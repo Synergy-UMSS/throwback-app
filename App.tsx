@@ -29,7 +29,7 @@ import { StatusBar } from 'expo-status-bar';
 import Main from './android/app/src/components/Main.jsx'
 import Navigation from './StackNavigator.js';
 
-type SectionProps = PropsWithChildren<{
+{/* type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
@@ -79,7 +79,7 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Header />
+          <Main/>
           <Navigation />
           
         </View>
@@ -106,5 +106,22 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+*/}
 
-export default App;
+
+export default function App() {
+  return (
+    <>
+      <Navigation/>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent:'center', 
+  },
+});

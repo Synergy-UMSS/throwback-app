@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./screens/HomeScreen";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,9 +21,9 @@ function BottomTabs() {
                 tabBarLabelStyle: { color: "white" },
                 tabBarIcon:({focused}) =>
                 focused ? (
-                    <Icon name="rocket" size={30} color="black" />
+                    <Ionicons name="home" size={24} color="black"/>
                 ) : (
-                    <Icon name="rocket" size={30} color="#900" />
+                    <Ionicons name="heart-outline" size={30} color="black"/>
                 ),
                 }} 
             />

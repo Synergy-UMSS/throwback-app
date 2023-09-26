@@ -10,8 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-
-    "@expo/vector-icons": "^13.0.0",
     "@react-native-firebase/app": "^18.5.0",
     "babel-eslint": "^10.1.0",
     "eslint-config-standard": "^17.1.0",

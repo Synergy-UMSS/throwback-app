@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from './src/screens/Home';
 import Splash from './src/screens/Splash';
+import Search from './src/screens/Search';
 import {RootStackParamList} from './src/utils/types';
 import 'react-native-gesture-handler';
 const Stack = createStackNavigator<RootStackParamList>();
@@ -14,6 +15,7 @@ const App = () => {
     return (
       <Tab.Navigator>
         <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Search" component={Search} />
       </Tab.Navigator>
     );
   }
@@ -28,6 +30,11 @@ const App = () => {
         />
         <Stack.Screen
           name={'Splash'}
+          component={Splash}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={'Search'}
           component={Splash}
           options={{headerShown: false}}
         />

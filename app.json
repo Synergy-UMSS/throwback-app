@@ -1,4 +1,5 @@
 {
   "name": "throwbackApp",
-  "displayName": "throwbackApp"
+  "displayName": "throwbackApp",
+  "icon": "./assets/icons/logo.png"
 }

@@ -2,22 +2,47 @@ import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity } from 'react-native-gesture-handler';
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import songs from '../../data/Prueba/Data';
+import TrackPlayer, {Capability, Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents} from 'react-native-track-player';
+
+const setPlayer = async () => {
+    try{
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add(songs);
+    }catch(e){
+
+    }
+}
+
+const play = async () => {
+    const track =  await TrackPlayer.getCurrentTrack();
+    let trackObject = await TrackPlayer.getTrack(trackIndex);
+    const position = await TrackPlayer.getPosition();
+    const duration = await TrackPlayer.getDuration();
+    if(track != null ){
+        if(playBackState == State.Paused){
+            await TrackPlayer.play();
+        }else {
+            await TrackPlayer.pause();
+        }
+    }
+}
+
 
 const Player = () => {
+    const playState = usePlaybackState;
     return (
         <SafeAreaView style={style.container}>
             <View style={style.maincontainer}>
-    
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
                         source={require('../../assets-prueba/images/Lust_for_Life.png')}
                         style={style.musicImage}
                     />
                 </View>
-               
                 <View>
                     <Text style={style.songTitle}>13 Beaches</Text>
                     <Text style={style.songArtist}>Lana del Rey</Text>
@@ -41,12 +66,10 @@ const Player = () => {
                 </View>
 
                 <View style={style.songControl}>
-                    <TouchableOpacity onPress={() => {}}>
-                        <Feather name="play" size={44} color="black" />
-                    </TouchableOpacity>     
+                     
 
-                    <TouchableOpacity onPress={() => {}}>
-                        <Ionicons name="pause-outline" size={44} color="black" />
+                    <TouchableOpacity onPress={() => play(playState)}>
+                        <Ionicons name={playState == State.Playing ? "pause-outline" :  "play-outline"} size={44} color="white" />
                     </TouchableOpacity>   
 
                 </View>

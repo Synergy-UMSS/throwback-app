@@ -19,7 +19,7 @@ const App = () => {
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
-          component={Player}
+          component={Home}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({ color, size }) => (
@@ -35,6 +35,17 @@ const App = () => {
             tabBarLabel: 'Buscar',
             tabBarIcon: ({ color, size }) => (
               <FontAwesomeIcon name="search" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="Player"
+          component={Player}
+          options={{
+            tabBarLabel: 'Reproducir',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="play-circle" color={color} size={size} />
             ),
             headerShown: false,
           }}

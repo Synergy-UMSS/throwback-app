@@ -48,10 +48,14 @@ const App = () => {
         <Stack.Screen
           name="Home"
           component={Movible}
-          options={{
-            headerShown: false,
-          }}
+          options={{ title: 'Tus memorias musicales', headerShown: false }}
         />
+        <Stack.Screen
+          name="Reproductor"
+          component={Reproductor} />
+        <Stack.Screen
+          name="DetalleMemoria"
+          component={DetalleMemoria}/>
         <Stack.Screen
           name={'Splash'}
           component={Splash}

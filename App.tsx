@@ -25,7 +25,7 @@ const App = () => {
 
         <Tab.Screen
           name="Home"
-          component={Home}
+          component={TusMemoriasMusicales}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({ color, size }) => (

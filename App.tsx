@@ -6,6 +6,11 @@ import Home from './src/screens/Home';
 import Splash from './src/screens/Splash';
 import {RootStackParamList} from './src/utils/types';
 import 'react-native-gesture-handler';
+import TusMemoriasMusicales from './src/screens/TusMemoriasMusicales';
+import Reproductor from './src/screens/Reproductor';
+import DetalleMemoria from './src/screens/DetalleMemoria';
+//import
+//
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
@@ -13,7 +18,7 @@ const App = () => {
   function Movible(){
     return (
       <Tab.Navigator>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Home" component={TusMemoriasMusicales} />
       </Tab.Navigator>
     );
   }
@@ -24,8 +29,14 @@ const App = () => {
         <Stack.Screen
           name="Home"
           component={Movible}
-          options={{headerShown: false}}
+          options={{ title: 'Tus memorias musicales', headerShown: false }}
         />
+        <Stack.Screen
+          name="Reproductor"
+          component={Reproductor} />
+        <Stack.Screen
+          name="DetalleMemoria"
+          component={DetalleMemoria}/>
         <Stack.Screen
           name={'Splash'}
           component={Splash}

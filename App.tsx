@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './src/screens/Home';
+import Player from './src/screens/Player';
 import Splash from './src/screens/Splash';
 import Search from './src/screens/Search';
 import { RootStackParamList } from './src/utils/types';
@@ -18,7 +19,7 @@ const App = () => {
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
-          component={Home}
+          component={Player}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({ color, size }) => (

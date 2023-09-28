@@ -5,43 +5,46 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './src/screens/Home';
 import Splash from './src/screens/Splash';
 import Search from './src/screens/Search';
-import { RootStackParamList } from './src/utils/types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Reproductor from './src/screens/Reproductor';
+import DetalleMemoria from './src/screens/DetalleMemoria';
+import { HomeProps } from './src/screens/Home';
+import { RootStackParamList } from './src/utils/types';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
-const App = () => {
-  function Movible() {
-    return (
-      <Tab.Navigator>
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            tabBarLabel: 'Inicio',
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="home" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />
-        <Tab.Screen
-          name="Search"
-          component={Search}
-          options={{
-            tabBarLabel: 'Buscar',
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesomeIcon name="search" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />
-      </Tab.Navigator>
-    );
-  }
+function Movible() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabel: 'Inicio',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="home" color={color} size={size} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          tabBarLabel: 'Buscar',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesomeIcon name="search" color={color} size={size} />
+          ),
+          headerShown: false,
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
+const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
@@ -52,10 +55,12 @@ const App = () => {
         />
         <Stack.Screen
           name="Reproductor"
-          component={Reproductor} />
+          component={Reproductor}
+        />
         <Stack.Screen
           name="DetalleMemoria"
-          component={DetalleMemoria}/>
+          component={DetalleMemoria}
+        />
         <Stack.Screen
           name={'Splash'}
           component={Splash}
@@ -63,12 +68,12 @@ const App = () => {
         />
         <Stack.Screen
           name={'Search'}
-          component={Splash}
+          component={Search}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
 
 export default App;

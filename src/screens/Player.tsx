@@ -12,7 +12,7 @@ const setPlayer = async () => {
         await TrackPlayer.setupPlayer();
         await TrackPlayer.add(songs);
         const trackList = await TrackPlayer.getQueue();
-        console.log('*****track list', trackList);
+        {/*console.log('*****track list', trackList);*/}
     }catch(e){
         console.log('aca hay error',e)
     }
@@ -20,11 +20,8 @@ const setPlayer = async () => {
 
 
 const playTrack = async (playState: State) => {
-    console.log('-------------playState:', playState);
+    {/*console.log('-------------playState:', playState);*/}
     const track =  await TrackPlayer.getCurrentTrack();
-    const trackObject = await TrackPlayer.getTrack(track); 
-    console.log('el track es:', trackObject);
-    trackAux = trackObject;
     if(track !== null ){
         if(playState == State.Ready || playState == State.Paused){
             await TrackPlayer.play();
@@ -55,8 +52,6 @@ const Player = () => {
 
     useEffect(() => {
         setPlayer();
-        const index = 0;
-        setsongIndex(index);
     }, []);
 
 

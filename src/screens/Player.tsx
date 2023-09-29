@@ -6,6 +6,7 @@ import {TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import TrackPlayer, {Capability, Event, RepeatMode, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
+import MiniPlayer from '../components/MiniPlayer';
 
 const setPlayer = async () => {
     try{
@@ -100,6 +101,13 @@ const Player = () => {
                     </TouchableOpacity>   
 
                 </View>
+
+                <MiniPlayer
+                    
+                    trackTitle={trackTitle}
+                    trackArtist={trackArtist}
+                    trackArtwork={trackArtwork}
+                />
 
             </View>
         </SafeAreaView>

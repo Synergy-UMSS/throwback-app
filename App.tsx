@@ -9,11 +9,18 @@ import Search from './src/screens/Search';
 import { RootStackParamList } from './src/utils/types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import MiniPlayer from './src/components/MiniPlayer';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  }
   function Movible() {
     return (
       <Tab.Navigator>
@@ -75,6 +82,7 @@ const App = () => {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
+      <MiniPlayer visible={modalVisible} onClose={toggleModal} />
     </NavigationContainer>
   );
 }

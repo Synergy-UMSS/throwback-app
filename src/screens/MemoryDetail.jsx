@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import ItemSong from '../utils/ItemSong';
 
 
 const memorias = [
@@ -14,17 +15,52 @@ const memorias = [
   { id: 9, tituloMemoria: " Noche de San Juan", cancion: "Feeling Good", artista: "Nina Simone", fecha: "2021-02-12", lugar: "Nueva Orleans, LA" },
 ];
 
-const Reproductor = ({ route, navigation }) => {
+const MemoryDetail = ({ route, navigation }) => {
   const { memoriaId } = route.params;
-  const memoria = memorias.find(m => m.id === memoriaId);
+  const memory = memorias.find(m => m.id === memoriaId);
 
+
+  const playSong = () => {
+    navigation.navigate('Reproductor', { memoriaId: memory.id });
+  };
 
   return (
-    <View>
-      <Text>Reproductor</Text>
-      <Text>{memoria.cancion} - {memoria.artista}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{memory.tituloMemoria}</Text>
+      <Text style={styles.description}>{memory.descripcion}</Text>
+      <Text style={styles.date}>{memory.fecha}</Text>
+      <ItemSong
+        song={memory.cancion}
+        artist={memory.artista}
+        onPlay={playSong}
+      />
     </View>
   );
 };
 
-export default Reproductor;
+const styles = StyleSheet.create({
+  container: {
+    margin: 15,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 15,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  description: {
+    marginBottom: 15,
+    fontSize: 16,
+    height: 150,
+  },
+  date: {
+    marginBottom: 15,
+    fontSize: 14,
+  },
+});
+
+export default MemoryDetail;

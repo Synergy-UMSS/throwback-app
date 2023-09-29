@@ -5,7 +5,7 @@ import Slider from '@react-native-community/slider';
 import {TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
-import TrackPlayer, {Capability, Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents} from 'react-native-track-player';
+import TrackPlayer, {Capability, Event, RepeatMode, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
 
 const setPlayer = async () => {
     try{
@@ -18,11 +18,13 @@ const setPlayer = async () => {
     }
 };
 
+
 const playTrack = async (playState: State) => {
     console.log('-------------playState:', playState);
     const track =  await TrackPlayer.getCurrentTrack();
-    const position = await TrackPlayer.getPosition();
-    const duration = await TrackPlayer.getDuration();
+    const trackObject = await TrackPlayer.getTrack(track); 
+    console.log('el track es:', trackObject);
+    trackAux = trackObject;
     if(track !== null ){
         if(playState == State.Ready || playState == State.Paused){
             await TrackPlayer.play();
@@ -30,43 +32,68 @@ const playTrack = async (playState: State) => {
             await TrackPlayer.pause();
         }
     }
-}
+};
+
 
 const Player = () => {
     const playState: State = usePlaybackState();
+    const sliderWork = useProgress(); 
+    const [songIndex, setsongIndex] = useState(0);
+    const [trackTitle, setTrackTitle] = useState();
+    const [trackArtist, setTrackArtist] = useState();
+    const [trackArtwork, setTrackArtwork] = useState();
+
+    useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+        if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
+          const track = await TrackPlayer.getTrack(event.nextTrack);
+          const {title, artwork, artist} = track;
+          setTrackTitle(title);
+          setTrackArtist(artist);
+          setTrackArtwork(artwork);
+        }
+    });
 
     useEffect(() => {
         setPlayer();
+        const index = 0;
+        setsongIndex(index);
     }, []);
+
 
     return (
         <SafeAreaView style={style.container}>
             <View style={style.maincontainer}>
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
-                        source={require('../../assets-prueba/images/Lust_for_Life.png')}
+                        source={trackArtwork}
                         style={style.musicImage}
                     />
                 </View>
                 <View>
-                    <Text style={style.songTitle}>13 Beaches</Text>
-                    <Text style={style.songArtist}>Lana del Rey</Text>
+                    <Text style={style.songTitle}>{trackTitle}</Text>
+                    <Text style={style.songArtist}>{trackArtist}</Text>
                 </View>
 
                 <View>
                     <View style={style.songDurationMain}>
-                        <Text style={style.songDuration}>00:00</Text>
-                        <Text style={style.songDuration}>04:00</Text>
+                        <Text style={style.songDuration}>
+                            {new Date(sliderWork.position *1000).toLocaleTimeString().substring(3,8)}
+                        </Text>
+                        <Text style={style.songDuration}>
+                            {new Date(sliderWork.duration *1000).toLocaleTimeString().substring(3,8)}
+                        </Text>
                     </View>
                     <Slider
                         style={style.songSlider}
-                        value = {10}
+                        value = {sliderWork.position}
                         minimumValue ={0}
-                        maximumValue= {100}
+                        maximumValue= {sliderWork.duration}
                         thumbTintColor = 'pink'
                         minimumTrackTintColor='black'
                         maximumTrackTintColor='white'
-                        onSlidingComplete={() => {}}
+                        onSlidingComplete={async time => {
+                            await TrackPlayer.seekTo(time);
+                        }}
                     />
                 </View>
 

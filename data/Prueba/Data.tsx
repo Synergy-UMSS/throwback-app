@@ -17,7 +17,7 @@ const songs = [
         id: 3,
         title: 'Meet Me In The PaleMoonlight',
         artist: 'Lana del Rey',
-        artwork: require('../../assets-prueba/images/Born_To_Die.png'),
+        artwork: require('../../assets-prueba/images/Born_To_Die.jpg'),
         url:require('../../assets-prueba/songs/Meet_Me_in_the_Pale_Moonlight.mp3'),
     },
     {

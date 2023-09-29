@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import {TouchableOpacity } from 'react-native-gesture-handler';
-import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import TrackPlayer, {Capability, Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents} from 'react-native-track-player';
@@ -12,18 +11,20 @@ const setPlayer = async () => {
     try{
         await TrackPlayer.setupPlayer();
         await TrackPlayer.add(songs);
+        const trackList = await TrackPlayer.getQueue();
+        console.log('*****track list', trackList);
     }catch(e){
-
+        console.log('aca hay error',e)
     }
-}
+};
 
-const play = async () => {
+const playTrack = async (playState: State) => {
+    console.log('-------------playState:', playState);
     const track =  await TrackPlayer.getCurrentTrack();
-    let trackObject = await TrackPlayer.getTrack(trackIndex);
     const position = await TrackPlayer.getPosition();
     const duration = await TrackPlayer.getDuration();
-    if(track != null ){
-        if(playBackState == State.Paused){
+    if(track !== null ){
+        if(playState == State.Ready || playState == State.Paused){
             await TrackPlayer.play();
         }else {
             await TrackPlayer.pause();
@@ -31,9 +32,13 @@ const play = async () => {
     }
 }
 
-
 const Player = () => {
-    const playState = usePlaybackState;
+    const playState: State = usePlaybackState();
+
+    useEffect(() => {
+        setPlayer();
+    }, []);
+
     return (
         <SafeAreaView style={style.container}>
             <View style={style.maincontainer}>
@@ -68,8 +73,8 @@ const Player = () => {
                 <View style={style.songControl}>
                      
 
-                    <TouchableOpacity onPress={() => play(playState)}>
-                        <Ionicons name={playState == State.Playing ? "pause-outline" :  "play-outline"} size={44} color="white" />
+                    <TouchableOpacity onPress={() => playTrack(playState)}>
+                        <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
                     </TouchableOpacity>   
 
                 </View>

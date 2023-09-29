@@ -1,11 +1,11 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect } from 'react';
-import { View, Image, StyleSheet } from 'react-native'; // Importa Image y StyleSheet
-import { RootStackParamList } from '../utils/types';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useEffect} from 'react';
+import {View, Image, StyleSheet} from 'react-native'; // Importa Image y StyleSheet
+import {RootStackParamList} from '../utils/types';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
-const Splash = ({ navigation }: SplashProps) => {
+const Splash = ({navigation}: SplashProps) => {
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('Home');
@@ -14,10 +14,7 @@ const Splash = ({ navigation }: SplashProps) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../assets/logo.png')}
-        style={styles.logo}
-      />
+      <Image source={require('../assets/logo-no-background.png')} style={styles.logo} />
     </View>
   );
 };
@@ -29,7 +26,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   background: {
-    backgroundColor: '#E4E6DC', // Establece el color de fondo deseado
+    backgroundColor: '#E4E6DC',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -37,7 +34,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 200,
-    height: 200,
+    height: 169,
   },
 });
 

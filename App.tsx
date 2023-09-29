@@ -19,25 +19,24 @@ import MemoryDetail from './src/screens/MemoryDetail';
 const App = () => {
   function Movible() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: '#ffffff',
+            tabBarInactiveTintColor: '#b5b3b3',
+            tabBarStyle: {
+              backgroundColor: '#787474',
+            },
+          }}
+        >
         <Tab.Screen
-          name="Tus memorias musicales"
-          component={MemoryList}
+          name="Home_memory"
+          component={MemoryNavigator}
           options={{
-            headerStyle: {
-              backgroundColor: '#e4e6dc',
-            },
-            headerTitleStyle: {
-              fontSize: 22,
-              color: 'black',
-              fontWeight: 'bold',
-              marginLeft: 18,
-            },
             tabBarLabel: 'Inicio',
             tabBarIcon: ({ color, size }) => (
               <Icon name="home" color={color} size={size} />
             ),
-            headerShown: true,
+            headerShown: false,
           }}
         />
         <Tab.Screen
@@ -70,7 +69,8 @@ const App = () => {
           component={Reproductor} />
         <Stack.Screen
           name="MemoryDetail"
-          component={MemoryDetail}/>
+          component={MemoryDetail}
+        />
         <Stack.Screen
           name={'Splash'}
           component={Splash}
@@ -85,5 +85,42 @@ const App = () => {
     </NavigationContainer>
   );
 }
+function MemoryNavigator() { // Navigation from home
+  return (
+      <Stack.Navigator>
+          <Stack.Screen 
+              name="Tus memorias musicales" 
+              component={MemoryList} 
+              options={{
+                headerStyle: {
+                  backgroundColor: '#e4e6dc',
+                },
+                headerTitleStyle: {
+                  fontSize: 22,
+                  color: 'black',
+                  fontWeight: 'bold',
+                  marginLeft: 18,
+                },
+                headerShown: true,
+                cardStyle: { backgroundColor: '#e4e6dc'
+                }
+              }}
+          />
 
+
+          <Stack.Screen 
+              name="MemoryDetail" 
+              component={MemoryDetail} 
+              options={{
+                title: ' ',
+                headerStyle: {
+                  backgroundColor: '#e4e6dc'
+                },
+                cardStyle: { backgroundColor: '#e4e6dc'
+                }
+              }}
+          />
+      </Stack.Navigator>
+  );
+}
 export default App;

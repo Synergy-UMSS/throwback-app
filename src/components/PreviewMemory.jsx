@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 23,
     borderColor: 'black',
     borderWidth: 2.5,
+    elevation:15
   },
   memoriaContainer: {
     flex: 1,

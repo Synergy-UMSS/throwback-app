@@ -29,11 +29,11 @@ const MemoryList = ({ navigation }) => {
     navigation.navigate('MemoryDetail', { memoriaId: id });
   };
   return (
-    <View style={{ flex: 1, backgroundColor: '#e4e6dc' }}>
+    <View>
       <FlatList
-        data={memorias}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={abrirDetalles} index={index} />}
+      data={memorias}
+      keyExtractor={item => item.id.toString()}
+      renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={abrirDetalles} index={index} />}
       />
     </View>
   );

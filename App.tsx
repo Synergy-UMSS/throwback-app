@@ -1,37 +1,44 @@
 import React from 'react';
+import { Text } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from './src/screens/Home';
 import Splash from './src/screens/Splash';
 import 'react-native-gesture-handler';
-import TusMemoriasMusicales from './src/screens/TusMemoriasMusicales';
-import Reproductor from './src/screens/Reproductor';
-import DetalleMemoria from './src/screens/DetalleMemoria';
 import Search from './src/screens/Search';
 import { RootStackParamList } from './src/utils/types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
-//        <Tab.Screen name="Home" component={TusMemoriasMusicales} />
+import MemoryList from './src/screens/MemoryList';
+import Reproductor from './src/screens/Reproductor';
+import MemoryDetail from './src/screens/MemoryDetail';
 
 const App = () => {
   function Movible() {
     return (
       <Tab.Navigator>
-
         <Tab.Screen
-          name="Home"
-          component={TusMemoriasMusicales}
+          name="Tus memorias musicales"
+          component={MemoryList}
           options={{
+            headerStyle: {
+              backgroundColor: '#e4e6dc',
+            },
+            headerTitleStyle: {
+              fontSize: 22,
+              color: 'black',
+              fontWeight: 'bold',
+              marginLeft: 18,
+            },
             tabBarLabel: 'Inicio',
             tabBarIcon: ({ color, size }) => (
               <Icon name="home" color={color} size={size} />
             ),
-            headerShown: false,
+            headerShown: true,
           }}
         />
         <Tab.Screen
@@ -48,9 +55,7 @@ const App = () => {
       </Tab.Navigator>
     );
   }
-// options={{
-//  headerShown: false,
-//}}
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
@@ -65,8 +70,8 @@ const App = () => {
           name="Reproductor"
           component={Reproductor} />
         <Stack.Screen
-          name="DetalleMemoria"
-          component={DetalleMemoria}/>
+          name="MemoryDetail"
+          component={MemoryDetail}/>
         <Stack.Screen
           name={'Splash'}
           component={Splash}

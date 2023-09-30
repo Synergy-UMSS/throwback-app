@@ -26,6 +26,9 @@ const SearchBar = () => {
           onChangeText={(cambio) => {
             setBusqueda(cambio);
           }}
+          onSubmitEditing={() => {
+            console.log("bebita bebe liean  "+busqueda);
+          }}
           value={busqueda} 
           style={{
             borderWidth: 1,

@@ -66,14 +66,19 @@ const App = () => {
           }}
         />
         <Stack.Screen
-          name={'Splash'}
+          name='Splash'
           component={Splash}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, }}
         />
         <Stack.Screen
-          name={'Search'}
-          component={Splash}
-          options={{ headerShown: false }}
+          name='Search'
+          component={Search}
+          options={{ headerShown: false, }}
+        />
+        <Stack.Screen
+          name='Player'
+          component={Player}
+          options={{ headerShown: false, }}
         />
       </Stack.Navigator>
       

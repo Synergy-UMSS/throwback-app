@@ -9,10 +9,10 @@ const PreviewMemory = ({ memoria, onPress, index }) => {
   return (
     <TouchableOpacity onPress={() => onPress(memoria.id)} style={{ ...styles.container, backgroundColor: color }}>
       <View style={styles.memoriaContainer}>
-        <Text style={styles.titulo}>{memoria.tituloMemoria}</Text>
+        <Text style={styles.titulo}>{memoria.titulo_memoria}</Text>
         <View style={styles.cancionContainer}>
           <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>{memoria.cancion} - {memoria.artista}</Text>
+          <Text style={styles.cancion}>{memoria.titulo_cancion} - {memoria.artista_cancion}</Text> 
         </View>
       </View>
     </TouchableOpacity>
@@ -24,18 +24,19 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
     marginTop: 14,
-    marginBottom: 14,
+    marginBottom: 10,
     margin: 10,
     padding: 22,
     borderRadius: 23,
     borderColor: 'black',
     borderWidth: 2.5,
+    elevation:15
   },
   memoriaContainer: {
     flex: 1,
   },
   titulo: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',

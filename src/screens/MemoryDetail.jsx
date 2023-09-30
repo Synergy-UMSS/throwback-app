@@ -1,37 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../utils/ItemSong';
 
-
-const memorias = [
-  { id: 1, tituloMemoria: "Festival al Aire Libre", cancion: "Livin' on a Prayer", artista: "Bon Jovi", fecha: "2019-07-20", lugar: "Nueva York, NY" },
-  { id: 2, tituloMemoria: "Fiesta de Graduación", cancion: "Don't Stop Believin'", artista: "Journey", fecha: "2020-06-10", lugar: "Los Ángeles, CA" },
-  { id: 3, tituloMemoria: "Parrillada en la casa de Carlos", cancion: "Bohemian Rhapsody", artista: "Queen", fecha: "2018-12-05", lugar: "Londres, Reino Unido" },
-  { id: 4, tituloMemoria: "Evento Musical al Aire Libre", cancion: "Hotel California", artista: "Eagles", fecha: "2019-08-28", lugar: "Austin, TX" },
-  { id: 5, tituloMemoria: "Monopoly con amigos", cancion: "Superstition", artista: "Stevie Wonder", fecha: "2019-11-20", lugar: "Los Ángeles, CA" },
-  { id: 6, tituloMemoria: "Noche de Estrellas en el Anfiteatro", cancion: "Stairway to Heaven", artista: "Led Zeppelin", fecha: "2018-07-12", lugar: "Chicago, IL" },
-  { id: 7, tituloMemoria: "Baile de Salón", cancion: "Dancing Queen", artista: "ABBA", fecha: "2021-08-08", lugar: "Miami, FL" },
-  { id: 8, tituloMemoria: "Café, reencuentro con amigos", cancion: "Wonderwall", artista: "Oasis", fecha: "2020-04-05", lugar: "San Francisco, CA" },
-  { id: 9, tituloMemoria: " Noche de San Juan", cancion: "Feeling Good", artista: "Nina Simone", fecha: "2021-02-12", lugar: "Nueva Orleans, LA" },
-];
+const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 
 const MemoryDetail = ({ route, navigation }) => {
-  const { memoriaId } = route.params;
-  const memory = memorias.find(m => m.id === memoriaId);
+  const { memoriaId, index } = route.params;
 
+  const [memory, setMemory] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
+      if (doc.exists) {
+        setMemory({ id: doc.id, ...doc.data() });
+      } else {
+        console.log('Documento no existe!');
+      }
+    });
+
+    return () => unsubscribe();  // Limpiar la suscripción al desmontar el componente
+  }, [memoriaId]);
+
+  if (!memory) return null;  // Si no hay memoria, no renderizar nada (o puedes mostrar un spinner)
+
+  const color = bgColor[index % bgColor.length];
 
   const playSong = () => {
     navigation.navigate('Reproductor', { memoriaId: memory.id });
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{memory.tituloMemoria}</Text>
-      <Text style={styles.description}>{memory.descripcion}</Text>
-      <Text style={styles.date}>{memory.fecha}</Text>
+    <View style={{ ...styles.container, backgroundColor: color }}>
+      <Text style={styles.title}>{memory.titulo_memoria}</Text>
+      <Text style={styles.subtitle}>{"Descripcion:"}</Text>
+      <Text style={styles.description}>{memory.descripcion_memoria}</Text>
+      <Text style={styles.tdate}>{"Fecha:"}</Text>
+      <Text style={styles.date}>{memory.fecha_memoria && memory.fecha_memoria.toDate().toISOString().split('T')[0]}</Text>
+      <Text style={styles.tdate}>{"Canción vinculada al recuerdo:"}</Text>
       <ItemSong
-        song={memory.cancion}
-        artist={memory.artista}
+        song={memory.titulo_cancion}
+        artist={memory.artista_cancion}
         onPlay={playSong}
       />
     </View>
@@ -40,27 +49,55 @@ const MemoryDetail = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 15,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 15,
+    flex: 0.95,
+    marginHorizontal: 25,
+    marginTop: 5,
+    borderColor: 'black',
+    borderWidth: 2.5,
+    borderRadius: 30,
+    padding: 30,
     backgroundColor: 'white',
+    elevation:15,
+    shadowColor:'black',
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
+    color: 'black',
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 20,
+    textAlign:'center',
+  },
+  subtitle: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  tdate: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
   },
   description: {
-    marginBottom: 15,
-    fontSize: 16,
-    height: 150,
+    fontSize: 18,
+    color:'#292929',
+    marginBottom: 20,
+    borderColor: 'black',
+    paddingBottom: 10,
+    textAlign:'justify'
   },
   date: {
-    marginBottom: 15,
-    fontSize: 14,
+    fontSize: 18,
+    color:'#292929',
+    marginBottom: 20,
   },
+  songButton: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    padding: 10,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 10,
+  }
 });
 
 export default MemoryDetail;

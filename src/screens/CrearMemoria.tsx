@@ -1,51 +1,65 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import xml2js from 'react-native-xml2js';
+import firestore from '@react-native-firebase/firestore';
+import ItemSong from '../utils/ItemSong';
 
 const CrearMemoria = () => {
-  const [nombreMemoria, setNombreMemoria] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [fecha, setFecha] = useState('');
+  const [tituloMemoria, setTituloMemoria] = useState('');
+  const [descripcionMemoria, setDescripcionMemoria] = useState('');
+  const [fechaMemoria, setFechaMemoria] = useState('');
+  const [tituloCancion, setTituloCancion] = useState('');
+  const [artistaCancion, setArtistaCancion] = useState('');
 
-  const guardarMemoria = () => {
-    // Crear un objeto de datos de memoria
+  const guardarMemoria = async () => {
     const memoria = {
-      nombre: nombreMemoria,
-      descripcion: descripcion,
-      fecha: fecha,
+      titulo_memoria: tituloMemoria,
+      descripcion_memoria: descripcionMemoria,
+      fecha_creacion: firestore.Timestamp.now(),
+      fecha_memoria: firestore.Timestamp.fromDate(new Date(fechaMemoria)),
+      titulo_cancion: 'Sample Song',
+      artista_cancion: 'Artist',
     };
 
-    // Convertir el objeto a XML
-    const builder = new xml2js.Builder();
-    const xmlMemoria = builder.buildObject(memoria);
-
-    // Aquí puedes guardar el XML en un archivo o enviarlo a través de una API
-    console.log(xmlMemoria);
+    try {
+      await firestore().collection('memorias').add(memoria);
+      console.log('Memoria guardada correctamente.');
+    } catch (error) {
+      console.error('Error al guardar la memoria: ', error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Nombre de la Memoria:</Text>
+      <Text style={styles.label}>Título de la Memoria:</Text>
       <TextInput
         style={styles.input}
-        value={nombreMemoria}
-        onChangeText={setNombreMemoria}
+        value={tituloMemoria}
+        onChangeText={setTituloMemoria}
       />
 
       <Text style={styles.label}>Descripción:</Text>
       <TextInput
         style={styles.input}
-        value={descripcion}
-        onChangeText={setDescripcion}
+        value={descripcionMemoria}
+        onChangeText={setDescripcionMemoria}
       />
 
-      <Text style={styles.label}>Fecha:</Text>
+      <Text style={styles.label}>Fecha de Memoria:</Text>
       <TextInput
         style={styles.input}
-        value={fecha}
-        onChangeText={setFecha}
+        value={fechaMemoria}
+        onChangeText={setFechaMemoria}
         placeholder="YYYY-MM-DD"
       />
+
+<Text style={styles.label}>Cancion Vinculada:</Text>
+      <View style={styles.marginBottom}>
+        <ItemSong
+          song='SampleSong'
+          artist='Artist'
+          onPlay='Play'
+        />
+      </View>
 
       <Button title="Guardar" onPress={guardarMemoria} />
     </View>
@@ -68,6 +82,11 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 8,
     marginTop: 8,
+
+  },
+  marginBottom: {
+    marginTop: 40,
+    marginBottom: 40,  // puedes ajustar el valor según el espacio que necesites
   },
 });
 

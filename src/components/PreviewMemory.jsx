@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
     marginTop: 14,
-    marginBottom: 14,
+    marginBottom: 10,
     margin: 10,
     padding: 22,
     borderRadius: 23,
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titulo: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',

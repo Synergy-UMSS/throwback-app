@@ -7,16 +7,13 @@ import {TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
-import MiniPlayer from '../components/MiniPlayer'
-import { createNavigationContainerRef } from '@react-navigation/native';
-export const navigationRef = createNavigationContainerRef<any>();
 
 const setPlayer = async () => {
     try{
         await TrackPlayer.setupPlayer();
         await TrackPlayer.add(songs);
-        const trackList = await TrackPlayer.getQueue();
-        {/*console.log('*****track list', trackList);*/}
+        {/*const trackList = await TrackPlayer.getQueue();
+        console.log('*****track list', trackList);*/}
     }catch(e){
         console.log('aca hay error',e)
     }
@@ -59,7 +56,7 @@ const Player = ({navigation}) => {
                          
     return (
         <SafeAreaView style={style.maincontainer}>
-            <TouchableOpacity style={style.flechita} onPress={() => navigationRef.goBack()}>
+            <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={30} color="white" />
             </TouchableOpacity>
 

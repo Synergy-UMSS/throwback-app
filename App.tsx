@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './src/screens/Home';
+import Player from './src/screens/Player';
 import Splash from './src/screens/Splash';
 import Search from './src/screens/Search';
 import { RootStackParamList } from './src/utils/types';
@@ -13,6 +14,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+
   function Movible() {
     return (
       <Tab.Navigator>
@@ -38,6 +40,17 @@ const App = () => {
             headerShown: false,
           }}
         />
+        <Tab.Screen
+          name="Player"
+          component={Player}
+          options={{
+            tabBarLabel: 'Reproducir',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="play-circle" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     );
   }
@@ -53,16 +66,22 @@ const App = () => {
           }}
         />
         <Stack.Screen
-          name={'Splash'}
+          name='Splash'
           component={Splash}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, }}
         />
         <Stack.Screen
-          name={'Search'}
-          component={Splash}
-          options={{ headerShown: false }}
+          name='Search'
+          component={Search}
+          options={{ headerShown: false, }}
+        />
+        <Stack.Screen
+          name='Player'
+          component={Player}
+          options={{ headerShown: false, }}
         />
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 }

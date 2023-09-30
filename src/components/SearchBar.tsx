@@ -7,7 +7,6 @@ import * as Animatable from 'react-native-animatable';
 const SearchBar = () => {
   // use state for search text
   const [busqueda, setBusqueda] = useState('');
-
   return (
     <View>
       <View

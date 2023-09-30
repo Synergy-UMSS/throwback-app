@@ -1,16 +1,21 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
+import MiniPlayer from '../components/MiniPlayer';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../utils/types';
 
-type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-const Home = ({navigation}: HomeProps) => {
+const Home = ({navigation}) => {
   return (
-    <View>
+    <View >
       <Text>Home</Text>
-    </View>
+      <MiniPlayer navigation={navigation}/>
+    </View> 
   );
 };
 
 export default Home;
+
+const style = StyleSheet.create({
+  full:{
+    flex:1,
+  },
+});

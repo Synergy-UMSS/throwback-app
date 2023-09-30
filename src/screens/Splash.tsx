@@ -16,12 +16,13 @@ const Splash = ({navigation}: SplashProps) => {
     <View>
       <Text
         style={{
-            fontSize: 40,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginTop: 200,
-        }}
-      >Logo Fachero</Text>
+          fontSize: 40,
+          fontWeight: 'bold',
+          textAlign: 'center',
+          marginTop: 200,
+        }}>
+        Logo Fachero
+      </Text>
     </View>
   );
 };

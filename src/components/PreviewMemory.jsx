@@ -1,18 +1,31 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
-const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
+const bgColor = [
+  '#c7a9d5',
+  '#B6BFD4',
+  '#9DE0D2',
+  '#BFEAAF',
+  '#F6EA7E',
+  '#F0CC8B',
+  '#FBBAA4',
+  '#FFC1D8',
+];
 
-const PreviewMemory = ({ memoria, onPress, index }) => {
+const PreviewMemory = ({memoria, onPress, index}) => {
   const color = bgColor[index % bgColor.length];
-  
+
   return (
-    <TouchableOpacity onPress={() => onPress(memoria.id)} style={{ ...styles.container, backgroundColor: color }}>
+    <TouchableOpacity
+      onPress={() => onPress(memoria.id)}
+      style={{...styles.container, backgroundColor: color}}>
       <View style={styles.memoriaContainer}>
         <Text style={styles.titulo}>{memoria.tituloMemoria}</Text>
         <View style={styles.cancionContainer}>
           <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>{memoria.cancion} - {memoria.artista}</Text>
+          <Text style={styles.cancion}>
+            {memoria.cancion} - {memoria.artista}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -30,7 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: 23,
     borderColor: 'black',
     borderWidth: 2.5,
-    elevation:15
+    elevation: 8,
   },
   memoriaContainer: {
     flex: 1,

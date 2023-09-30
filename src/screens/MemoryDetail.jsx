@@ -6,7 +6,8 @@ import ItemSong from '../utils/ItemSong';
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 
 const MemoryDetail = ({ route, navigation }) => {
-  const { memoriaId } = route.params;
+  const { memoriaId, index } = route.params;
+
   const [memory, setMemory] = useState(null);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const MemoryDetail = ({ route, navigation }) => {
 
   if (!memory) return null;  // Si no hay memoria, no renderizar nada (o puedes mostrar un spinner)
 
-  const color = bgColor[(memory.id.length - 1) % bgColor.length];
+  const color = bgColor[index % bgColor.length];
 
   const playSong = () => {
     navigation.navigate('Reproductor', { memoriaId: memory.id });

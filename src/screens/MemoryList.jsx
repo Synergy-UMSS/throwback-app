@@ -5,8 +5,8 @@ import MemoryDetail from './MemoryDetail';
 import firestore from '@react-native-firebase/firestore';
 
 const MemoryList = ({ navigation }) => {
-  const abrirDetalles = (id) => {
-    navigation.navigate('MemoryDetail', { memoriaId: id });
+  const abrirDetalles = (id, index) => {
+    navigation.navigate('MemoryDetail', { memoriaId: id, index: index });
   };
 
   const [data, setData] = useState([]);
@@ -39,7 +39,8 @@ const MemoryList = ({ navigation }) => {
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
-        renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={abrirDetalles} index={index} />}
+        renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
+
       />
     </View>
   );

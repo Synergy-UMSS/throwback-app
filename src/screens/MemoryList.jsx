@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import {View, FlatList, Text, StyleSheet} from 'react-native';
 import PreviewMemory from '../components/PreviewMemory';
 import MemoryDetail from './MemoryDetail';
 import firestore from '@react-native-firebase/firestore';
@@ -29,13 +29,15 @@ const MemoryList = ({ navigation }) => {
   if (data.length === 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.messageText}>No tienes memorias musicales creadas</Text>
+        <Text style={styles.messageText}>
+          No tienes memorias musicales creadas
+        </Text>
       </View>
     );
   }
 
   return (
-    <View>
+    <View style={styles.containerlist}>
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}

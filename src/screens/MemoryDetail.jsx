@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../utils/ItemSong';
 
@@ -27,7 +27,7 @@ const MemoryDetail = ({ route, navigation }) => {
   const color = bgColor[index % bgColor.length];
 
   const playSong = () => {
-    navigation.navigate('Reproductor', { memoriaId: memory.id });
+    navigation.navigate('Reproductor', {memoriaId: memory.id});
   };
 
   return (
@@ -49,55 +49,34 @@ const MemoryDetail = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.95,
+    flex: 0.97,
     marginHorizontal: 25,
-    marginTop: 5,
     borderColor: 'black',
     borderWidth: 2.5,
     borderRadius: 30,
     padding: 30,
     backgroundColor: 'white',
-    elevation:15,
-    shadowColor:'black',
+    elevation: 15,
+    shadowColor: 'black',
   },
   title: {
     fontSize: 24,
     color: 'black',
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign:'center',
+    marginBottom: 10,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
-  tdate: {
-    fontSize: 20,
-    color: 'black',
-    fontWeight: 'bold',
-  },
   description: {
-    fontSize: 18,
-    color:'#292929',
-    marginBottom: 20,
+    fontSize: 16,
+    color: '#292929',
     borderColor: 'black',
-    paddingBottom: 10,
-    textAlign:'justify'
+    textAlign: 'justify',
   },
-  date: {
-    fontSize: 18,
-    color:'#292929',
-    marginBottom: 20,
-  },
-  songButton: {
-    flexDirection: 'row',
-    alignItems: 'center', 
-    padding: 10,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 10,
-  }
 });
 
 export default MemoryDetail;

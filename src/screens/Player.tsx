@@ -2,12 +2,26 @@ import React, { useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import {TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import TrackPlayer, {Capability, Event, RepeatMode, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
-import MiniPlayer from '../components/MiniPlayer';
+import { BottomPopup } from '../components/MiniPlayer';
 
+const popupList = [
+    {
+        id: 1,
+        name : 'task',
+    },
+    {
+        id: 2,
+        name : 'message',
+    },
+    {
+        id: 3,
+        name : 'note',
+    },
+]
 const setPlayer = async () => {
     try{
         await TrackPlayer.setupPlayer();
@@ -40,6 +54,7 @@ const Player = () => {
     const [trackTitle, setTrackTitle] = useState();
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
+    let popuRef = React.createRef()
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
         if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
@@ -55,6 +70,13 @@ const Player = () => {
         setPlayer();
     }, []);
 
+    const onShowPopup = () => {
+        popuRef.show()
+    };
+
+    const onClosePopup = () => {
+        popuRef.close()
+    };
 
     return (
         <SafeAreaView style={style.container}>
@@ -94,22 +116,21 @@ const Player = () => {
                 </View>
 
                 <View style={style.songControl}>
-                     
-
                     <TouchableOpacity onPress={() => playTrack(playState)}>
                         <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
                     </TouchableOpacity>   
-
                 </View>
 
-                <MiniPlayer
-                    
-                    trackTitle={trackTitle}
-                    trackArtist={trackArtist}
-                    trackArtwork={trackArtwork}
-                />
-
             </View>
+            <TouchableWithoutFeedback onPress={onShowPopup}>
+                <Text> Musica reproduciendo</Text>
+            </TouchableWithoutFeedback>
+            <BottomPopup 
+                title='Demo Popup'
+                ref={(target) => popuRef = target }
+                onTouchOutside={onClosePopup}
+                data={popupList}
+            />
         </SafeAreaView>
     );
 };

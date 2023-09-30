@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../utils/ItemSong';
 
-const CrearMemoria = () => {
+const CrearMemoria = ({ navigation }) => {
   const [tituloMemoria, setTituloMemoria] = useState('');
   const [descripcionMemoria, setDescripcionMemoria] = useState('');
   const [fechaMemoria, setFechaMemoria] = useState('');
@@ -26,6 +26,10 @@ const CrearMemoria = () => {
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
+  };
+
+  const playSong = () => {
+    navigation.navigate('Reproductor', {memoriaId: 1}); //mandando id 1 para probar
   };
 
   return (
@@ -57,7 +61,7 @@ const CrearMemoria = () => {
         <ItemSong
           song='SampleSong'
           artist='Artist'
-          onPlay='Play'
+          onPlay={playSong}
         />
       </View>
 

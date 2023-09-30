@@ -21,7 +21,7 @@ const memorias = [
 const Reproductor = ({ route, navigation }) => {
   const { memoriaId } = route.params;
   const memoria = memorias.find(m => m.id === memoriaId);
-
+  // const memoria = memorias[0];
 
   return (
     <View>

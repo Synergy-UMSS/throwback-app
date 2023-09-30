@@ -17,7 +17,7 @@ const MemoryDetail = ({ route, navigation }) => {
       } else {
         console.log('Documento no existe!');
       }
-    });
+    }); 
 
     return () => unsubscribe();  // Limpiar la suscripción al desmontar el componente
   }, [memoriaId]);

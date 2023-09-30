@@ -8,7 +8,7 @@ const MemoryList = ({ navigation }) => {
   const abrirDetalles = (id, index) => {
     navigation.navigate('MemoryDetail', { memoriaId: id, index: index });
   };
-
+ 
   const [data, setData] = useState([]);
 
   useEffect(() => {

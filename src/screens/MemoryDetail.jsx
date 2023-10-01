@@ -85,6 +85,11 @@ const styles = StyleSheet.create({
     color:'black',
     marginBottom: 20,
   },
+  tdate: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
+  },
   tsong: {
     fontSize: 20,
     color: 'black',

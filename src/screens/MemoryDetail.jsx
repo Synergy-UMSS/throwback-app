@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import ItemSong from '../utils/ItemSong';
+import ItemSong from '../components/PreviewSong';
+import placeholderImage from '../screens/placeholder.png';
 
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 
 const MemoryDetail = ({ route, navigation }) => {
   const { memoriaId, index } = route.params;
-
   const [memory, setMemory] = useState(null);
 
   useEffect(() => {
@@ -37,11 +37,13 @@ const MemoryDetail = ({ route, navigation }) => {
       <Text style={styles.description}>{memory.descripcion_memoria}</Text>
       <Text style={styles.tdate}>{"Fecha:"}</Text>
       <Text style={styles.date}>{memory.fecha_memoria && memory.fecha_memoria.toDate().toISOString().split('T')[0]}</Text>
-      <Text style={styles.tdate}>{"Canción vinculada al recuerdo:"}</Text>
+      <Text style={styles.tsong}>{"Canción vinculada al recuerdo:"}</Text>
       <ItemSong
         song={memory.titulo_cancion}
         artist={memory.artista_cancion}
         onPlay={playSong}
+        imageUri={memory.imagen_cancion ? { uri: memory.imagen_cancion } : placeholderImage}
+        memoriaId={memoriaId}
       />
     </View>
   );
@@ -49,15 +51,15 @@ const MemoryDetail = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.97,
+    flex: 0.96,
     marginHorizontal: 25,
     borderColor: 'black',
     borderWidth: 2.5,
-    borderRadius: 30,
-    padding: 30,
+    borderRadius: 20,
+    padding: 25,
     backgroundColor: 'white',
-    elevation: 15,
-    shadowColor: 'black',
+    elevation:10,
+    shadowColor:'black',
   },
   title: {
     fontSize: 24,
@@ -72,11 +74,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   description: {
-    fontSize: 16,
-    color: '#292929',
+    fontSize: 18,
+    color:'black',
+    marginBottom: 20,
     borderColor: 'black',
     textAlign: 'justify',
   },
+  date: {
+    fontSize: 18,
+    color:'black',
+    marginBottom: 20,
+  },
+  tsong: {
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
+    marginBottom: 7,
+  },
+  songButton: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    padding: 10,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 10,
+  }
 });
 
 export default MemoryDetail;

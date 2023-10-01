@@ -20,12 +20,10 @@ const PreviewMemory = ({memoria, onPress, index}) => {
       onPress={() => onPress(memoria.id)}
       style={{...styles.container, backgroundColor: color}}>
       <View style={styles.memoriaContainer}>
-        <Text style={styles.titulo}>{memoria.tituloMemoria}</Text>
+        <Text style={styles.titulo}>{memoria.titulo_memoria}</Text>
         <View style={styles.cancionContainer}>
           <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>
-            {memoria.cancion} - {memoria.artista}
-          </Text>
+          <Text style={styles.cancion}>{memoria.titulo_cancion} - {memoria.artista_cancion}</Text> 
         </View>
       </View>
     </TouchableOpacity>

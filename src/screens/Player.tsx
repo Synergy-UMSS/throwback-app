@@ -7,6 +7,7 @@ import {TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
+//import placeholderImage from './placeholder.png';
 
 const setPlayer = async () => {
     try{
@@ -63,7 +64,7 @@ const Player = ({navigation}) => {
             <View style={style.container}>
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
-                        source={trackArtwork}
+                        source={trackArtwork || require('../assets/placeholder.png')}
                         style={style.musicImage}
                     />
                 </View>

@@ -14,7 +14,7 @@ import MemoryList from './src/screens/MemoryList';
 import MemoryDetail from './src/screens/MemoryDetail';
 import Search from './src/screens/Search';
 import Reproductor from './src/screens/Reproductor';
-import CrearMemoria from './src/screens/CrearMemoria';
+import CrearMemoria from './src/screens/CreateMemory';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

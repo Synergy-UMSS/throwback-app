@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 import Home from './src/screens/Home';
+import Player from './src/screens/Player';
 import Splash from './src/screens/Splash';
 import MemoryList from './src/screens/MemoryList';
 import MemoryDetail from './src/screens/MemoryDetail';
@@ -126,7 +127,19 @@ const App = () => {
           component={Splash}
           options={{headerShown: false}}
         />
+        
+        <Stack.Screen
+          name='Search'
+          component={Search}
+          options={{ headerShown: false, }}
+        />
+        <Stack.Screen
+          name='Player'
+          component={Player}
+          options={{ headerShown: false, }}
+        />
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 }

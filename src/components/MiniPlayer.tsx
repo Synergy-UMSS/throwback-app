@@ -1,16 +1,22 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Modal, Button, Dimensions, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import Player from '../screens/Player';
+import { MusicPlayerContext } from '../components/MusicPlayerContext';
 
 const MiniPlayer = ({ navigation }) => {
-    return (
-        <View style={style.maincontainer}>
-            <TouchableOpacity style={style.container} onPress={()=>navigation.navigate(Player)}>
-                <Text> Reproduciendo canción </Text>
-            </TouchableOpacity>
-        </View>
-
-    )
+    const {isPlaying} = useContext(MusicPlayerContext);
+    console.log('isPlaying:', isPlaying);
+    if (isPlaying){
+        console.log('isPlaying:', isPlaying);
+        return (
+            <View style={style.maincontainer}>
+                <TouchableOpacity style={style.container} onPress={()=>navigation.navigate(Player)}>
+                    <Text> Reproduciendo canción </Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    return null;
 }
 
 export default MiniPlayer;
@@ -23,7 +29,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         height: 50,
         borderRadius:25,
-        backgroundColor: 'white',
+        backgroundColor: '#96EAD280',
         alignItems:'center',
         justifyContent: 'center',
         position: 'absolute',

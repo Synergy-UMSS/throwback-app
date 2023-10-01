@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
@@ -6,7 +6,9 @@ import Slider from '@react-native-community/slider';
 import {TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
+import Connection from '../components/Connection';
 import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
+import { MusicPlayerContext } from '../components/MusicPlayerContext';
 
 const setPlayer = async () => {
     try{
@@ -39,6 +41,7 @@ const Player = ({navigation}) => {
     const [trackTitle, setTrackTitle] = useState();
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
+    const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
         if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
@@ -52,7 +55,12 @@ const Player = ({navigation}) => {
 
     useEffect(() => {
         setPlayer();
+        
     }, []);
+
+    useEffect(() => {
+        setIsPlaying(true);
+    }, [isPlaying]);
                          
     return (
         <SafeAreaView style={style.maincontainer}>
@@ -101,6 +109,7 @@ const Player = ({navigation}) => {
                     </TouchableOpacity>   
                 </View>
 
+                <Connection/>
             </View>
         </SafeAreaView>
     );
@@ -111,7 +120,7 @@ export default Player;
 const style = StyleSheet.create({
     maincontainer: {
         flex: 1,
-        backgroundColor: '#96ead2',
+        backgroundColor: '#96ead290',
         justifyContent:'center',
     },
     container: {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import ItemSong from '../utils/ItemSong';
+import ItemSong from '../components/PreviewSong';
 
 const CrearMemoria = ({ navigation }) => {
   const [tituloMemoria, setTituloMemoria] = useState('');
@@ -62,9 +62,10 @@ const CrearMemoria = ({ navigation }) => {
           song='SampleSong'
           artist='Artist'
           onPlay={playSong}
+          //imageUri={memory.imagen_cancion ? { uri: memory.imagen_cancion } : placeholderImage}
+          //memoriaId={memoriaId}
         />
       </View>
-
       <Button title="Guardar" onPress={guardarMemoria} />
     </View>
   );

@@ -10,6 +10,11 @@ import Connection from '../components/Connection';
 import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 
+let color: string[] = [
+    '#C7A9D560',
+    '#96ead280',
+    '#FFC1D860',
+]
 const setPlayer = async () => {
     try{
         await TrackPlayer.setupPlayer();
@@ -46,7 +51,8 @@ const Player = ({navigation}) => {
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
         if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
           const track = await TrackPlayer.getTrack(event.nextTrack);
-          const {title, artwork, artist} = track;
+          const {id, title, artwork, artist} = track;
+          setsongIndex(id);
           setTrackTitle(title);
           setTrackArtist(artist);
           setTrackArtwork(artwork);
@@ -63,7 +69,11 @@ const Player = ({navigation}) => {
     }, [isPlaying]);
                          
     return (
-        <SafeAreaView style={style.maincontainer}>
+        <SafeAreaView style={{
+            flex: 1,
+            backgroundColor: color[songIndex % 3],
+            justifyContent:'center',
+        }}>
             <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={30} color="white" />
             </TouchableOpacity>

@@ -30,7 +30,7 @@ const MemoryList = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <Text style={styles.messageText}>
-          No tienes memorias musicales creadas
+          No tiene memorias musicales creadas.
         </Text>
       </View>
     );
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   messageText: {
-    //fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 18,
     marginLeft: 18
   }

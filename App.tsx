@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 import Home from './src/screens/Home';
+import Player from './src/screens/Player';
 import Splash from './src/screens/Splash';
 import MemoryList from './src/screens/MemoryList';
 import MemoryDetail from './src/screens/MemoryDetail';
@@ -86,15 +87,25 @@ function Movible() {
           ),
         }}
       />
-
       <Tab.Screen
         name="Search"
         component={Search}
         options={{
           tabBarLabel: 'Buscar',
           tabBarIcon: ({ color, size }) => (
-            // Replace this with the correct icon component if not FontAwesomeIcon
             <Icon name="search" color={color} size={size} />
+          ),
+          headerShown: false,
+        }}
+      />
+
+      <Tab.Screen
+        name="Player"
+        component={Player}
+        options={{
+          tabBarLabel: 'Reproducir',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="play-circle" color={color} size={size} />
           ),
           headerShown: false,
         }}
@@ -122,7 +133,24 @@ const App = () => {
           name="MemoryDetail"
           component={MemoryDetail}
         />
+        <Stack.Screen
+          name={'Splash'}
+          component={Splash}
+          options={{headerShown: false}}
+        />
+        
+        <Stack.Screen
+          name='Search'
+          component={Search}
+          options={{ headerShown: false, }}
+        />
+        <Stack.Screen
+          name= 'Player'
+          component= {Player}
+          options={{ headerShown: false, }}
+        />
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 }

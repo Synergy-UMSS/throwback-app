@@ -30,7 +30,7 @@ const MemoryList = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <Text style={styles.messageText}>
-          No tienes memorias musicales creadas
+          No tiene memorias musicales creadas.
         </Text>
       </View>
     );
@@ -42,7 +42,6 @@ const MemoryList = ({ navigation }) => {
         data={data}
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
         renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
-
       />
     </View>
   );
@@ -54,6 +53,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   messageText: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 18,
     marginLeft: 18
   }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
-import placeholderImage from '../screens/placeholder.png';
+import placeholderImage from '../assets/placeholder.png';
 
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 
@@ -31,7 +31,8 @@ const MemoryDetail = ({ route, navigation }) => {
   };
 
   return (
-    <View style={{ ...styles.container, backgroundColor: color }}>
+    //<ScrollView style={{flex: 1}}>
+    <ScrollView style={{ ...styles.container, backgroundColor: color}}>
       <Text style={styles.title}>{memory.titulo_memoria}</Text>
       <Text style={styles.subtitle}>{"Descripcion:"}</Text>
       <Text style={styles.description}>{memory.descripcion_memoria}</Text>
@@ -45,23 +46,29 @@ const MemoryDetail = ({ route, navigation }) => {
         imageUri={memory.imagen_cancion ? { uri: memory.imagen_cancion } : placeholderImage}
         memoriaId={memoriaId}
       />
-    </View>
+      <Text>  </Text>
+      <Text>  </Text>
+    </ScrollView>
+    //</ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.96,
-    marginHorizontal: 25,
+    flex: 1,
+    marginHorizontal: 23,
+    marginBottom: 23,
+    marginTop: 5,
     borderColor: 'black',
-    borderWidth: 2.5,
-    borderRadius: 20,
+    borderWidth: 0,
+    borderRadius: 17,
     padding: 25,
     backgroundColor: 'white',
     elevation:10,
     shadowColor:'black',
   },
   title: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 24,
     color: 'black',
     fontWeight: 'bold',
@@ -69,34 +76,40 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
   description: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 18,
-    color:'black',
+    color:'#5C5C5C',
     marginBottom: 20,
     borderColor: 'black',
     textAlign: 'justify',
   },
   date: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 18,
-    color:'black',
+    color:'#5C5C5C',
     marginBottom: 20,
   },
   tdate: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
   tsong: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
     marginBottom: 7,
   },
   songButton: {
+    fontFamily:'Quicksand-VariableFont',
     flexDirection: 'row',
     alignItems: 'center', 
     padding: 10,

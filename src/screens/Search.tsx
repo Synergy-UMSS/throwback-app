@@ -37,6 +37,17 @@ const Search = ({ navigation }) => {
     console.log('handlePress ' + paila);
   };
 
+  const displaySongSuggestions = () => {
+    if (showHistory) return null;
+    return (
+      <View>
+        <SongSuggestion songData={cancion} onOptionPress={handlePress} /> 
+        <SongSuggestion songData={cancion2} onOptionPress={handlePress} />
+      </View>
+    );
+  };
+
+
   return (
     <View
       style={{
@@ -64,11 +75,11 @@ const Search = ({ navigation }) => {
             clearSearches();
           }}
         >
-          <Text>Limpiar</Text>
+
+          {showHistory && <Text>Limpiar</Text>}
         </TouchableOpacity>
       </View>
-      <SongSuggestion songData={cancion} onOptionPress={handlePress} /> 
-      <SongSuggestion songData={cancion2} onOptionPress={handlePress} /> 
+      {displaySongSuggestions()}
       {displaySearches()}
       <MiniPlayer navigation={navigation} />
     </View>

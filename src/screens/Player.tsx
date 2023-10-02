@@ -9,32 +9,39 @@ import songs from '../../data/Prueba/Data';
 import Connection from '../components/Connection';
 import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
-
-const setPlayer = async () => {
-    try{
-        await TrackPlayer.setupPlayer();
-        await TrackPlayer.add(songs);
-        {/*const trackList = await TrackPlayer.getQueue();
-        console.log('*****track list', trackList);*/}
-    }catch(e){
-        console.log('aca hay error',e)
-    }
-};
-
-
-const playTrack = async (playState: State) => {
-    {/*console.log('-------------playState:', playState);*/}
-    const track =  await TrackPlayer.getCurrentTrack();
-    if(track !== null ){
-        if(playState == State.Ready || playState == State.Paused){
-            await TrackPlayer.play();
-        }else {
-            await TrackPlayer.pause();
-        }
-    }
-};
-
+import {useSearchStore} from '../store/searchStore';
+import {usePlayerStore} from '../store/playerStore';
 const Player = ({navigation}) => {
+    const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
+    useSearchStore();
+    const {currentSong} = usePlayerStore();
+    const setPlayer = async () => {
+        try{
+            await TrackPlayer.setupPlayer();
+            // quiero las canciones desde 3.5
+            let aux = currentSong;
+            //const {currentSearch} = usePlayerStore();
+            await TrackPlayer.add(aux);
+            {/*const trackList = await TrackPlayer.getQueue();
+            console.log('*****track list', trackList);*/}
+        }catch(e){
+            console.log('aca hay error',e)
+        }
+    };
+    
+    
+    const playTrack = async (playState: State) => {
+        {/*console.log('-------------playState:', playState);*/}
+        const track =  await TrackPlayer.getCurrentTrack();
+        if(track !== null ){
+            if(playState == State.Ready || playState == State.Paused){
+                await TrackPlayer.play();
+            }else {
+                await TrackPlayer.pause();
+            }
+        }
+    };
+
     const playState: State = usePlaybackState();
     const sliderWork = useProgress(); 
     const [songIndex, setsongIndex] = useState(0);
@@ -69,6 +76,9 @@ const Player = ({navigation}) => {
             </TouchableOpacity>
 
             <View style={style.container}>
+                <Text>
+                    puta mierdaaaa
+                </Text>
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
                         source={trackArtwork}

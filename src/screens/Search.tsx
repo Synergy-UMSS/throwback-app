@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Platform, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Platform, TouchableOpacity} from 'react-native';
 import MiniPlayer from '../components/MiniPlayer';
 import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
-import { useSearchStore } from '../store/searchStore';
+import {useSearchStore} from '../store/searchStore';
 import SongSuggestion from '../components/SongSuggestion';
-import songs  from '../../data/Prueba/Data';
-const Search = ({ navigation }) => {
-  const { clearRecentSearches, recentSearches, showHistory,currentSearch } = useSearchStore();
+import songs from '../../data/Prueba/Data';
+const Search = ({navigation}) => {
+  const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
+    useSearchStore();
 
   const clearSearches = () => {
     clearRecentSearches();
@@ -20,39 +21,42 @@ const Search = ({ navigation }) => {
     ));
   };
 
-
-  const handlePress = (paila) => {
+  const handlePress = paila => {
     console.log('handlePress ' + paila);
   };
   const matching = (query, song) => {
-    const { title, artist } = song;
-    const lowerCaseQuery = query.toLowerCase();
-    const lowerCaseTitle = title.toLowerCase();
-    const lowerCaseArtist = artist.toLowerCase();
+    const {title, artist} = song;
+    const lowerCaseQuery = query ? query.toLowerCase() : '';
+    const lowerCaseTitle = title ? title.toLowerCase() : '';
+    const lowerCaseArtist = artist ? artist.toLowerCase() : '';
+
     return (
-      lowerCaseTitle.includes(lowerCaseQuery) || lowerCaseArtist.includes(lowerCaseQuery)
+      lowerCaseTitle.includes(lowerCaseQuery) ||
+      lowerCaseArtist.includes(lowerCaseQuery)
     );
   };
-
 
   const displaySongSuggestions = () => {
     if (showHistory) return null;
     const suggests = [];
     let mimi = currentSearch;
-    for(let i=0;i<songs.length;i++){
-      if(matching(mimi,songs[i])){
+    for (let i = 0; i < songs.length; i++) {
+      if (matching(mimi, songs[i])) {
         suggests.push(songs[i]);
       }
     }
     return (
       <View>
         {suggests.map((song, index) => (
-          <SongSuggestion key={index} songData={song} onOptionPress={handlePress} />
+          <SongSuggestion
+            key={index}
+            songData={song}
+            onOptionPress={handlePress}
+          />
         ))}
       </View>
     );
   };
-
 
   return (
     <View
@@ -60,8 +64,7 @@ const Search = ({ navigation }) => {
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 28 : 12,
         position: 'relative', // Agrega esta propiedad
-      }}
-    >
+      }}>
       <SearchBar
         style={{
           position: 'absolute',
@@ -74,13 +77,11 @@ const Search = ({ navigation }) => {
         style={{
           alignItems: 'flex-end',
           paddingRight: 10,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => {
             clearSearches();
-          }}
-        >
+          }}>
           {showHistory && <Text>Limpiar</Text>}
         </TouchableOpacity>
       </View>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,17 +9,21 @@ import {
   Button,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native'; // Importa useNavigation desde React Navigation
 
-const SongSuggestion = ({songData, onOptionPress}) => {
-  const {id, title, artist, artwork, url} = songData;
+const SongSuggestion = ({ songData, onOptionPress }) => {
+  const { id, title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
+  const navigation = useNavigation(); // Obtiene el objeto de navegación
 
   const handleOptionPress = () => {
     setShowOptions(!showOptions);
   };
   const handlePlayPress = () => {
-    console.log('handlePlayPress');
+    // Navega a la pantalla "Player" cuando se presiona la canción
+    navigation.navigate('Player', { songData }); // Reemplaza 'Player' con el nombre de tu pantalla "Player"
   };
+  
   return (
     <TouchableOpacity onPress={handlePlayPress}>
       {/* Envuelve toda la canción en un TouchableOpacity */}

@@ -4,6 +4,7 @@ interface SearchStore {
   recentSearches: string[];
   currentSearch: string;
   showHistory: true; // Nuevo booleano para controlar la visibilidad del historial
+  showSuggestions: false; // Nuevo booleano para controlar la visibilidad de las sugerencias
   deleteRecentSearch: (searchQuery: string) => void;
   addRecentSearch: (searchQuery: string) => void;
   clearRecentSearches: () => void;
@@ -45,6 +46,16 @@ export const useSearchStore = create<SearchStore>(set => ({
   updateCurrentSearch: searchQuery => {
     set(state => ({
       currentSearch: searchQuery,
+    }));
+  },
+  showSuggestionsTrue: () => {
+    set(state => ({
+      showSuggestions: true,
+    }));
+  },
+  showSuggestionsFalse: () => {
+    set(state => ({
+      showSuggestions: false,
     }));
   }
 }));

@@ -1,37 +1,37 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
+import ItemSong from '../components/PreviewSong';
 
-const CreateMemory = () => {
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const { control, handleSubmit, setValue, formState: { errors } } = useForm();
+const CrearMemoria = ({ navigation }) => {
+  const { control, handleSubmit, formState: { errors } } = useForm();
 
-  const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(Platform.OS === 'ios');
-    setDate(currentDate);
-    setValue('fechaMemoria', currentDate.toISOString().split('T')[0]); // Formatea la fecha como YYYY-MM-DD
-  };
+  const onSubmit = async (data) => {
+    const memoria = {
+      titulo_memoria: data.tituloMemoria,
+      descripcion_memoria: data.descripcionMemoria,
+      fecha_creacion: firestore.Timestamp.now(),
+      fecha_memoria: firestore.Timestamp.fromDate(new Date(data.fechaMemoria)),
+      titulo_cancion: 'Sample Song',
+      artista_cancion: 'Artist',
+    };
 
-  const guardarMemoria = async (data) => {
     try {
-      await firestore().collection('memorias').add({
-        tituloMemoria: data.tituloMemoria,
-        descripcionMemoria: data.descripcionMemoria,
-        fechaMemoria: data.fechaMemoria,
-      });
+      await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
   };
 
+  const playSong = () => {
+    navigation.navigate('Reproductor', { memoriaId: 1 }); // mandando id 1 para probar
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Título de la Memoria:</Text>
+      <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 16 }}>Título de la Memoria:</Text>
       <Controller
         control={control}
         render={({ field: { onChange, value } }) => (
@@ -46,6 +46,7 @@ const CreateMemory = () => {
         rules={{ required: true }}
       />
       {errors.tituloMemoria && <Text style={styles.error}>Este campo es obligatorio.</Text>}
+
 
       <Text style={styles.label}>Descripción:</Text>
       <Controller
@@ -62,24 +63,36 @@ const CreateMemory = () => {
       />
 
       <Text style={styles.label}>Fecha de Memoria:</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <Text>{date.toISOString().split('T')[0]}</Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          minimumDate={new Date()} // No permite fechas posteriores al día actual
-          mode="date"
-          onChange={onDateChange}
-        />
-      )}
+      <Controller
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <TextInput
+            style={styles.input}
+            value={value}
+            onChangeText={onChange}
+            placeholder="YYYY-MM-DD"
+          />
+        )}
+        name="fechaMemoria"
+        defaultValue=""
+        rules={{ required: true }}
+      />
 
-      <Button title="Guardar" onPress={handleSubmit(guardarMemoria)} />
+      <Text style={styles.label}>Cancion Vinculada:</Text>
+      <View style={styles.marginBottom}>
+        <ItemSong
+          song='SampleSong'
+          artist='Artist'
+          onPlay={playSong}
+        />
+      </View>
+
+      <Button title="Guardar" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
@@ -96,9 +109,13 @@ const styles = {
     padding: 8,
     marginTop: 8,
   },
+  marginBottom: {
+    marginTop: 40,
+    marginBottom: 40,
+  },
   error: {
     color: 'red',
   },
-};
+});
 
-export default CreateMemory;
+export default CrearMemoria;

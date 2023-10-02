@@ -3,15 +3,13 @@ import { Text, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     text: {
-        color: "grey",
         fontSize: 12,
-        fontWeight: "bold",
     },
     bold: {
         fontWeight: "bold",
     },
-    blue: {
-        color: "blue",
+    grey: {
+        color: "grey",
     },
     big: {
         fontSize: 20,
@@ -29,6 +27,6 @@ export default function StyledText ({blue, bold, big, small, children}) {
         big && styles.big,
         small && styles.small,
     ];
-
+    <StyledText blue bold big>Un texto</StyledText>;
     return <Text style={textStyle}>{children}</Text>;
 }

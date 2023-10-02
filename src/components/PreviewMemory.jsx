@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
       marginTop: 14,// minimo header
     //marginBottom: 0,
     //margin:0, //deprecate
-      padding: 22, // dinamico
+      padding: 11, // dinamico
     borderRadius: 17,
     borderColor: 'black',
     borderWidth: 0,
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     //marginBottom: 5,
     color: 'black',
+    marginBottom:5,
   },
   cancionContainer: {
     marginLeft:10,
@@ -78,9 +79,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     //backgroundColor :'#FAFAFA',
-    borderRadius: 17,
+    borderRadius: 13,
     //elevation:1,
-    padding:3,
+    padding:10,
     paddingLeft :15,
   },
   iconoMusica: {

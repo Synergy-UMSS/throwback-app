@@ -4,9 +4,11 @@ import MiniPlayer from '../components/MiniPlayer';
 import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
 import {useSearchStore} from '../store/searchStore';
-
+import SongSuggestion from '../components/SongSuggestion';
+import songs from '../../data/Prueba/Data';
 const Search = ({navigation}) => {
-  const {clearRecentSearches, recentSearches, showHistory} = useSearchStore();
+  const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
+    useSearchStore();
 
   const clearSearches = () => {
     clearRecentSearches();
@@ -17,6 +19,43 @@ const Search = ({navigation}) => {
     return recentSearches.map((searchQuery, index) => (
       <RecentSearchItem key={index} searchQuery={searchQuery} />
     ));
+  };
+
+  const handlePress = paila => {
+    console.log('handlePress ' + paila);
+  };
+  const matching = (query, song) => {
+    const {title, artist} = song;
+    const lowerCaseQuery = query ? query.toLowerCase() : '';
+    const lowerCaseTitle = title ? title.toLowerCase() : '';
+    const lowerCaseArtist = artist ? artist.toLowerCase() : '';
+
+    return (
+      lowerCaseTitle.includes(lowerCaseQuery) ||
+      lowerCaseArtist.includes(lowerCaseQuery)
+    );
+  };
+
+  const displaySongSuggestions = () => {
+    if (showHistory) return null;
+    const suggests = [];
+    let mimi = currentSearch;
+    for (let i = 0; i < songs.length; i++) {
+      if (matching(mimi, songs[i])) {
+        suggests.push(songs[i]);
+      }
+    }
+    return (
+      <View>
+        {suggests.map((song, index) => (
+          <SongSuggestion
+            key={index}
+            songData={song}
+            onOptionPress={handlePress}
+          />
+        ))}
+      </View>
+    );
   };
 
   return (
@@ -43,9 +82,10 @@ const Search = ({navigation}) => {
           onPress={() => {
             clearSearches();
           }}>
-          <Text>Limpiar</Text>
+          {showHistory && <Text>Limpiar</Text>}
         </TouchableOpacity>
       </View>
+      {displaySongSuggestions()}
       {displaySearches()}
       <MiniPlayer navigation={navigation} />
     </View>

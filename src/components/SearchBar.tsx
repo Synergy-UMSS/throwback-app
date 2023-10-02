@@ -4,11 +4,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import { useSearchStore } from '../store/searchStore';
-
 const SearchBar = () => {
   const [busqueda, setBusqueda] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const { addRecentSearch, showHistoryTrue, showHistoryFalse } = useSearchStore();
+  const { addRecentSearch, showHistoryTrue, showHistoryFalse,updateCurrentSearch} = useSearchStore();
 
   useEffect(() => {
     // Agregar un oyente para detectar si el teclado está abierto o cerrado
@@ -29,6 +28,7 @@ const SearchBar = () => {
   const handleSearch = () => {
     if (busqueda !== '') {
       addRecentSearch(busqueda);
+      updateCurrentSearch(busqueda);
     }
   };
 
@@ -89,6 +89,7 @@ const SearchBar = () => {
             <TouchableOpacity
               onPress={() => {
                 setBusqueda('');
+                showHistoryTrue();
               }}
               style={{
                 marginLeft: 'auto',

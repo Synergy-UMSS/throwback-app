@@ -11,6 +11,8 @@ import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayer
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
+import { useFocusEffect } from '@react-navigation/native';
+
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
@@ -19,9 +21,8 @@ const Player = ({navigation}) => {
         try{
             await TrackPlayer.setupPlayer();
             // quiero las canciones desde 3.5
-            let aux = currentSong;
             //const {currentSearch} = usePlayerStore();
-            await TrackPlayer.add(aux);
+            await TrackPlayer.add(currentSong);
             {/*const trackList = await TrackPlayer.getQueue();
             console.log('*****track list', trackList);*/}
         }catch(e){
@@ -41,7 +42,6 @@ const Player = ({navigation}) => {
             }
         }
     };
-
     const playState: State = usePlaybackState();
     const sliderWork = useProgress(); 
     const [songIndex, setsongIndex] = useState(0);
@@ -76,9 +76,6 @@ const Player = ({navigation}) => {
             </TouchableOpacity>
 
             <View style={style.container}>
-                <Text>
-                    puta mierdaaaa
-                </Text>
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
                         source={trackArtwork}

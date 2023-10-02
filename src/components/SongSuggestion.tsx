@@ -10,17 +10,22 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native'; // Importa useNavigation desde React Navigation
+import { usePlayerStore } from '../store/playerStore';
+import TrackPlayer from 'react-native-track-player';
 
 const SongSuggestion = ({ songData, onOptionPress }) => {
   const { id, title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation(); // Obtiene el objeto de navegación
-
+  const { setCurrentSong } = usePlayerStore();
   const handleOptionPress = () => {
     setShowOptions(!showOptions);
   };
+
   const handlePlayPress = () => {
     // Navega a la pantalla "Player" cuando se presiona la canción
+    setCurrentSong(songData);
+    console.log('songData', songData);
     navigation.navigate('Player', { songData }); // Reemplaza 'Player' con el nombre de tu pantalla "Player"
   };
   

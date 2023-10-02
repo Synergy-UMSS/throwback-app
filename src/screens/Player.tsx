@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView, useSafeAreaFrame} from 'react-native-safe-area-context';
@@ -9,13 +9,9 @@ import {
 } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import songs from '../../data/Prueba/Data';
-import TrackPlayer, {
-  Event,
-  State,
-  usePlaybackState,
-  useProgress,
-  useTrackPlayerEvents,
-} from 'react-native-track-player';
+import Connection from '../components/Connection';
+import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
+import { MusicPlayerContext } from '../components/MusicPlayerContext';
 
 const setPlayer = async () => {
   try {
@@ -45,12 +41,13 @@ const playTrack = async (playState: State) => {
 };
 
 const Player = ({navigation}) => {
-  const playState: State = usePlaybackState();
-  const sliderWork = useProgress();
-  const [songIndex, setsongIndex] = useState(0);
-  const [trackTitle, setTrackTitle] = useState();
-  const [trackArtist, setTrackArtist] = useState();
-  const [trackArtwork, setTrackArtwork] = useState();
+    const playState: State = usePlaybackState();
+    const sliderWork = useProgress(); 
+    const [songIndex, setsongIndex] = useState(0);
+    const [trackTitle, setTrackTitle] = useState();
+    const [trackArtist, setTrackArtist] = useState();
+    const [trackArtwork, setTrackArtwork] = useState();
+    const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
@@ -62,9 +59,20 @@ const Player = ({navigation}) => {
     }
   });
 
-  useEffect(() => {
-    setPlayer();
-  }, []);
+    useEffect(() => {
+        setPlayer();
+        
+    }, []);
+
+    useEffect(() => {
+        setIsPlaying(true);
+    }, [isPlaying]);
+                         
+    return (
+        <SafeAreaView style={style.maincontainer}>
+            <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back" size={30} color="white" />
+            </TouchableOpacity>
 
   return (
     <SafeAreaView style={style.maincontainer}>
@@ -110,51 +118,19 @@ const Player = ({navigation}) => {
           />
         </View>
 
-        <View style={style.songControl}>
-          <TouchableOpacity onPress={() => playTrack(playState)}>
-            <Ionicons
-              name={
-                playState !== State.Playing ? 'play-outline' : 'pause-outline'
-              }
-              size={44}
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
+                <Connection/>
+            </View>
+        </SafeAreaView>
+    );
 };
 
 export default Player;
 
 const style = StyleSheet.create({
-  maincontainer: {
-    flex: 1,
-    backgroundColor: '#96ead2',
-    justifyContent: 'center',
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  imageWrapper: {
-    width: 300,
-    height: 340,
-    marginBottom: 25,
-  },
-  musicImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 15,
-  },
-  elevation: {
-    elevation: 5,
-    shadowColor: '#ccc',
-    shadowOffset: {
-      width: 5,
-      height: 5,
+    maincontainer: {
+        flex: 1,
+        backgroundColor: '#96ead290',
+        justifyContent:'center',
     },
     shadowOpacity: 0.5,
     shadowRadius: 3.84,

@@ -4,20 +4,27 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './src/screens/Home';
 import Player from './src/screens/Player';
-import Splash from './src/screens/Splash';
 import Search from './src/screens/Search';
+import Splash from './src/screens/Splash';
+import { MusicPlayerProvider } from './src/components/MusicPlayerContext';
 import { RootStackParamList } from './src/utils/types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-
   function Movible() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: '#ffffff',
+            tabBarInactiveTintColor: '#b5b3b3',
+            tabBarStyle: {
+              backgroundColor: '#787474',
+            },
+          }}
+        >
         <Tab.Screen
           name="Home"
           component={Home}
@@ -56,6 +63,7 @@ const App = () => {
   }
 
   return (
+    <MusicPlayerProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen
@@ -81,8 +89,8 @@ const App = () => {
           options={{ headerShown: false, }}
         />
       </Stack.Navigator>
-      
     </NavigationContainer>
+    </MusicPlayerProvider>
   );
 }
 

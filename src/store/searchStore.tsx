@@ -2,6 +2,7 @@ import create from 'zustand';
 
 interface SearchStore {
   recentSearches: string[];
+  currentSearch: string;
   showHistory: true; // Nuevo booleano para controlar la visibilidad del historial
   deleteRecentSearch: (searchQuery: string) => void;
   addRecentSearch: (searchQuery: string) => void;
@@ -41,4 +42,9 @@ export const useSearchStore = create<SearchStore>(set => ({
       showHistory: false,
     }));
   },
+  updateCurrentSearch: searchQuery => {
+    set(state => ({
+      currentSearch: searchQuery,
+    }));
+  }
 }));

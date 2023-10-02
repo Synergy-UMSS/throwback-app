@@ -3,19 +3,20 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Button } from '
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SongSuggestion = ({ songData, onOptionPress }) => {
-  const { imageSource, songName, artistName } = songData;
+  const { id, title, artist, artwork,url } = songData;
   const [showOptions, setShowOptions] = useState(false);
-
+  const linki='./Lust_for_Life.png';
   const handleOptionPress = () => {
     setShowOptions(!showOptions);
   };
 
   return (
     <View style={styles.container}>
-      <Image source={imageSource} style={styles.image} />
+      {console.log('putaaaaaaa ' + artist)}
+      <Image source={artwork} style={styles.image} />
       <View style={styles.textContainer}>
-        <Text style={styles.songName}>{songName}</Text>
-        <Text style={styles.artistName}>{artistName}</Text>
+        <Text style={styles.songName}>{title}</Text>
+        <Text style={styles.artistName}>{artist}</Text>
       </View>
       <TouchableOpacity onPress={handleOptionPress}>
         <MaterialCommunityIcons name="dots-vertical" size={30} color="gray" />
@@ -25,9 +26,9 @@ const SongSuggestion = ({ songData, onOptionPress }) => {
       <Modal visible={showOptions} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Image source={imageSource} style={styles.image} />
-            <Text style={styles.songName}>{songName}</Text>
-            <Text style={styles.artistName}>{artistName}</Text>
+            <Image source={artwork} style={styles.imageSelected} />
+            <Text style={styles.songName}>{title}</Text>
+            <Text style={styles.artistName}>{artist}</Text>
             <Text>¿Deseas crear una memoria musical?</Text>
             <Button title="Crear Memoria Musical" onPress={() => onOptionPress('option1')} />
             <Button title="Cerrar" onPress={handleOptionPress} />
@@ -74,6 +75,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     elevation: 5,
+  },
+  imageSelected: {
+    width: 300,
+    height: 300,
+    borderRadius: 10,
   },
 });
 

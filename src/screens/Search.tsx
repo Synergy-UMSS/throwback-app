@@ -5,9 +5,9 @@ import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
 import { useSearchStore } from '../store/searchStore';
 import SongSuggestion from '../components/SongSuggestion';
-
+import songs  from '../../data/Prueba/Data';
 const Search = ({ navigation }) => {
-  const { clearRecentSearches, recentSearches, showHistory } = useSearchStore();
+  const { clearRecentSearches, recentSearches, showHistory,currentSearch } = useSearchStore();
 
   const clearSearches = () => {
     clearRecentSearches();
@@ -20,29 +20,35 @@ const Search = ({ navigation }) => {
     ));
   };
 
-  const cancion = {
-    id: '1',
-    imageSource: null,
-    songName: 'Melodía de Dios',
-    artistName: 'Tan Bionica',
-  };
-  const cancion2 = {
-    id: '2',
-    imageSource: null,
-    songName: 'Somewhere Only We Know',
-    artistName: 'Keane',
-  };
 
   const handlePress = (paila) => {
     console.log('handlePress ' + paila);
   };
+  const matching = (query, song) => {
+    const { title, artist } = song;
+    const lowerCaseQuery = query.toLowerCase();
+    const lowerCaseTitle = title.toLowerCase();
+    const lowerCaseArtist = artist.toLowerCase();
+    return (
+      lowerCaseTitle.includes(lowerCaseQuery) || lowerCaseArtist.includes(lowerCaseQuery)
+    );
+  };
+
 
   const displaySongSuggestions = () => {
     if (showHistory) return null;
+    const suggests = [];
+    let mimi = currentSearch;
+    for(let i=0;i<songs.length;i++){
+      if(matching(mimi,songs[i])){
+        suggests.push(songs[i]);
+      }
+    }
     return (
       <View>
-        <SongSuggestion songData={cancion} onOptionPress={handlePress} /> 
-        <SongSuggestion songData={cancion2} onOptionPress={handlePress} />
+        {suggests.map((song, index) => (
+          <SongSuggestion key={index} songData={song} onOptionPress={handlePress} />
+        ))}
       </View>
     );
   };
@@ -75,7 +81,6 @@ const Search = ({ navigation }) => {
             clearSearches();
           }}
         >
-
           {showHistory && <Text>Limpiar</Text>}
         </TouchableOpacity>
       </View>

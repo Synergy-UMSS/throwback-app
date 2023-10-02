@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native'; // Importa TouchableOpacity
+import {View, Text, Platform, TouchableOpacity} from 'react-native';
 import MiniPlayer from '../components/MiniPlayer';
 import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
@@ -24,9 +24,16 @@ const Search = ({navigation}) => {
       style={{
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 28 : 12,
-        justifyContent: 'center',
+        position: 'relative', // Agrega esta propiedad
       }}>
-      <SearchBar />
+      <SearchBar
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+        }}
+      />
       <View
         style={{
           alignItems: 'flex-end',

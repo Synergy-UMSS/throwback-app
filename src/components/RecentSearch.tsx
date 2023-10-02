@@ -1,25 +1,24 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useSearchStore } from '../store/searchStore';
+import {useSearchStore} from '../store/searchStore';
 
-const RecentSearchItem = ({ searchQuery }) => {
-  const { clearRecentSearches, deleteRecentSearch } = useSearchStore();
+const RecentSearchItem = ({searchQuery}) => {
+  const {clearRecentSearches, deleteRecentSearch} = useSearchStore();
   const handleDelete = () => {
-    console.log("borrar");
+    console.log('borrar');
     deleteRecentSearch(searchQuery);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.queryText}>{searchQuery}</Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => {
           handleDelete();
-        }} 
-      >
-      <Feather name="x-circle" size={20} color="gray"/>
+        }}>
+        <Feather name="x-circle" size={20} color="gray" />
       </TouchableOpacity>
     </View>
   );
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 0,
     alignItems: 'center',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'gray',
     margin: 10,

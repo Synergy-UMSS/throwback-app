@@ -1,19 +1,42 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, TextInput, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useSearchStore} from '../store/searchStore';
+import { useSearchStore } from '../store/searchStore';
+
 const SearchBar = () => {
   const [busqueda, setBusqueda] = useState('');
-  const {addRecentSearch} = useSearchStore();
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { addRecentSearch, showHistoryTrue, showHistoryFalse } = useSearchStore();
+
+  useEffect(() => {
+    // Agregar un oyente para detectar si el teclado está abierto o cerrado
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardOpen(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardOpen(false);
+    });
+
+    // Limpieza de oyentes al desmontar el componente
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const handleSearch = () => {
-    console.log("persigo tus ojos por la capital");
     if (busqueda !== '') {
       addRecentSearch(busqueda);
     }
+  };
+
+  const handleBack = () => {
+    // Limpiar búsqueda y cerrar el teclado
+    setBusqueda('');
+    Keyboard.dismiss();
+    showHistoryTrue();
   };
 
   return (
@@ -24,9 +47,14 @@ const SearchBar = () => {
           alignItems: 'center',
           padding: 10,
           height: 50,
-        }}>
-        {busqueda !== '' && (
-          <TouchableOpacity>
+        }}
+      >
+        {(isKeyboardOpen || busqueda !== '') && (
+          <TouchableOpacity
+            onPress={() => {
+              handleBack();
+            }}
+          >
             <Animatable.View animation={'fadeIn'} duration={300}>
               <MaterialIcons name="arrow-back" size={30} color="gray" />
             </Animatable.View>
@@ -44,10 +72,12 @@ const SearchBar = () => {
             fontSize: 10,
             flexDirection: 'row',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <TextInput
             onChangeText={cambio => {
               setBusqueda(cambio);
+              showHistoryFalse();
             }}
             onSubmitEditing={() => {
               handleSearch();
@@ -55,20 +85,22 @@ const SearchBar = () => {
             value={busqueda}
             placeholder="¿Qué es lo que quieres escuchar?"
           />
-          {busqueda !== '' && (
+          {(isKeyboardOpen || busqueda !== '')&& (
             <TouchableOpacity
               onPress={() => {
                 setBusqueda('');
               }}
               style={{
                 marginLeft: 'auto',
-              }}>
+              }}
+            >
               <Animatable.View
                 animation={'fadeInRight'}
                 duration={300}
                 style={{
                   marginLeft: 10,
-                }}>
+                }}
+              >
                 <Feather name="x-circle" size={30} color="gray" />
               </Animatable.View>
             </TouchableOpacity>

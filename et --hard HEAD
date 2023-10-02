@@ -1,0 +1,320 @@
+[33mcommit 1835b5603966483806b4ca7ec35667f9e605afae[m[33m ([m[1;36mHEAD -> [m[1;32mdetails[m[33m, [m[1;31morigin/details[m[33m)[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Mon Oct 2 02:04:09 2023 -0400
+
+    add colors in player
+
+[33mcommit 0eec55385c47cef469d264608775416341c926a9[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Mon Oct 2 01:33:26 2023 -0400
+
+    change song and image name
+
+[33mcommit 9d19c2e2243cf3595fb8a0d9e760e7c758da4cd2[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: 79aefd8 6279229
+Author: judithmarg <87728150+judithmarg@users.noreply.github.com>
+Date:   Sun Oct 1 21:39:12 2023 -0400
+
+    Merge pull request #12 from Synergy-UMSS/mergeSearchwithPlayer
+    
+    Merge searchwith player
+
+[33mcommit 62792299574da366924fa60ee6db2865dd353f4c[m
+Merge: 63f1280 79aefd8
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Sun Oct 1 21:28:44 2023 -0400
+
+    linters
+
+[33mcommit 79aefd87461a3ea83d985ba2de04b343560a94b5[m
+Merge: b69b0ad 138a8b9
+Author: elprogramadorr <91036558+elprogramadorr@users.noreply.github.com>
+Date:   Sun Oct 1 21:14:18 2023 -0400
+
+    Merge pull request #11 from Synergy-UMSS/player-j
+    
+    Player j
+
+[33mcommit 138a8b9f00f654e769b724ae609a94309f263dfa[m[33m ([m[1;31morigin/player-j[m[33m, [m[1;32mplayer-j[m[33m)[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sun Oct 1 21:01:23 2023 -0400
+
+    remove multimedia
+
+[33mcommit c28205b84c50ce58658f7e48fe6fd9966a6d9d16[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sun Oct 1 20:41:08 2023 -0400
+
+    update Data.tsx 2
+
+[33mcommit 63f1280b2233e91eeb2508739b566cfe47f81dd7[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Sun Oct 1 20:14:27 2023 -0400
+
+    finished search component
+
+[33mcommit 16289f2a272d1e32029b608241f6139be0516270[m
+Author: judithmarg <87728150+judithmarg@users.noreply.github.com>
+Date:   Sun Oct 1 19:59:26 2023 -0400
+
+    Update Data.tsx
+
+[33mcommit b69b0add02afe2d09f87f0ab2e91f8634b3db0a8[m
+Merge: 6e8d085 ab58100
+Author: elprogramadorr <91036558+elprogramadorr@users.noreply.github.com>
+Date:   Sun Oct 1 14:58:46 2023 -0400
+
+    Merge pull request #7 from Synergy-UMSS/player-j
+    
+    Player j
+
+[33mcommit 294b35b61435b7869358f17fd0d7ab46f0b77dc3[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Sun Oct 1 14:30:57 2023 -0400
+
+    recent search working
+
+[33mcommit ab58100475cb485828b20b58bbaa8973cf926f82[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sun Oct 1 13:02:36 2023 -0400
+
+    added music and artwork on Data
+
+[33mcommit 69b34a03d4a289dc4ea6d1568cdad3abf08bb820[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Sun Oct 1 01:46:27 2023 -0400
+
+    created limpar button
+
+[33mcommit c6db2784155d99d44bd352679393888af4c6faad[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sat Sep 30 23:10:23 2023 -0400
+
+    added message error connection to player
+
+[33mcommit 2ebb020dddc37ac15cee432f36bbca7b8399f625[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sat Sep 30 22:03:39 2023 -0400
+
+    added miniplayer (button to navigate -> Player)
+
+[33mcommit 6dd45364ef07495d1c8b43a6e750b2c30417da63[m[33m ([m[1;31morigin/modifySearchComponent[m[33m)[m
+Merge: cd08e8e 6e8d085
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Sat Sep 30 17:47:12 2023 -0400
+
+    created recentSearch Component
+
+[33mcommit cd08e8e09be61a6be2e326af48b00a01c9a17ae0[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Sat Sep 30 16:59:51 2023 -0400
+
+    .
+
+[33mcommit 6e8d085ee78ec7f7caf63127a10c40c7e901cb38[m
+Merge: 37b5fbf 51a5235
+Author: elprogramadorr <91036558+elprogramadorr@users.noreply.github.com>
+Date:   Sat Sep 30 10:33:38 2023 -0400
+
+    Merge pull request #6 from Synergy-UMSS/player-j
+    
+    Player j
+
+[33mcommit 51a5235098b11f3feec97f5807f2d9a61f901122[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sat Sep 30 03:03:41 2023 -0400
+
+    refactoring
+
+[33mcommit 7c6afba80c5b64220ca32a61ed2cbf801cc2cbff[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sat Sep 30 02:31:52 2023 -0400
+
+    add almost req. error with flechita
+
+[33mcommit 7afe13b98b3af516842ce02bf341906ab2e72c0a[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 29 23:20:53 2023 -0400
+
+    add pop up -critical
+
+[33mcommit b7dced088b26c63f931bde65469e3025debd619f[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Fri Sep 29 23:19:45 2023 -0400
+
+    SearchBar component
+
+[33mcommit 1ffdb3dacf7cf8f3cb4616224d4969305673ccec[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Fri Sep 29 22:30:07 2023 -0400
+
+    onSumbit added
+
+[33mcommit 43fd580f1fa7e2d2f2d0a1b08844d0680e8caed8[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 29 19:13:41 2023 -0400
+
+    errors to fix
+
+[33mcommit 8c38e335cfdf5845ec103477815b88b393206241[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 29 18:58:38 2023 -0400
+
+    intento de minireproductor
+
+[33mcommit 03b2e0583465ed08dc2cbd4d868169b7ffbbdb7a[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 29 01:54:55 2023 -0400
+
+    more songs added
+
+[33mcommit 7ba6e347e5556395c20d494e73309ceb502b6380[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 29 01:21:34 2023 -0400
+
+    refactor a bit
+
+[33mcommit b3d928c558808c3d4a7e846c4e5d8cc57fd77cb2[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 29 01:14:39 2023 -0400
+
+    add ready player -almost finished
+
+[33mcommit ddb5c74bb59f66f5560b061fbaf23594caffd181[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Thu Sep 28 22:24:14 2023 -0400
+
+    play an example song(list of three)
+
+[33mcommit e7fd403eda21b1d2cdaf8a6848cfe1c9eb82168b[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Thu Sep 28 02:19:54 2023 -0400
+
+    tack with error in services
+
+[33mcommit 5fdca2a1716415227235c42d56ae8ac35189dacc[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Thu Sep 28 00:33:45 2023 -0400
+
+    add screen about reproductor with example
+
+[33mcommit 37b5fbfb0c8b0cd3816e02e5864f2390324a3de9[m
+Merge: b1867ec 837313c
+Author: elprogramadorr <91036558+elprogramadorr@users.noreply.github.com>
+Date:   Wed Sep 27 20:09:19 2023 -0400
+
+    Merge pull request #4 from Synergy-UMSS/searchScreen
+    
+    Search screen
+
+[33mcommit 837313c8bd6a719dbe4a9dfe46073d783bcfe5f2[m[33m ([m[1;34mgrafted[m[33m, [m[1;31morigin/searchScreen[m[33m, [m[1;32msearchScreen[m[33m)[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Wed Sep 27 19:56:19 2023 -0400
+
+    completed searchbar with hooks
+
+[33mcommit b1867ec863bddba52bc12b0e7392ee983aed9eb5[m[33m ([m[1;31morigin/player[m[33m, [m[1;32mplayer[m[33m)[m
+Merge: 26a3c7f 68a2c40
+Author: judithmarg <87728150+judithmarg@users.noreply.github.com>
+Date:   Mon Sep 25 20:39:36 2023 -0400
+
+    Merge pull request #3 from Synergy-UMSS/branch-1-j
+    
+    deleted expo files
+
+[33mcommit 68a2c401adfdb4e814da466ce805d245f708a2d8[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Mon Sep 25 20:33:14 2023 -0400
+
+    deleted expo files
+
+[33mcommit 26a3c7f09bdeee712457e37062605ba276f0bdf1[m
+Merge: d2a073e 77c2316
+Author: elprogramadorr <91036558+elprogramadorr@users.noreply.github.com>
+Date:   Mon Sep 25 20:15:15 2023 -0400
+
+    Merge pull request #2 from Synergy-UMSS/branch-1-j
+    
+    Branch 1 j
+
+[33mcommit 77c2316c4e91c603369700bf5949f03556134f82[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Mon Sep 25 20:08:13 2023 -0400
+
+    fixed dependencies
+
+[33mcommit 16226493d5610b22255224e8fd9f07a0aa6a15c4[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Mon Sep 25 19:48:14 2023 -0400
+
+    loco
+
+[33mcommit d40491c78edda336b73e942f74951526ed132253[m
+Merge: 46fed6f d2a073e
+Author: judithmarg <87728150+judithmarg@users.noreply.github.com>
+Date:   Mon Sep 25 19:11:14 2023 -0400
+
+    Merge branch 'main' into branch-1-j
+
+[33mcommit d2a073e957527a2ef27bebcf0b742c3e80fa0df7[m
+Merge: 0b5b83b 53e7cb6
+Author: elprogramadorr <91036558+elprogramadorr@users.noreply.github.com>
+Date:   Mon Sep 25 18:19:28 2023 -0400
+
+    Merge pull request #1 from Synergy-UMSS/set-navigation
+    
+    added navigation dependencies
+
+[33mcommit 46fed6fc24fb92c35954ad3a738b2f3dbb576ccb[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Mon Sep 25 18:08:34 2023 -0400
+
+    add firebase configured for android
+
+[33mcommit 53e7cb6936c45535219fb88738e57898d7d96211[m[33m ([m[1;31morigin/set-navigation[m[33m, [m[1;32mset-navigation[m[33m)[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Mon Sep 25 17:24:49 2023 -0400
+
+    added navigation dependencies
+
+[33mcommit 94f43ee5a22d21628e26bc0c3de7747c77af812f[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sun Sep 24 13:38:14 2023 -0400
+
+    add home and search
+
+[33mcommit 0c7d59bdf7ee01127cc70076a7e2cedb3207c191[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sun Sep 24 12:07:47 2023 -0400
+
+    add home with navigator
+
+[33mcommit 43ecf62656df13afdfc8eb12421e5be1972dab5b[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Sun Sep 24 02:20:04 2023 -0400
+
+    add navigator with error
+
+[33mcommit 553ab8a09ee1495b8620595d78476acbf68602f2[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 22 22:28:40 2023 -0400
+
+    add eslint to package for errors
+
+[33mcommit b98cb33903a3dddd6e8af33d5c51cc21d8cb4a96[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Fri Sep 22 22:19:21 2023 -0400
+
+    add linter
+
+[33mcommit 553ca22661c2067d8e88380a778a3412a03334ea[m
+Author: judithmarg <judithmargaritapacollalli@gmail.com>
+Date:   Thu Sep 21 16:41:14 2023 -0400
+
+    add automatically changes
+
+[33mcommit 0b5b83b574309ca5a197719e82457d1023710ba8[m
+Author: Mateo <mateovaldivia3000@gmail.com>
+Date:   Thu Sep 21 01:51:31 2023 -0400
+
+    first commit

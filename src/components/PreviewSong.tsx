@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 10,
-        padding: 5,
+        padding: 9,
         backgroundColor: '#FAFAFA',
         borderRadius: 10,
         elevation:8
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     },
     songArtist: {
         fontSize: 14,
-        color: 'black',
+        color:'#5C5C5C',
     },
 });
 

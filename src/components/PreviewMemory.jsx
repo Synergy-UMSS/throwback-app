@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Dimensions } from 'react-native';
+const screenHeight = Dimensions.get('window').height;
 
 const bgColor = [
   '#c7a9d5',
@@ -50,37 +52,35 @@ const PreviewMemory = ({memoria, onPress, index}) => {
 
 const styles = StyleSheet.create({
   container: {
-      marginLeft: 10,
-      marginRight: 10,
-      marginTop: 14,// minimo header
-    //marginBottom: 0,
-    //margin:0, //deprecate
-      padding: 11, // dinamico
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+    padding: 11,
     borderRadius: 17,
     borderColor: 'black',
     borderWidth: 0,
-    elevation: 8,
+    elevation: 8,  
+    height: screenHeight / 8.5,
+    justifyContent: 'center',
   },
   memoriaContainer: {
     flex: 1,
   },
   titulo: {
     marginLeft:10,
-    //fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 18,
     fontWeight: 'bold',
-    //marginBottom: 5,
     color: 'black',
     marginBottom:5,
   },
   cancionContainer: {
+    fontFamily:'Quicksand-VariableFont',
     marginLeft:10,
     marginRight:10,
     flexDirection: 'row',
     alignItems: 'center',
-    //backgroundColor :'#FAFAFA',
     borderRadius: 13,
-    //elevation:1,
     padding:10,
     paddingLeft :15,
   },
@@ -89,8 +89,9 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   cancion: {
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 14,
-    color: 'black',
+    color: '#5C5C5C',
   },
 });
 

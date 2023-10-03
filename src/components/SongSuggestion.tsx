@@ -28,12 +28,10 @@ const SongSuggestion = ({ songData }) => {
     navigation.navigate('Player', { songData });
   };
 
-  const crearMemoria = () => {
-    //aqui creo memoria con currentSong
-    console.log('crear memoria ' + currentSong.title);
-    //aqui haz lo que quieras
+  const createMemory = () => {
+    navigation.navigate('CreateMemory', { currentSong });
   };
-
+  
   return (
     <TouchableOpacity onPress={handlePlayPress}>
       <View style={styles.container}>
@@ -57,7 +55,7 @@ const SongSuggestion = ({ songData }) => {
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={[styles.button, styles.cyanButton]}
-                onPress={crearMemoria}
+                onPress={createMemory}
               >
                 <Text style={styles.buttonText}>Crear Memoria Musical</Text>
               </TouchableOpacity>

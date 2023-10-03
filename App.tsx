@@ -1,17 +1,62 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import Home from './src/screens/Home';
+import CreateMemory from './src/screens/CreateMemory';
+import Reproductor from './src/screens/Reproductor';
+import MemoryList from './src/screens/MemoryList';
 import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
+import Home from './src/screens/Home';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
-import {RootStackParamList} from './src/utils/types';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {RootStackParamList} from './src/utils/types';
+import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
+// const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+function MemoryNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+          name="Tus memorias musicales" 
+          component={MemoryList} 
+          options={{
+            headerStyle: {
+              backgroundColor: '#e4e6dc',
+            },
+            headerTitleStyle: {
+              fontSize: 22,
+              color: 'black',
+              fontWeight: 'bold',
+              marginLeft: 18,
+            },
+            headerShown: true,
+            cardStyle: { backgroundColor: '#e4e6dc' }
+          }}
+      />
+      <Stack.Screen
+        name="Reproductor"
+        component={Reproductor} 
+      />
+      <Stack.Screen 
+          name="MemoryDetail" 
+          component={MemoryDetail} 
+          options={{
+            title: ' ',
+            headerStyle: {
+              backgroundColor: '#e4e6dc'
+            },
+            cardStyle: { backgroundColor: '#e4e6dc' }
+          }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 const App = () => {
   function Movible() {
@@ -25,8 +70,8 @@ const App = () => {
           },
         }}>
         <Tab.Screen
-          name="Home"
-          component={Home}
+          name="Home_memory"
+          component={MemoryNavigator}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({color, size}) => (
@@ -35,6 +80,7 @@ const App = () => {
             headerShown: false,
           }}
         />
+
         <Tab.Screen
           name="Search"
           component={Search}
@@ -46,17 +92,6 @@ const App = () => {
             headerShown: false,
           }}
         />
-        {/*<Tab.Screen
-          name="Player"
-          component={Player}
-          options={{
-            tabBarLabel: 'Reproducir',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="play-circle" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />*/}
       </Tab.Navigator>
     );
   }
@@ -68,6 +103,13 @@ const App = () => {
           <Stack.Screen
             name="Home"
             component={Movible}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Create"
+            component={CreateMemory}
             options={{
               headerShown: false,
             }}
@@ -85,6 +127,11 @@ const App = () => {
           <Stack.Screen
             name="Player"
             component={Player}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="CreateMemory"
+            component={CreateMemory}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

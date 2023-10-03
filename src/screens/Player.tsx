@@ -112,7 +112,7 @@ const Player = ({navigation}) => {
             <View style={style.container}>
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
-                        source={trackArtwork}
+                        source={trackArtwork || require('../assets/placeholder.png')}
                         style={style.musicImage}
                     />
                 </View>

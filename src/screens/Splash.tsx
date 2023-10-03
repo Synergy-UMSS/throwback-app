@@ -1,6 +1,6 @@
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Image, StyleSheet} from 'react-native'; // Importa Image y StyleSheet
 import {RootStackParamList} from '../utils/types';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
@@ -13,17 +13,29 @@ const Splash = ({navigation}: SplashProps) => {
   }, [navigation]);
 
   return (
-    <View>
-      <Text
-        style={{
-            fontSize: 40,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginTop: 200,
-        }}
-      >Logo Fachero</Text>
+    <View style={styles.container}>
+      <Image source={require('../assets/logo-no-background.png')} style={styles.logo} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  background: {
+    backgroundColor: '#E4E6DC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  logo: {
+    width: 200,
+    height: 169,
+  },
+});
 
 export default Splash;

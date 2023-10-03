@@ -126,7 +126,7 @@ const App = () => {
         }}>
         <Tab.Screen
           name="Home"
-          component={Home}
+          component={MemoryList}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({color, size}) => (

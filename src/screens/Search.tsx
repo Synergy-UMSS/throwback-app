@@ -55,7 +55,7 @@ const Search = ({navigation}) => {
             onOptionPress={handlePress}
           />
         ))}
-        {suggests.length === 0 && (<Text style={{textAlign: 'center'}}>No hay resultados</Text>)}
+        {suggests.length === 0 && (<Text style={{textAlign: 'center'}}>No se ha encontrado ningún resultado</Text>)}
       </View>
       
     );

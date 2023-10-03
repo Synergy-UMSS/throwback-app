@@ -6,17 +6,16 @@ import { MusicPlayerProvider } from '../components/MusicPlayerContext';
 
 const Home = ({navigation}) => {
   return (
-    <View >
-        <Text>Home</Text>
-        <MiniPlayer navigation={navigation }/>
-    </View> 
+    <View
+      style={{
+        flex: 1,
+        marginTop: Platform.OS === 'ios' ? 28 : 12,
+        position: 'relative', // Agrega esta propiedad
+      }}>
+      <MiniPlayer navigation={navigation} />
+    </View>
   );
 };
 
 export default Home;
 
-const style = StyleSheet.create({
-  full:{
-    flex:1,
-  },
-});

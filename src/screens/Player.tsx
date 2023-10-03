@@ -23,6 +23,7 @@ const Player = ({navigation}) => {
             // quiero las canciones desde 3.5
             //const {currentSearch} = usePlayerStore();
             await TrackPlayer.add([currentSong]);
+            await TrackPlayer.add(songs);
             const trackList = await TrackPlayer.getQueue();
             console.log('*****track list', trackList);
         }catch(e){
@@ -83,14 +84,14 @@ const Player = ({navigation}) => {
     
     const changeValuesTrack = async () => {
         try {
-            await TrackPlayer.add([currentSong]);
+            {/*await TrackPlayer.add([currentSong]);
             const trackList = await TrackPlayer.getQueue();
-            console.log('*****track list', trackList);
+            console.log('*****track list', trackList);*/}
             const trackIndex = await TrackPlayer.getCurrentTrack();
             console.log('el id real es....', currentSong.id);
-            const track = await TrackPlayer.getTrack(currentSong.id - 1);
-            console.log('el track es ahora ', trackIndex);
+            const track = await TrackPlayer.getTrack(currentSong.id);
             const {title, artwork, artist} = track;
+            console.log(title, artwork, artist);
             setTrackTitle(title);
             setTrackArtist(artist);
             setTrackArtwork(artwork);

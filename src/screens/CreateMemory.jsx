@@ -15,8 +15,8 @@ const CrearMemoria = ({ navigation }) => {
   const {setCurrentSong, currentSong} = usePlayerStore();
   const songg = songs.find(s => s.title === currentSong.title);
   const songArtwork = songg ? songg.artwork : null;
-
-
+  
+  
   const onSubmit = async (data) => {
     const memoria = {
       titulo_memoria: data.tituloMemoria,

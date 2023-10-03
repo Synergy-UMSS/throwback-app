@@ -3,6 +3,7 @@ import {View, FlatList, Text, StyleSheet} from 'react-native';
 import PreviewMemory from '../components/PreviewMemory';
 import MemoryDetail from './MemoryDetail';
 import firestore from '@react-native-firebase/firestore';
+import MiniPlayer from '../components/MiniPlayer';
 
 const MemoryList = ({ navigation }) => {
   const abrirDetalles = (id, index) => {
@@ -43,6 +44,7 @@ const MemoryList = ({ navigation }) => {
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
         renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
       />
+        <MiniPlayer navigation={navigation} />
     </View>
   );
 };

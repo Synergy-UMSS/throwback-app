@@ -99,7 +99,7 @@ const Search = ({navigation}) => {
       <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
     )}
   </TouchableOpacity>
-</View>
+    </View>
 
       {displaySongSuggestions()}
       {displaySearches()}

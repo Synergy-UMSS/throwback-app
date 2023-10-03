@@ -11,19 +11,27 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 
-const SongSuggestion = ({ songData, onOptionPress }) => {
+const SongSuggestion = ({ songData }) => {
   const { id, title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
-  const { setCurrentSong } = usePlayerStore();
+  const { setCurrentSong,currentSong } = usePlayerStore();
 
   const handleOptionPress = () => {
+    setCurrentSong(songData);
+    console.log('cancion actual  ' + currentSong.title);
     setShowOptions(!showOptions);
   };
 
   const handlePlayPress = () => {
     setCurrentSong(songData);
     navigation.navigate('Player', { songData });
+  };
+
+  const crearMemoria = () => {
+    //aqui creo memoria con currentSong
+    console.log('crear memoria ' + currentSong.title);
+    //aqui haz lo que quieras
   };
 
   return (
@@ -49,7 +57,7 @@ const SongSuggestion = ({ songData, onOptionPress }) => {
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={[styles.button, styles.cyanButton]}
-                onPress={() => onOptionPress('option1')}
+                onPress={crearMemoria}
               >
                 <Text style={styles.buttonText}>Crear Memoria Musical</Text>
               </TouchableOpacity>

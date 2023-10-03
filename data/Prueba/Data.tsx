@@ -73,8 +73,8 @@ const songs = [
         id: 11,
         title: 'Dijeron que no la iba a lograr',
         artist: 'Chino Pacas',
-        artwork: require('../../assets-prueba/images/Chino_PacasX Fuerza_RegidaDijeron_que_no_la_iba_lograr.jpg'),
-        url:require('../../assets-prueba/songs/Chino_Pacas_X_Fuerza_Regida_Dijeron_que_no_la_iba_lograr .mp3'),
+        artwork: require('../../assets-prueba/images/Chino_PacasXFuerza_RegidaDijeron_que_no_la_iba_lograr.jpg'),
+        url:require('../../assets-prueba/songs/Chino_Pacas_X_Fuerza_Regida_Dijeron_que_no_la_iba_lograr.mp3'),
     },
     {
         id: 12,

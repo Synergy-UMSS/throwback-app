@@ -13,6 +13,14 @@ import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
 import { useFocusEffect } from '@react-navigation/native';
 
+let color: string[] = [
+    '#C7A9D560',
+    '#96ead280',
+    '#FFC1D860',
+]
+
+let lastSong = null;
+
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
@@ -21,10 +29,11 @@ const Player = ({navigation}) => {
         try{
             await TrackPlayer.setupPlayer();
             // quiero las canciones desde 3.5
-            //const {currentSearch} = usePlayerStore();
-            await TrackPlayer.add(currentSong);
-            {/*const trackList = await TrackPlayer.getQueue();
-            console.log('*****track list', trackList);*/}
+            await TrackPlayer.add([currentSong]);
+            await TrackPlayer.add(songs);
+            {/*const trackList = await TrackPlayer.getQueue();*/}
+            await TrackPlayer.play();
+            console.log('*****track list', trackList);
         }catch(e){
             console.log('aca hay error',e)
         }
@@ -59,18 +68,43 @@ const Player = ({navigation}) => {
           setTrackArtwork(artwork);
         }
     });
+    
+    const changeValuesTrack = async () => {
+        try {
+            const trackIndex = await TrackPlayer.getCurrentTrack();
+            const track = await TrackPlayer.getTrack(currentSong.id);
+            const {title, artwork, artist} = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            if (currentSong != lastSong) {
+                await TrackPlayer.skip(currentSong.id); 
+            };
+            await TrackPlayer.play();
+            lastSong = currentSong;
+        } catch(e) {
+            console.log('Hubo un error b:', e);
+        }
+    };
 
     useEffect(() => {
         setPlayer();
-        
     }, []);
+
+    useEffect(() => {
+        changeValuesTrack();
+    }, [currentSong]);
 
     useEffect(() => {
         setIsPlaying(true);
     }, [isPlaying]);
                          
     return (
-        <SafeAreaView style={style.maincontainer}>
+        <SafeAreaView style={{
+            flex: 1,
+            backgroundColor: color[currentSong.id % 3],
+            justifyContent:'center',
+        }}>
             <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={30} color="white" />
             </TouchableOpacity>

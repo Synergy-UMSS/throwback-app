@@ -46,7 +46,7 @@ const App = () => {
             headerShown: false,
           }}
         />
-        <Tab.Screen
+        {/*<Tab.Screen
           name="Player"
           component={Player}
           options={{
@@ -56,7 +56,7 @@ const App = () => {
             ),
             headerShown: false,
           }}
-        />
+        />*/}
       </Tab.Navigator>
     );
   }

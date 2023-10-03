@@ -14,11 +14,9 @@ import { usePlayerStore } from '../store/playerStore';
 const MemoryDetail = ({ route, navigation }) => {
   const { memoriaId, index } = route.params;
   const [memory, setMemory] = useState(null);
-  const { setCurrentSong } = usePlayerStore();
-
   
-
-
+  const { setCurrentSong } = usePlayerStore();
+  
   useEffect(() => {
     const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
       if (doc.exists) {
@@ -34,10 +32,6 @@ const MemoryDetail = ({ route, navigation }) => {
   if (!memory) return null;  // Si no hay memoria, no renderizar nada (o puedes mostrar un spinner)
 
   const color = bgColor[index % bgColor.length];
-
-  // const playSong = () => {
-  //   navigation.navigate('Reproductor', {memoriaId: memory.id});
-  // };
 
   const songg = songs.find(s => s.title === memory.titulo_cancion);
   const songArtwork = songg ? songg.artwork : null;

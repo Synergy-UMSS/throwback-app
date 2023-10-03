@@ -30,6 +30,7 @@ const Player = ({navigation}) => {
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
             const trackList = await TrackPlayer.getQueue();
+            await TrackPlayer.play();
             console.log('*****track list', trackList);
         }catch(e){
             console.log('aca hay error',e)
@@ -75,6 +76,7 @@ const Player = ({navigation}) => {
             setTrackArtist(artist);
             setTrackArtwork(artwork);
             await TrackPlayer.skip(currentSong.id); 
+            await TrackPlayer.play();
         } catch(e) {
             console.log('Hubo un error b:', e);
         }

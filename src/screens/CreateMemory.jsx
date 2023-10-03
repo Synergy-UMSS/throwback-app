@@ -12,7 +12,7 @@ const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const {currentSong} = usePlayerStore();
+  const {setCurrentSong, currentSong} = usePlayerStore();
   const songg = songs.find(s => s.title === currentSong.title);
   const songArtwork = songg ? songg.artwork : null;
 
@@ -35,9 +35,13 @@ const CrearMemoria = ({ navigation }) => {
     }
   };
 
-  const playSong = () => {
-    navigation.navigate('Reproductor', { memoriaId: 1 }); // mandando id 1 para probar
+  const playSong = async () => {
+    const songToPlay = songs.find(s => s.title === currentSong.title);
+    if (!songToPlay) return;
+    await setCurrentSong(songToPlay);
+    navigation.navigate('Player'); 
   };
+
 
   return (
     <View style={styles.container}>

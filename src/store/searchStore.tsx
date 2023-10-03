@@ -3,8 +3,8 @@ import create from 'zustand';
 interface SearchStore {
   recentSearches: string[];
   currentSearch: string;
-  showHistory: true; // Nuevo booleano para controlar la visibilidad del historial
-  showSuggestions: false; // Nuevo booleano para controlar la visibilidad de las sugerencias
+  showHistory: boolean; // Nuevo booleano para controlar la visibilidad del historial
+  showSuggestions: boolean; // Nuevo booleano para controlar la visibilidad de las sugerencias
   deleteRecentSearch: (searchQuery: string) => void;
   addRecentSearch: (searchQuery: string) => void;
   clearRecentSearches: () => void;
@@ -14,7 +14,9 @@ interface SearchStore {
 
 export const useSearchStore = create<SearchStore>(set => ({
   recentSearches: [],
-  showHistory: false, // Valor inicial: historial oculto
+  currentSearch: '',
+  showHistory: true, // Valor inicial: historial oculto
+  showSuggestions: false, // Valor inicial: sugerencias ocultas
   deleteRecentSearch: searchQuery => {
     set(state => ({
       recentSearches: state.recentSearches.filter(

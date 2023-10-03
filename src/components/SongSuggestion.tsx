@@ -29,7 +29,7 @@ const SongSuggestion = ({ songData }) => {
   };
 
   const createMemory = () => {
-    navigation.navigate('CreateMemory', {memoriaId: memory.id});
+    navigation.navigate('CreateMemory', { currentSong });
   };
   
   return (

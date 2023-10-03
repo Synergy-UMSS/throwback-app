@@ -6,11 +6,16 @@ import DateTimePicker from '@react-native-community/datetimepicker'; // Importa 
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/placeholder.png';
 import { usePlayerStore } from '../store/playerStore';
+import songs from '../../data/Prueba/Data';
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const {currentSong} = usePlayerStore();
+  const songg = songs.find(s => s.title === currentSong.title);
+  const songArtwork = songg ? songg.artwork : null;
+
 
   const onSubmit = async (data) => {
     const memoria = {
@@ -18,8 +23,8 @@ const CrearMemoria = ({ navigation }) => {
       descripcion_memoria: data.descripcionMemoria,
       fecha_creacion: firestore.Timestamp.now(),
       fecha_memoria: firestore.Timestamp.fromDate(selectedDate),
-      titulo_cancion: 'Sample Song',
-      artista_cancion: 'Artist',
+      titulo_cancion: currentSong.title,
+      artista_cancion: currentSong.artist,
     };
 
     try {
@@ -93,8 +98,9 @@ const CrearMemoria = ({ navigation }) => {
       <Text style={styles.label}>Cancion Vinculada:</Text>
       <View style={styles.marginBottom}>
         <ItemSong
-          song='SampleSong'
-          artist='Artist'
+          song={currentSong.title}
+          artist={currentSong.artist}
+          imageUri={songArtwork || placeholderImage}
           onPlay={playSong}
         />
       </View>

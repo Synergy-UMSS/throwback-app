@@ -50,12 +50,14 @@ const MemoryList = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    padding: 20,
+    color:'black'
   },
   messageText: {
     fontFamily:'Quicksand-VariableFont',
     fontSize: 18,
-    marginLeft: 18
+    marginLeft: 18,
+    color:'black'
   }
 });
 

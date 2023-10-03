@@ -4,13 +4,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import { useSearchStore } from '../store/searchStore';
+
 const SearchBar = () => {
   const [busqueda, setBusqueda] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const { addRecentSearch, showHistoryTrue, showHistoryFalse,updateCurrentSearch} = useSearchStore();
+  const [isSearchBoxFocused, setIsSearchBoxFocused] = useState(false);
+  const { addRecentSearch, showHistory, showHistoryTrue, showHistoryFalse, updateCurrentSearch } = useSearchStore();
 
   useEffect(() => {
-    // Agregar un oyente para detectar si el teclado está abierto o cerrado
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
       setIsKeyboardOpen(true);
     });
@@ -18,7 +19,6 @@ const SearchBar = () => {
       setIsKeyboardOpen(false);
     });
 
-    // Limpieza de oyentes al desmontar el componente
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
@@ -33,8 +33,8 @@ const SearchBar = () => {
   };
 
   const handleBack = () => {
-    // Limpiar búsqueda y cerrar el teclado
     setBusqueda('');
+    updateCurrentSearch('');
     Keyboard.dismiss();
     showHistoryTrue();
   };
@@ -63,19 +63,23 @@ const SearchBar = () => {
         <View
           style={{
             flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
             borderWidth: 1,
             borderColor: 'gray',
             borderRadius: 10,
             height: 40,
-            paddingLeft: 10,
-            paddingRight: 10,
-            fontSize: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
+            paddingHorizontal: 10,
           }}
         >
+          {/* Icono de lupa (visible cuando showHistory es true) */}
+          {showHistory && (
+            <MaterialIcons name="search" size={20} color="gray" />
+          )}
           <TextInput
-            onChangeText={cambio => {
+            onFocus={() => setIsSearchBoxFocused(true)}
+            onBlur={() => setIsSearchBoxFocused(false)}
+            onChangeText={(cambio) => {
               setBusqueda(cambio);
               showHistoryFalse();
             }}
@@ -84,23 +88,25 @@ const SearchBar = () => {
             }}
             value={busqueda}
             placeholder="¿Qué es lo que quieres escuchar?"
+            maxLength={50}
+            style={{
+              flex: 1,
+            }}
           />
-          {(isKeyboardOpen || busqueda !== '')&& (
+          {(isKeyboardOpen || busqueda !== '') && (
             <TouchableOpacity
               onPress={() => {
                 setBusqueda('');
                 showHistoryTrue();
+                updateCurrentSearch('');
               }}
               style={{
-                marginLeft: 'auto',
+                marginLeft: 10,
               }}
             >
               <Animatable.View
                 animation={'fadeInRight'}
                 duration={300}
-                style={{
-                  marginLeft: 10,
-                }}
               >
                 <Feather name="x-circle" size={30} color="gray" />
               </Animatable.View>

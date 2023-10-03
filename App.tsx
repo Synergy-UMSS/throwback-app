@@ -92,18 +92,6 @@ const App = () => {
             headerShown: false,
           }}
         />
-
-        <Tab.Screen
-          name="Player"
-          component={Player}
-          options={{
-            tabBarLabel: 'Reproducir',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="play-circle" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />
       </Tab.Navigator>
     );
   }

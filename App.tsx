@@ -15,6 +15,7 @@ import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RootStackParamList} from './src/utils/types';
+import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,6 +40,10 @@ function MemoryNavigator() {
             cardStyle: { backgroundColor: '#e4e6dc' }
           }}
       />
+      <Stack.Screen
+        name="Reproductor"
+        component={Reproductor} 
+      />
       <Stack.Screen 
           name="MemoryDetail" 
           component={MemoryDetail} 
@@ -54,65 +59,6 @@ function MemoryNavigator() {
   );
 }
 
-function Movible() {
-  return (
-    <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: '#ffffff',
-          tabBarInactiveTintColor: '#b5b3b3',
-          tabBarStyle: {
-            backgroundColor: '#787474',
-          },
-        }}
-      >
-      <Tab.Screen
-        name="Home_memory"
-        component={MemoryNavigator}
-        options={{
-          tabBarLabel: 'Inicio',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" color={color} size={size} />
-          ),
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name="CrearMemoria"
-        component={CrearMemoria}
-        options={{
-          tabBarLabel: 'Crear',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="add" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarLabel: 'Buscar',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="search" color={color} size={size} />
-          ),
-          headerShown: false,
-        }}
-      />
-
-      <Tab.Screen
-        name="Player"
-        component={Player}
-        options={{
-          tabBarLabel: 'Reproducir',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="play-circle" color={color} size={size} />
-          ),
-          headerShown: false,
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
-
 const App = () => {
   function Movible() {
     return (
@@ -125,8 +71,8 @@ const App = () => {
           },
         }}>
         <Tab.Screen
-          name="Home"
-          component={MemoryList}
+          name="Home_memory"
+          component={MemoryNavigator}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({color, size}) => (
@@ -135,6 +81,18 @@ const App = () => {
             headerShown: false,
           }}
         />
+        
+        <Tab.Screen
+          name="CrearMemoria"
+          component={CrearMemoria}
+          options={{
+            tabBarLabel: 'Crear',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="add" color={color} size={size} />
+            ),
+          }}
+        />
+
         <Tab.Screen
           name="Search"
           component={Search}
@@ -146,6 +104,7 @@ const App = () => {
             headerShown: false,
           }}
         />
+
         <Tab.Screen
           name="Player"
           component={Player}

@@ -35,6 +35,7 @@ const SearchBar = () => {
   const handleBack = () => {
     // Limpiar búsqueda y cerrar el teclado
     setBusqueda('');
+    updateCurrentSearch('');
     Keyboard.dismiss();
     showHistoryTrue();
   };
@@ -90,6 +91,7 @@ const SearchBar = () => {
               onPress={() => {
                 setBusqueda('');
                 showHistoryTrue();
+                updateCurrentSearch('');
               }}
               style={{
                 marginLeft: 'auto',

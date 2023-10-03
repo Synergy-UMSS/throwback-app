@@ -38,7 +38,7 @@ const Search = ({navigation}) => {
 
   let suggests = [];
   const displaySongSuggestions = () => {
-    if (showHistory) return null;
+    if (showHistory || currentSearch.length===0) return null;
     suggests = [];
     let mimi = currentSearch;
     for (let i = 0; i < songs.length; i++) {
@@ -77,17 +77,30 @@ const Search = ({navigation}) => {
         }}
       />
       <View
-        style={{
-          alignItems: 'flex-end',
-          paddingRight: 10,
-        }}>
-        <TouchableOpacity
-          onPress={() => {
-            clearSearches();
-          }}>
-          {showHistory && <Text>Limpiar</Text>}
-        </TouchableOpacity>
-      </View>
+  style={{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    height: 50,
+  }}
+>
+  {showHistory && (
+    <Text style={{ fontSize: 16, fontWeight: 'nunito', color: 'black' }}>
+      Búsquedas Recientes
+    </Text>
+  )}
+  <TouchableOpacity
+    onPress={() => {
+      clearSearches();
+    }}
+  >
+    {showHistory && (
+      <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
+    )}
+  </TouchableOpacity>
+</View>
+
       {displaySongSuggestions()}
       {displaySearches()}
       <MiniPlayer navigation={navigation} />

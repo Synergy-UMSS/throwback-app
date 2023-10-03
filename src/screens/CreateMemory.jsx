@@ -67,7 +67,7 @@ const CrearMemoria = ({ navigation }) => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <TextInput
-            style={styles.input}
+            style={styles.inputdescripcion}
             value={value}
             onChangeText={onChange}
             maxLength={500}
@@ -109,31 +109,55 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Button title="Guardar" onPress={handleSubmit(onSubmit)} />
+      <Button style={styles.button} title="Guardar" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: ' #e4e6dc',
     flex: 1,
     padding: 16,
+    color: '#e4e6dc',
   },
   label: {
-    fontSize: 16,
+    fontFamily:'Quicksand-VariableFont',
+    fontSize: 20,
+    color: 'black',
     fontWeight: 'bold',
-    marginTop: 16,
   },
   input: {
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#ccc',
     padding: 8,
     marginTop: 8,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 17,
+    borderColor: 'black',
+  },
+  inputdescripcion: {
+    fontSize: 16,
+    borderWidth: 1,
+    padding: 8,
+    marginTop: 8,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 17,
+    borderColor: 'black',
+    height: 200,
   },
   marginBottom: {
     marginTop: 40,
     marginBottom: 40,
+  },
+  button: {
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 5,
+    backgroundColor: '#4ADCC8',
   },
   error: {
     color: 'red',

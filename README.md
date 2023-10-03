@@ -17,7 +17,7 @@ Follow these steps to get started with **Throwback**:
     cd throwbackApp
 3. Install Dependencies:
     ```bash
-    npm install or yarn install
+    npm install
 4. To run the app on Android:
     ```bash
     npx react-native run-android

@@ -96,7 +96,7 @@ const Search = ({navigation}) => {
     }}
   >
     {showHistory && (
-      <Text style={{ fontSize: 11, color: 'gray' }}>Borrar Historial de Busqueda</Text>
+      <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
     )}
   </TouchableOpacity>
 </View>

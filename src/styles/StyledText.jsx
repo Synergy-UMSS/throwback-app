@@ -27,6 +27,6 @@ export default function StyledText ({blue, bold, big, small, children}) {
         big && styles.big,
         small && styles.small,
     ];
-    <StyledText blue bold big>Un texto</StyledText>;
+    <StyledText>Un texto</StyledText>;
     return <Text style={textStyle}>{children}</Text>;
 }

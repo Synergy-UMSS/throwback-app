@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onSubmit = async (data) => {
     const memoria = {
       titulo_memoria: data.tituloMemoria,
       descripcion_memoria: data.descripcionMemoria,
       fecha_creacion: firestore.Timestamp.now(),
-      fecha_memoria: firestore.Timestamp.fromDate(new Date(data.fechaMemoria)),
+      fecha_memoria: firestore.Timestamp.fromDate(selectedDate),
       titulo_cancion: 'Sample Song',
       artista_cancion: 'Artist',
     };
@@ -39,6 +42,7 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
+            maxLength={40}
           />
         )}
         name="tituloMemoria"
@@ -46,7 +50,6 @@ const CrearMemoria = ({ navigation }) => {
         rules={{ required: true }}
       />
       {errors.tituloMemoria && <Text style={styles.error}>Este campo es obligatorio.</Text>}
-
 
       <Text style={styles.label}>Descripción:</Text>
       <Controller
@@ -56,6 +59,7 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
+            maxLength={500}
           />
         )}
         name="descripcionMemoria"
@@ -63,20 +67,26 @@ const CrearMemoria = ({ navigation }) => {
       />
 
       <Text style={styles.label}>Fecha de Memoria:</Text>
-      <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            value={value}
-            onChangeText={onChange}
-            placeholder="YYYY-MM-DD"
-          />
-        )}
-        name="fechaMemoria"
-        defaultValue=""
-        rules={{ required: true }}
+      <TextInput
+        style={styles.input}
+        value={selectedDate.toISOString().split('T')[0]}
+        onFocus={() => setShowDatePicker(true)}
+        placeholder="YYYY-MM-DD"
       />
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          display="default"
+          onChange={(event, date) => {
+            if (date) {
+              setSelectedDate(date);
+              setShowDatePicker(false);
+            }
+          }}
+          maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
+        />
+      )}
 
       <Text style={styles.label}>Cancion Vinculada:</Text>
       <View style={styles.marginBottom}>

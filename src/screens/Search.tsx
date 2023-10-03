@@ -36,9 +36,10 @@ const Search = ({navigation}) => {
     );
   };
 
+  let suggests = [];
   const displaySongSuggestions = () => {
     if (showHistory) return null;
-    const suggests = [];
+    suggests = [];
     let mimi = currentSearch;
     for (let i = 0; i < songs.length; i++) {
       if (matching(mimi, songs[i])) {
@@ -54,7 +55,9 @@ const Search = ({navigation}) => {
             onOptionPress={handlePress}
           />
         ))}
+        {suggests.length === 0 && (<Text style={{textAlign: 'center'}}>No hay resultados</Text>)}
       </View>
+      
     );
   };
 

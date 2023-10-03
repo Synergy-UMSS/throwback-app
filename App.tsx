@@ -1,10 +1,9 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import CrearMemoria from './src/screens/CrearMemoria';
+import CreateMemory from './src/screens/CreateMemory';
 import Reproductor from './src/screens/Reproductor';
 import MemoryList from './src/screens/MemoryList';
 import Player from './src/screens/Player';
@@ -83,8 +82,8 @@ const App = () => {
         />
         
         <Tab.Screen
-          name="CrearMemoria"
-          component={CrearMemoria}
+          name="CreateMemory"
+          component={CreateMemory}
           options={{
             tabBarLabel: 'Crear',
             tabBarIcon: ({ color, size }) => (

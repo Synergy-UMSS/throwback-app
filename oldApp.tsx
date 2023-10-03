@@ -11,7 +11,7 @@ import TusMemoriasMusicales from './src/screens/TusMemoriasMusicales';
 import Reproductor from './src/screens/Reproductor';
 import DetalleMemoria from './src/screens/DetalleMemoria';
 import Search from './src/screens/Search';
-import CrearMemoria from './src/screens/CrearMemoria';
+import CrearMemoria from './src/screens/CreateMemory';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

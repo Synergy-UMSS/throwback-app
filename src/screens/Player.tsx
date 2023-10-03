@@ -95,7 +95,7 @@ const Player = ({navigation}) => {
     return (
         <SafeAreaView style={{
             flex: 1,
-            backgroundColor: color[songIndex % 3],
+            backgroundColor: color[currentSong.id % 3],
             justifyContent:'center',
         }}>
             <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>

@@ -80,17 +80,6 @@ const App = () => {
             headerShown: false,
           }}
         />
-        
-        <Tab.Screen
-          name="CreateMemory"
-          component={CreateMemory}
-          options={{
-            tabBarLabel: 'Crear',
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="add" color={color} size={size} />
-            ),
-          }}
-        />
 
         <Tab.Screen
           name="Search"
@@ -131,6 +120,13 @@ const App = () => {
             }}
           />
           <Stack.Screen
+            name="Create"
+            component={CreateMemory}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="Splash"
             component={Splash}
             options={{headerShown: false}}
@@ -143,6 +139,11 @@ const App = () => {
           <Stack.Screen
             name="Player"
             component={Player}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="CreateMemory"
+            component={CreateMemory}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

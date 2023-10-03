@@ -13,6 +13,12 @@ import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
 import { useFocusEffect } from '@react-navigation/native';
 
+let color: string[] = [
+    '#C7A9D560',
+    '#96ead280',
+    '#FFC1D860',
+]
+
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
@@ -87,7 +93,11 @@ const Player = ({navigation}) => {
     }, [isPlaying]);
                          
     return (
-        <SafeAreaView style={style.maincontainer}>
+        <SafeAreaView style={{
+            flex: 1,
+            backgroundColor: color[songIndex % 3],
+            justifyContent:'center',
+        }}>
             <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={30} color="white" />
             </TouchableOpacity>

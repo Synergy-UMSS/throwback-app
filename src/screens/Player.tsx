@@ -21,7 +21,6 @@ const Player = ({navigation}) => {
         try{
             await TrackPlayer.setupPlayer();
             // quiero las canciones desde 3.5
-            //const {currentSearch} = usePlayerStore();
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
             const trackList = await TrackPlayer.getQueue();
@@ -60,38 +59,12 @@ const Player = ({navigation}) => {
           setTrackArtwork(artwork);
         }
     });
-
-    {/*const changeValuesTrack = async () => {
-        const trackIndex = await TrackPlayer.getCurrentTrack();
-        const track = await TrackPlayer.getTrack(trackIndex);
-        const {title, artwork, artist} = track;
-        setTrackTitle(title);
-        setTrackArtist(artist);
-        setTrackArtwork(artwork);
-        TrackPlayer.skip(currentSong.id);
-    };
-
-    useEffect(() => {
-        setPlayer();
-        
-    }, []);
-
-    useEffect(() => {
-        setPlayer();
-        changeValuesTrack();
-        console.log('se logro');
-    }, [currentSong]);*/}
     
     const changeValuesTrack = async () => {
         try {
-            {/*await TrackPlayer.add([currentSong]);
-            const trackList = await TrackPlayer.getQueue();
-            console.log('*****track list', trackList);*/}
             const trackIndex = await TrackPlayer.getCurrentTrack();
-            console.log('el id real es....', currentSong.id);
             const track = await TrackPlayer.getTrack(currentSong.id);
             const {title, artwork, artist} = track;
-            console.log(title, artwork, artist);
             setTrackTitle(title);
             setTrackArtist(artist);
             setTrackArtwork(artwork);

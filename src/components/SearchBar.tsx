@@ -4,10 +4,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import { useSearchStore } from '../store/searchStore';
+
 const SearchBar = () => {
   const [busqueda, setBusqueda] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const { addRecentSearch, showHistoryTrue, showHistoryFalse,updateCurrentSearch} = useSearchStore();
+  const { addRecentSearch, showHistoryTrue, showHistoryFalse, updateCurrentSearch } = useSearchStore();
 
   useEffect(() => {
     // Agregar un oyente para detectar si el teclado está abierto o cerrado
@@ -64,19 +65,17 @@ const SearchBar = () => {
         <View
           style={{
             flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
             borderWidth: 1,
             borderColor: 'gray',
             borderRadius: 10,
             height: 40,
-            paddingLeft: 10,
-            paddingRight: 10,
-            fontSize: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
+            paddingHorizontal: 10,
           }}
         >
           <TextInput
-            onChangeText={cambio => {
+            onChangeText={(cambio) => {
               setBusqueda(cambio);
               showHistoryFalse();
             }}
@@ -85,8 +84,12 @@ const SearchBar = () => {
             }}
             value={busqueda}
             placeholder="¿Qué es lo que quieres escuchar?"
+            maxLength={50}
+            style={{
+              flex: 1, // Para que ocupe todo el espacio disponible
+            }}
           />
-          {(isKeyboardOpen || busqueda !== '')&& (
+          {(isKeyboardOpen || busqueda !== '') && (
             <TouchableOpacity
               onPress={() => {
                 setBusqueda('');
@@ -94,15 +97,12 @@ const SearchBar = () => {
                 updateCurrentSearch('');
               }}
               style={{
-                marginLeft: 'auto',
+                marginLeft: 10,
               }}
             >
               <Animatable.View
                 animation={'fadeInRight'}
                 duration={300}
-                style={{
-                  marginLeft: 10,
-                }}
               >
                 <Feather name="x-circle" size={30} color="gray" />
               </Animatable.View>

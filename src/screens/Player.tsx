@@ -22,9 +22,9 @@ const Player = ({navigation}) => {
             await TrackPlayer.setupPlayer();
             // quiero las canciones desde 3.5
             //const {currentSearch} = usePlayerStore();
-            await TrackPlayer.add(currentSong);
-            {/*const trackList = await TrackPlayer.getQueue();
-            console.log('*****track list', trackList);*/}
+            await TrackPlayer.add([currentSong]);
+            const trackList = await TrackPlayer.getQueue();
+            console.log('*****track list', trackList);
         }catch(e){
             console.log('aca hay error',e)
         }
@@ -60,10 +60,53 @@ const Player = ({navigation}) => {
         }
     });
 
+    {/*const changeValuesTrack = async () => {
+        const trackIndex = await TrackPlayer.getCurrentTrack();
+        const track = await TrackPlayer.getTrack(trackIndex);
+        const {title, artwork, artist} = track;
+        setTrackTitle(title);
+        setTrackArtist(artist);
+        setTrackArtwork(artwork);
+        TrackPlayer.skip(currentSong.id);
+    };
+
     useEffect(() => {
         setPlayer();
         
     }, []);
+
+    useEffect(() => {
+        setPlayer();
+        changeValuesTrack();
+        console.log('se logro');
+    }, [currentSong]);*/}
+    
+    const changeValuesTrack = async () => {
+        try {
+            await TrackPlayer.add([currentSong]);
+            const trackList = await TrackPlayer.getQueue();
+            console.log('*****track list', trackList);
+            const trackIndex = await TrackPlayer.getCurrentTrack();
+            console.log('el id real es....', currentSong.id);
+            const track = await TrackPlayer.getTrack(currentSong.id - 1);
+            console.log('el track es ahora ', trackIndex);
+            const {title, artwork, artist} = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            await TrackPlayer.skip(currentSong.id); 
+        } catch(e) {
+            console.log('Hubo un error b:', e);
+        }
+    };
+
+    useEffect(() => {
+        setPlayer();
+    }, []);
+
+    useEffect(() => {
+        changeValuesTrack();
+    }, [currentSong]);
 
     useEffect(() => {
         setIsPlaying(true);

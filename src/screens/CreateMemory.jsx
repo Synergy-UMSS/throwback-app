@@ -4,6 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
+import placeholderImage from '../assets/placeholder.png';
+import { usePlayerStore } from '../store/playerStore';
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();

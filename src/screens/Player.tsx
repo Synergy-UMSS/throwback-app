@@ -19,6 +19,8 @@ let color: string[] = [
     '#FFC1D860',
 ]
 
+let lastSong = null;
+
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
@@ -29,7 +31,7 @@ const Player = ({navigation}) => {
             // quiero las canciones desde 3.5
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
-            const trackList = await TrackPlayer.getQueue();
+            {/*const trackList = await TrackPlayer.getQueue();*/}
             await TrackPlayer.play();
             console.log('*****track list', trackList);
         }catch(e){
@@ -75,8 +77,11 @@ const Player = ({navigation}) => {
             setTrackTitle(title);
             setTrackArtist(artist);
             setTrackArtwork(artwork);
-            await TrackPlayer.skip(currentSong.id); 
+            if (currentSong != lastSong) {
+                await TrackPlayer.skip(currentSong.id); 
+            };
             await TrackPlayer.play();
+            lastSong = currentSong;
         } catch(e) {
             console.log('Hubo un error b:', e);
         }

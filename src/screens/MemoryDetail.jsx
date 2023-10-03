@@ -3,12 +3,21 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/placeholder.png';
-
+import songs from '../../data/Prueba/Data';
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
+//import { usePlayerStore } from '../store/playerStore';
+import { usePlayerStore } from '../store/playerStore';
+
+
+
 
 const MemoryDetail = ({ route, navigation }) => {
   const { memoriaId, index } = route.params;
   const [memory, setMemory] = useState(null);
+  const { setCurrentSong } = usePlayerStore();
+
+  
+
 
   useEffect(() => {
     const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
@@ -26,9 +35,20 @@ const MemoryDetail = ({ route, navigation }) => {
 
   const color = bgColor[index % bgColor.length];
 
-  const playSong = () => {
-    navigation.navigate('Reproductor', {memoriaId: memory.id});
+  // const playSong = () => {
+  //   navigation.navigate('Reproductor', {memoriaId: memory.id});
+  // };
+
+  const songg = songs.find(s => s.title === memory.titulo_cancion);
+  const songArtwork = songg ? songg.artwork : null;
+
+  const playSong = async () => {
+    const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
+    if (!songToPlay) return;
+    await setCurrentSong(songToPlay);
+    navigation.navigate('Player'); 
   };
+
 
   return (
     //<ScrollView style={{flex: 1}}>
@@ -40,10 +60,10 @@ const MemoryDetail = ({ route, navigation }) => {
       <Text style={styles.date}>{memory.fecha_memoria && memory.fecha_memoria.toDate().toISOString().split('T')[0]}</Text>
       <Text style={styles.tsong}>{"Canción vinculada al recuerdo:"}</Text>
       <ItemSong
-        song={memory.titulo_cancion}
-        artist={memory.artista_cancion}
+        song={memory.titulo_cancion} //ok
+        artist={memory.artista_cancion} //ok
         onPlay={playSong}
-        imageUri={memory.imagen_cancion ? { uri: memory.imagen_cancion } : placeholderImage}
+        imageUri={songArtwork || placeholderImage}
         memoriaId={memoriaId}
       />
       <Text>  </Text>
@@ -52,6 +72,10 @@ const MemoryDetail = ({ route, navigation }) => {
     //</ScrollView>
   );
 };
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {

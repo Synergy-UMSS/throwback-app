@@ -3,6 +3,7 @@ import {View, FlatList, Text, StyleSheet} from 'react-native';
 import PreviewMemory from '../components/PreviewMemory';
 import MemoryDetail from './MemoryDetail';
 import firestore from '@react-native-firebase/firestore';
+import MiniPlayer from '../components/MiniPlayer';
 
 const MemoryList = ({ navigation }) => {
   const abrirDetalles = (id, index) => {
@@ -32,25 +33,31 @@ const MemoryList = ({ navigation }) => {
         <Text style={styles.messageText}>
           No tiene memorias musicales creadas.
         </Text>
+        <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
       </View>
     );
   }
 
+  
   return (
-    <View style={styles.containerlist}>
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
-        renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
-      />
-    </View>
-  );
-};
+      <View style={styles.container}>
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
+          renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
+        />
+      
+        <View style={styles.miniPlayerContainer}>
+          <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
+        </View>
+      </View>
+    );
+  }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 0,
     color:'black'
   },
   messageText: {

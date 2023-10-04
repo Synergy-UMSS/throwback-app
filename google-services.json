@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "123136814804",
-    "project_id": "synergy-umss",
-    "storage_bucket": "synergy-umss.appspot.com"
+    "project_number": "849615597646",
+    "project_id": "throwback-app-c44c7",
+    "storage_bucket": "throwback-app-c44c7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123136814804:android:67e9d849c4778270941541",
+        "mobilesdk_app_id": "1:849615597646:android:994e12a765efe89926531f",
         "android_client_info": {
-          "package_name": "com.throwbackapp"
+          "package_name": "com.synergy.throwbackApp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB8e_SRGTjZk6Mjjvd2s6wN7WelbKBvvOM"
+          "current_key": "AIzaSyBWi54JnkvguCQSuHBav9G1VwLkE5dTGo8"
         }
       ],
       "services": {

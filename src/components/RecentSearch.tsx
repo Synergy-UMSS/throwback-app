@@ -34,11 +34,14 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     margin: 10,
     height: 40,
+    borderRadius:10,
   },
   queryText: {
     fontSize: 16,
     flex: 1,
     alignSelf: 'center',
+    color:'#777',
+    marginLeft:20,
   },
   deleteButton: {
     padding: 8,

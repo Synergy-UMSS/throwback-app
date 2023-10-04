@@ -91,6 +91,7 @@ const SearchBar = () => {
             maxLength={50}
             style={{
               flex: 1,
+              color:'black',
             }}
           />
           {(isKeyboardOpen || busqueda !== '') && (

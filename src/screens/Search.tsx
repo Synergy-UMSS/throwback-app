@@ -6,6 +6,8 @@ import RecentSearchItem from '../components/RecentSearch';
 import {useSearchStore} from '../store/searchStore';
 import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
+import { ScrollView } from 'react-native';
+
 const Search = ({navigation}) => {
   const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
@@ -55,7 +57,7 @@ const Search = ({navigation}) => {
             onOptionPress={handlePress}
           />
         ))}
-        {suggests.length === 0 && (<Text style={{textAlign: 'center'}}>No se ha encontrado ningún resultado</Text>)}
+        {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}
       </View>
       
     );
@@ -76,36 +78,39 @@ const Search = ({navigation}) => {
           right: 0,
         }}
       />
-      <View
-  style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    height: 50,
-  }}
->
-  {showHistory && (
-    <Text style={{ fontSize: 16/*, fontWeight: 'nunito'*/, color: 'black' }}>
-      Búsquedas Recientes
-    </Text>
-  )}
-  <TouchableOpacity
-    onPress={() => {
-      clearSearches();
-    }}
-  >
-    {showHistory && (
-      <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
-    )}
-  </TouchableOpacity>
-</View>
-
-      {displaySongSuggestions()}
-      {displaySearches()}
+      <ScrollView style={{ paddingTop:0 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 10,
+            height: 50,
+          }}
+         >
+          {showHistory && (
+            <Text style={{ fontSize: 16/*, fontWeight: 'nunito'*/, color: 'black' }}>
+              Búsquedas Recientes
+            </Text>
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              clearSearches();
+            }}
+          >
+            {showHistory && (
+              <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        {displaySongSuggestions()}
+        {displaySearches()}
+        <Text>{'\n\n'}</Text>
+      </ScrollView>
       <MiniPlayer navigation={navigation} />
     </View>
   );
 };
+
 
 export default Search;

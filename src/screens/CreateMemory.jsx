@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
@@ -30,6 +30,7 @@ const CrearMemoria = ({ navigation }) => {
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
+      showSuccessAlert();
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
@@ -40,6 +41,26 @@ const CrearMemoria = ({ navigation }) => {
     if (!songToPlay) return;
     await setCurrentSong(songToPlay);
     navigation.navigate('Player'); 
+  };
+
+  const showSuccessAlert = () => {
+    Alert.alert(
+      'Memoria creada con éxito',
+      'La memoria se ha guardado correctamente.',
+      [
+        {
+          text: 'Okay',
+          onPress: () => {
+            navigation.navigate('Home'); // Redirige a la vista "home"
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const memoryList = () => {
+    navigation.navigate('MemoryList');
   };
 
 
@@ -110,6 +131,10 @@ const CrearMemoria = ({ navigation }) => {
       </View>
 
       <Button title="Guardar" onPress={handleSubmit(onSubmit)} />
+      {/*<Alert 
+        title="Memoria guardada correctamente."
+        onPress={memoryList} 
+        />*/}
     </View>
   );
 };

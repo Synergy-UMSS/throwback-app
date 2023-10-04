@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
@@ -7,6 +7,7 @@ import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/placeholder.png';
 import { usePlayerStore } from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
+import MemoryList from './MemoryList';
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
@@ -15,7 +16,12 @@ const CrearMemoria = ({ navigation }) => {
   const {setCurrentSong, currentSong} = usePlayerStore();
   const songg = songs.find(s => s.title === currentSong.title);
   const songArtwork = songg ? songg.artwork : null;
-
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  
+  const memoryList = () => {
+    navigation.navigate(MemoryList, {});
+    setSuccessModalVisible(false);
+  };
 
   const onSubmit = async (data) => {
     const memoria = {
@@ -30,6 +36,7 @@ const CrearMemoria = ({ navigation }) => {
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
+      setSuccessModalVisible(true);
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
@@ -109,7 +116,24 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
+<<<<<<< Updated upstream
       <Button style={styles.button} title="Guardar" onPress={handleSubmit(onSubmit)} />
+=======
+      <Button title="Guardar" onPress={handleSubmit(onSubmit)} />
+      
+      <Modal
+        isVisible={successModalVisible}
+        onBackdropPress={() => setSuccessModalVisible(false)}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.successText}>Memoria creada con éxito.</Text>
+          <Button
+            title="Okay"
+            onPress={memoryList}
+          />
+        </View>
+        </Modal>
+>>>>>>> Stashed changes
     </View>
   );
 };
@@ -161,6 +185,17 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  successText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
 

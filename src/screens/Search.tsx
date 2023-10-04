@@ -86,7 +86,7 @@ const Search = ({navigation}) => {
   }}
 >
   {showHistory && (
-    <Text style={{ fontSize: 16, fontWeight: 'nunito', color: 'black' }}>
+    <Text style={{ fontSize: 16/*, fontWeight: 'nunito'*/, color: 'black' }}>
       Búsquedas Recientes
     </Text>
   )}

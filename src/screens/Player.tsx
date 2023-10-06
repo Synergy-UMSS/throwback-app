@@ -24,7 +24,7 @@ let lastSong = null;
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
-    const {currentSong} = usePlayerStore();
+    const {setCurrentSong, currentSong} = usePlayerStore();
     const setPlayer = async () => {
         try{
             await TrackPlayer.setupPlayer();
@@ -66,6 +66,8 @@ const Player = ({navigation}) => {
           setTrackTitle(title);
           setTrackArtist(artist);
           setTrackArtwork(artwork);
+          console.log(currentSong.title);
+          await setCurrentSong(track);
         }
     });
     

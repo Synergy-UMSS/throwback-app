@@ -15,6 +15,8 @@ const bgColor = [
   '#FFC1D8',
 ];
 
+
+
 function aclararColor(hex, porcentaje=0.3) {
   // Convertir el color hex a RGB
   let r = parseInt(hex.slice(1, 3), 16);

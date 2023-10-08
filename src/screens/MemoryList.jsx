@@ -13,7 +13,7 @@ const MemoryList = ({ navigation }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firestore().collection('memorias').onSnapshot(querySnapshot => {
+    const unsubscribe = firestore().collection('memorias').orderBy('fecha_creacion', 'desc').onSnapshot(querySnapshot => {
       const memoryData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setData(memoryData);
       console.log(memoryData);
@@ -24,6 +24,8 @@ const MemoryList = ({ navigation }) => {
 
     // Limpiar el listener cuando el componente se desmonte.
     return () => unsubscribe();
+
+
   }, []);
   // Si data está vacío, muestra el mensaje.
   // if (true) {

@@ -1,8 +1,11 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+//import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Dimensions } from 'react-native';
 const screenHeight = Dimensions.get('window').height;
+//import MarqueeLabel from 'react-native-marquee-label';
+// import TextTicker from 'react-native-text-ticker';
+// import Marquee from 'react-native-marquee';
 
 const bgColor = [
   '#c7a9d5',
@@ -32,11 +35,10 @@ function aclararColor(hex, porcentaje=0.3) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-
-
 const PreviewMemory = ({memoria, onPress, index}) => {
   const color = bgColor[index % bgColor.length];
   const colorOscurecido = aclararColor(color);
+  
   return (
     <TouchableOpacity
       onPress={() => onPress(memoria.id)}
@@ -45,7 +47,7 @@ const PreviewMemory = ({memoria, onPress, index}) => {
         <Text style={styles.titulo}>{memoria.titulo_memoria}</Text>
         <View style={{...styles.cancionContainer, backgroundColor: colorOscurecido}}>
           <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>{memoria.titulo_cancion} - {memoria.artista_cancion}</Text> 
+          <Text style={styles.cancion}>{memoria.titulo_cancion} - {memoria.artista_cancion}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 0,
     elevation: 8,  
-    height: screenHeight / 8.5,
+    //height: screenHeight / 8.5,
     justifyContent: 'center',
   },
   memoriaContainer: {
@@ -84,13 +86,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 13,
     padding:10,
-    paddingLeft :15,
   },
   iconoMusica: {
     marginRight: 5,
     color: 'black',
   },
   cancion: {
+    marginRight:30,
     fontFamily:'Arial',
     fontSize: 14,
     color: '#5C5C5C',

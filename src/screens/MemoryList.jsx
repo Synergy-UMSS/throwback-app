@@ -43,10 +43,12 @@ const MemoryList = ({ navigation }) => {
   
   return (
       <View style={styles.container}>
+        
         <FlatList
           data={data}
           keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
           renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
+          contentContainerStyle={{paddingBottom:50}}
         />
       
         <View style={styles.miniPlayerContainer}>

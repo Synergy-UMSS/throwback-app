@@ -48,7 +48,7 @@ const MemoryDetail = ({ route, navigation }) => {
     //<ScrollView style={{flex: 1}}>
     <ScrollView style={{ ...styles.container, backgroundColor: color}}>
       <Text style={styles.title}>{memory.titulo_memoria}</Text>
-      <Text style={styles.subtitle}>{"Descripcion:"}</Text>
+      <Text style={styles.subtitle}>{"Descripción:"}</Text>
       <Text style={styles.description}>{memory.descripcion_memoria}</Text>
       <Text style={styles.tdate}>{"Fecha:"}</Text>
       <Text style={styles.date}>{memory.fecha_memoria && memory.fecha_memoria.toDate().toISOString().split('T')[0]}</Text>

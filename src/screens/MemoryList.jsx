@@ -25,8 +25,8 @@ const MemoryList = ({ navigation }) => {
     // Limpiar el listener cuando el componente se desmonte.
     return () => unsubscribe();
   }, []);
-
   // Si data está vacío, muestra el mensaje.
+  // if (true) {
   if (data.length === 0) {
     return (
       <View style={styles.container}>

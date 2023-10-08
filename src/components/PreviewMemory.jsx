@@ -68,14 +68,14 @@ const styles = StyleSheet.create({
   },
   titulo: {
     marginLeft:10,
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
     marginBottom:5,
   },
   cancionContainer: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     marginLeft:10,
     marginRight:10,
     flexDirection: 'row',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   cancion: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 14,
     color: '#5C5C5C',
   },

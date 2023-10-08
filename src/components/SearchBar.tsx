@@ -67,7 +67,7 @@ const SearchBar = () => {
             alignItems: 'center',
             borderWidth: 1,
             borderColor: 'gray',
-            borderRadius: 10,
+            borderRadius: 0,
             height: 40,
             paddingHorizontal: 10,
           }}
@@ -92,6 +92,7 @@ const SearchBar = () => {
             style={{
               flex: 1,
               color:'black',
+              fontFamily: 'Arial',
             }}
           />
           {(isKeyboardOpen || busqueda !== '') && (

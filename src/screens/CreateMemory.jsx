@@ -54,7 +54,7 @@ const CrearMemoria = ({ navigation }) => {
       'La memoria se ha guardado correctamente.',
       [
         {
-          text: 'Okay',
+          text: 'Aceptar',
           onPress: () => {
             navigation.navigate('Home'); // Redirige a la vista "home"
           },
@@ -75,7 +75,7 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={40}
+            maxLength={25}
           />
         )}
         name="tituloMemoria"
@@ -98,14 +98,14 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={500}
+            maxLength={150}
           />
         )}
         name="descripcionMemoria"
         defaultValue=""
       />
 
-      <Text style={styles.label}>Fecha de Memoria:</Text>
+      <Text style={styles.label}>Fecha:</Text>
       <TextInput
         style={styles.input}
         value={selectedDate.toISOString().split('T')[0]}
@@ -137,11 +137,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Button title="Guardar" onPress={handleSubmit(onSubmit)} />
-      {/*<Alert 
-        title="Memoria guardada correctamente."
-        onPress={memoryList} 
-        />*/}
+      <Button title="Crear Memoria" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };

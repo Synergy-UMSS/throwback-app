@@ -139,7 +139,7 @@ const CrearMemoria = ({ navigation }) => {
       </View>
 
       <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
-        <Text style={{ color: 'white' }}>Crear Memoria</Text>
+        <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
       </Pressable>
     </View>
   );
@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 8,
     marginTop: 8,
+    borderRadius: 10,
+    backgroundColor: 'white',
   },
   marginBottom: {
     marginTop: 8,

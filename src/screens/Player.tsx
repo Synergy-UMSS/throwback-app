@@ -19,7 +19,7 @@ let color: string[] = [
     '#FFC1D860',
 ]
 
-let lastSong = null;
+let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
@@ -32,8 +32,8 @@ const Player = ({navigation}) => {
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
             {/*const trackList = await TrackPlayer.getQueue();*/}
+            {/*console.log('*****track list', trackList);*/}
             await TrackPlayer.play();
-            console.log('*****track list', trackList);
         }catch(e){
             console.log('aca hay error',e)
         }
@@ -125,10 +125,10 @@ const Player = ({navigation}) => {
 
                 <View>
                     <View style={style.songDurationMain}>
-                        <Text style={style.songDuration}>
+                        <Text>
                             {new Date(sliderWork.position *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
-                        <Text style={style.songDuration}>
+                        <Text>
                             {new Date(sliderWork.duration *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
                     </View>

@@ -22,7 +22,7 @@ const Connection = () => {
                 justifyContent:'center',
                 alignItems:'center',
                 backgroundColor: isConnected ?'#00FF0000': '#50505061',}}>
-                <Text style={{justifyContent:'center', textAlign:'center',}}>{isConnected ?'':'No es posible reproducir la música debido a                    problemas de conectividad.'}</Text>
+                <Text style={{justifyContent:'center', textAlign:'center',}}>{isConnected ?'':'No es posible reproducir la música debido a\n problemas de conectividad.'}</Text>
             </View>
 
     );

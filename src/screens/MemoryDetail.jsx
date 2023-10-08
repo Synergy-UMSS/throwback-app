@@ -9,6 +9,13 @@ const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B
 import { usePlayerStore } from '../store/playerStore';
 
 
+const formatDate = date => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 
 const MemoryDetail = ({ route, navigation }) => {
@@ -51,7 +58,7 @@ const MemoryDetail = ({ route, navigation }) => {
       <Text style={styles.subtitle}>{"Descripción:"}</Text>
       <Text style={styles.description}>{memory.descripcion_memoria}</Text>
       <Text style={styles.tdate}>{"Fecha:"}</Text>
-      <Text style={styles.date}>{memory.fecha_memoria && memory.fecha_memoria.toDate().toISOString().split('T')[0]}</Text>
+      <Text style={styles.date}>{memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}</Text>
       <Text style={styles.tsong}>{"Canción vinculada al recuerdo:"}</Text>
       <ItemSong
         song={memory.titulo_cancion} //ok

@@ -15,17 +15,28 @@ const Connection = () => {
         }
     },[]);
     return (
-            <View style={{position:'absolute',
-                bottom:0,
-                height:40,
-                width:'100%',
-                justifyContent:'center',
-                alignItems:'center',
-                backgroundColor: isConnected ?'#00FF0000': '#50505061',}}>
-                <Text style={{justifyContent:'center', textAlign:'center',}}>{isConnected ?'':'No es posible reproducir la música debido a\n problemas de conectividad.'}</Text>
+            <View style={style.containerMessage}>
+                <Text style={style.message}>{isConnected ?'':'No es posible reproducir la música debido a\n problemas de conectividad.'}</Text>
             </View>
 
     );
 };
 
 export default Connection;
+
+const style = StyleSheet.create({
+    containerMessage:{
+        position:'absolute',
+        bottom:0,
+        height:40,
+        width:'100%',
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor: isConnected ?'#00FF0000': '#50505061',
+    },
+    message:{
+        justifyContent:'center',
+        textAlign:'center',
+        fontFamily: 'Arial',
+    }
+})

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, Pressable } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
@@ -54,7 +54,7 @@ const CrearMemoria = ({ navigation }) => {
       'La memoria se ha guardado correctamente.',
       [
         {
-          text: 'Okay',
+          text: 'Aceptar',
           onPress: () => {
             navigation.navigate('Home'); // Redirige a la vista "home"
           },
@@ -67,6 +67,7 @@ const CrearMemoria = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.pageTitle}>Crear memoria musical</Text>
       <RequiredField>Título de la Memoria:</RequiredField>
       <Controller
         control={control}
@@ -75,7 +76,7 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={40}
+            maxLength={25}
           />
         )}
         name="tituloMemoria"
@@ -98,14 +99,14 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={500}
+            maxLength={150}
           />
         )}
         name="descripcionMemoria"
         defaultValue=""
       />
 
-      <Text style={styles.label}>Fecha de Memoria:</Text>
+      <Text style={styles.label}>Fecha:</Text>
       <TextInput
         style={styles.input}
         value={selectedDate.toISOString().split('T')[0]}
@@ -137,11 +138,9 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Button title="Guardar" onPress={handleSubmit(onSubmit)} />
-      {/*<Alert 
-        title="Memoria guardada correctamente."
-        onPress={memoryList} 
-        />*/}
+      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
+        <Text style={{ color: 'white' }}>Crear Memoria</Text>
+      </Pressable>
     </View>
   );
 };
@@ -150,6 +149,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#e4e6dc',
+  },
+  pageTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 16,
+    color: 'black',
   },
   label: {
     fontSize: 16,
@@ -164,11 +171,22 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   marginBottom: {
-    marginTop: 40,
-    marginBottom: 40,
+    marginTop: 8,
+    marginBottom: 8,
   },
   error: {
     color: 'red',
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20, // Ajusta el tamaño horizontal según tus preferencias
+    borderRadius: 10,
+    elevation: 3,
+    backgroundColor: 'black',
+    width: 150,
+    alignSelf: 'center',
   },
 });
 

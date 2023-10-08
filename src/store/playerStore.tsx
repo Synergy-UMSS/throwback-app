@@ -15,7 +15,7 @@ export const usePlayerStore = create<PlayerStore>(set => ({
     id: 19,
     title: 'As it was',
     artist: 'Harry Styles',
-    artwork: require('../../assets-prueba/images/As-it-was.png'),
+    artwork: require('../../assets-prueba/images/harry_styles.jpg'),
     url: require('../../assets-prueba/songs/Harry-Styles-As-It-Was.mp3'),
   },
   setCurrentSong: song => {

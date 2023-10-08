@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
-import placeholderImage from '../assets/placeholder.png';
+import placeholderImage from '../assets/logo.png';
 import songs from '../../data/Prueba/Data';
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 //import { usePlayerStore } from '../store/playerStore';

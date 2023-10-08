@@ -114,7 +114,7 @@ const Player = ({navigation}) => {
             <View style={style.container}>
                 <View style={[style.imageWrapper, style.elevation]}> 
                     <Image 
-                        source={trackArtwork || require('../assets/placeholder.png')}
+                        source={trackArtwork || require('../assets/logo.png')}
                         style={style.musicImage}
                     />
                 </View>

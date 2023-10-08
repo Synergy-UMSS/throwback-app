@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
-import placeholderImage from '../assets/placeholder.png';
+import placeholderImage from '../assets/logo.png';
 import { usePlayerStore } from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
 import RequiredField from '../components/RequiredField';

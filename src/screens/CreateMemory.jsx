@@ -80,7 +80,7 @@ const CrearMemoria = ({ navigation }) => {
         name="tituloMemoria"
         defaultValue=""
         rules={{
-          required: true | 'Este campo es obligatorio',
+          required: 'Este campo es obligatorio',
           validate: {
             noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
           },

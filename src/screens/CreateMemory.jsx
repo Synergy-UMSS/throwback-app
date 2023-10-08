@@ -7,6 +7,7 @@ import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/placeholder.png';
 import { usePlayerStore } from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
+import RequiredField from '../components/RequiredField';
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
@@ -66,7 +67,7 @@ const CrearMemoria = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 16 }}>Título de la Memoria:</Text>
+      <RequiredField>Título de la Memoria:</RequiredField>
       <Controller
         control={control}
         render={({ field: { onChange, value } }) => (

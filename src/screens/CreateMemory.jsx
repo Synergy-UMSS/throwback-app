@@ -28,6 +28,10 @@ const CrearMemoria = ({ navigation }) => {
       artista_cancion: currentSong.artist,
     };
 
+    const isSpecialCharacter = (value) => {
+      return /^[a-zA-Z0-9\s\-]+$/.test(value); // Expresión regular que permite letras, números, espacios y guiones
+    };
+
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
@@ -60,10 +64,6 @@ const CrearMemoria = ({ navigation }) => {
     );
   };
 
-  const memoryList = () => {
-    navigation.navigate('MemoryList');
-  };
-
 
   return (
     <View style={styles.container}>
@@ -80,9 +80,13 @@ const CrearMemoria = ({ navigation }) => {
         )}
         name="tituloMemoria"
         defaultValue=""
-        rules={{ required: true }}
+        rules={{
+          required: 'Este campo es obligatorio',
+          validate: (value) => isSpecialCharacter(value) || 'No se permiten caracteres especiales',
+        }}
       />
-      {errors.tituloMemoria && <Text style={styles.error}>Este campo es obligatorio.</Text>}
+      {errors.tituloMemoria && <Text style={styles.error}>{errors.tituloMemoria.message}</Text>}
+
 
       <Text style={styles.label}>Descripción:</Text>
       <Controller

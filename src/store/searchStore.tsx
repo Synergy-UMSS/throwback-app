@@ -24,11 +24,21 @@ export const useSearchStore = create<SearchStore>(set => ({
       ),
     }));
   },
-  addRecentSearch: searchQuery => {
-    // Primero elimino duplicados de searchQuery en el array
-    set(state => ({
-      recentSearches: [searchQuery, ...state.recentSearches],
-    }));
+  addRecentSearch: searchQuery => {    //Bug: El historial de búsquedas sobre pasa el límite de 30 canciones.
+    if (searchQuery.trim() !== '') {
+      set(state => {
+        const updatedRecentSearches = [
+          searchQuery.trim(),
+          ...state.recentSearches.filter(query => query !== searchQuery.trim())
+        ];
+        if (updatedRecentSearches.length > 30) {
+          updatedRecentSearches.splice(30);
+        }
+        return {
+          recentSearches: updatedRecentSearches,
+        };
+      });
+    }
   },
   clearRecentSearches: () => {
     set(state => ({

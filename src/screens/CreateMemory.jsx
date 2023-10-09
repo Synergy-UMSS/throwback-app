@@ -8,6 +8,8 @@ import placeholderImage from '../assets/placeholder.png';
 import { usePlayerStore } from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
 import RequiredField from '../components/RequiredField';
+import { format } from 'date-fns';
+
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
@@ -103,13 +105,13 @@ const CrearMemoria = ({ navigation }) => {
         defaultValue=""
       />
 
-      <Text style={styles.label}>Fecha de Memoria:</Text>
       <TextInput
         style={styles.input}
-        value={selectedDate.toISOString().split('T')[0]}
+        value={format(selectedDate, 'dd/MM/yyyy')} // Cambia el formato aquí
         onFocus={() => setShowDatePicker(true)}
-        placeholder="YYYY-MM-DD"
+        placeholder="dd/mm/aaaa"
       />
+
       {showDatePicker && (
         <DateTimePicker
           value={selectedDate}
@@ -153,6 +155,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 16,
+    fontFamily: 'Arial',
   },
   input: {
     fontSize: 16,
@@ -160,6 +163,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 8,
     marginTop: 8,
+    fontFamily: 'Arial',
   },
   marginBottom: {
     marginTop: 40,
@@ -167,6 +171,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
+    fontFamily: 'Arial',
   },
 });
 

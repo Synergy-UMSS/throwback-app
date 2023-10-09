@@ -26,9 +26,10 @@ const SearchBar = () => {
   }, []);
 
   const handleSearch = () => {
-    if (busqueda !== '') {
-      addRecentSearch(busqueda);
-      updateCurrentSearch(busqueda);
+    const trimmedBusqueda = busqueda.trim(); //Bug: Los espacios al inicio de la búsqueda afectan al resultado
+    if (trimmedBusqueda !== '') {
+      addRecentSearch(trimmedBusqueda);
+      updateCurrentSearch(trimmedBusqueda);
     }
   };
 

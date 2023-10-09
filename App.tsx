@@ -32,8 +32,8 @@ function MemoryNavigator() {
             headerTitleStyle: {
               fontSize: 22,
               color: 'black',
-              fontWeight: 'bold',
-              marginLeft: 18,
+              fontFamily:'arial-bold',
+              marginLeft: 0,
             },
             headerShown: true,
             cardStyle: { backgroundColor: '#e4e6dc' }

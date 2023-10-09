@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
-import placeholderImage from '../assets/placeholder.png';
+import placeholderImage from '../assets/logo.png';
 import songs from '../../data/Prueba/Data';
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 //import { usePlayerStore } from '../store/playerStore';
 import { usePlayerStore } from '../store/playerStore';
 
 
+const formatDate = date => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 
 const MemoryDetail = ({ route, navigation }) => {
@@ -48,10 +55,10 @@ const MemoryDetail = ({ route, navigation }) => {
     //<ScrollView style={{flex: 1}}>
     <ScrollView style={{ ...styles.container, backgroundColor: color}}>
       <Text style={styles.title}>{memory.titulo_memoria}</Text>
-      <Text style={styles.subtitle}>{"Descripcion:"}</Text>
+      <Text style={styles.subtitle}>{"Descripción:"}</Text>
       <Text style={styles.description}>{memory.descripcion_memoria}</Text>
       <Text style={styles.tdate}>{"Fecha:"}</Text>
-      <Text style={styles.date}>{memory.fecha_memoria && memory.fecha_memoria.toDate().toISOString().split('T')[0]}</Text>
+      <Text style={styles.date}>{memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}</Text>
       <Text style={styles.tsong}>{"Canción vinculada al recuerdo:"}</Text>
       <ItemSong
         song={memory.titulo_cancion} //ok

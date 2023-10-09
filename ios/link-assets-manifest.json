@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Anuschka-Demo.ttf",
+      "sha1": "c0c699a23604f8103c975839f32e6cf87334ca28"
+    },
+    {
+      "path": "src/assets/fonts/arial-bold.ttf",
+      "sha1": "362b1fdf5cf78f14d03a5275c4b2f95cca10e54b"
+    },
+    {
+      "path": "src/assets/fonts/Arial.ttf",
+      "sha1": "056d20ac56be76d076480c2cab53811fefb91b73"
+    },
+    {
+      "path": "src/assets/fonts/arial_bold.ttf",
+      "sha1": "0a964ad1406c869ea0a6708cf6379a8becad1300"
+    },
+    {
+      "path": "src/assets/fonts/PaletteMosaic-Regular.ttf",
+      "sha1": "ad21cf93ab1f6fe2cdfa4f03c671205677a596fc"
+    }
+  ]
+}

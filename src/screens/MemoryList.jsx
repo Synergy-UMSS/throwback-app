@@ -13,7 +13,7 @@ const MemoryList = ({ navigation }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = firestore().collection('memorias').onSnapshot(querySnapshot => {
+    const unsubscribe = firestore().collection('memorias').orderBy('fecha_creacion', 'desc').onSnapshot(querySnapshot => {
       const memoryData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setData(memoryData);
       console.log(memoryData);
@@ -24,9 +24,11 @@ const MemoryList = ({ navigation }) => {
 
     // Limpiar el listener cuando el componente se desmonte.
     return () => unsubscribe();
-  }, []);
 
+
+  }, []);
   // Si data está vacío, muestra el mensaje.
+  // if (true) {
   if (data.length === 0) {
     return (
       <View style={styles.container}>
@@ -45,6 +47,7 @@ const MemoryList = ({ navigation }) => {
           data={data}
           keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
           renderItem={({ item, index }) => <PreviewMemory memoria={item} onPress={(id) => abrirDetalles(id, index)} index={index} />}
+          contentContainerStyle={{paddingBottom:50}}
         />
       
         <View style={styles.miniPlayerContainer}>
@@ -61,7 +64,7 @@ const styles = StyleSheet.create({
     color:'black'
   },
   messageText: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 18,
     marginLeft: 18,
     color:'black'

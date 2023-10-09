@@ -8,6 +8,8 @@ import placeholderImage from '../assets/logo.png';
 import { usePlayerStore } from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
 import RequiredField from '../components/RequiredField';
+import { format } from 'date-fns';
+
 
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
@@ -67,7 +69,9 @@ const CrearMemoria = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+    
       <Text style={styles.pageTitle}>Crear memoria musical</Text>
+
       <RequiredField>Título de la Memoria:</RequiredField>
       <Controller
         control={control}
@@ -105,14 +109,15 @@ const CrearMemoria = ({ navigation }) => {
         name="descripcionMemoria"
         defaultValue=""
       />
-
+          
       <Text style={styles.label}>Fecha:</Text>
       <TextInput
         style={styles.input}
-        value={selectedDate.toISOString().split('T')[0]}
+        value={format(selectedDate, 'dd/MM/yyyy')} // Cambia el formato aquí
         onFocus={() => setShowDatePicker(true)}
-        placeholder="YYYY-MM-DD"
+        placeholder="dd/mm/aaaa"
       />
+
       {showDatePicker && (
         <DateTimePicker
           value={selectedDate}
@@ -128,7 +133,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       )}
 
-      <Text style={styles.label}>Cancion Vinculada:</Text>
+      <Text style={styles.label}>Canción vinculada:</Text>
       <View style={styles.marginBottom}>
         <ItemSong
           song={currentSong.title}
@@ -162,6 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 16,
+    fontFamily: 'Arial',
   },
   input: {
     fontSize: 16,
@@ -169,8 +175,10 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 8,
     marginTop: 8,
+    fontFamily: 'Arial',
     borderRadius: 10,
     backgroundColor: 'white',
+
   },
   marginBottom: {
     marginTop: 8,
@@ -178,6 +186,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
+    fontFamily: 'Arial',
   },
   button: {
     alignItems: 'center',

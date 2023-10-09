@@ -26,9 +26,10 @@ const SearchBar = () => {
   }, []);
 
   const handleSearch = () => {
-    if (busqueda !== '') {
-      addRecentSearch(busqueda);
-      updateCurrentSearch(busqueda);
+    const trimmedBusqueda = busqueda.trim(); //Bug: Los espacios al inicio de la búsqueda afectan al resultado
+    if (trimmedBusqueda !== '') {
+      addRecentSearch(trimmedBusqueda);
+      updateCurrentSearch(trimmedBusqueda);
     }
   };
 
@@ -67,7 +68,7 @@ const SearchBar = () => {
             alignItems: 'center',
             borderWidth: 1,
             borderColor: 'gray',
-            borderRadius: 10,
+            borderRadius: 0,
             height: 40,
             paddingHorizontal: 10,
           }}
@@ -92,6 +93,7 @@ const SearchBar = () => {
             style={{
               flex: 1,
               color:'black',
+              fontFamily: 'Arial',
             }}
           />
           {(isKeyboardOpen || busqueda !== '') && (

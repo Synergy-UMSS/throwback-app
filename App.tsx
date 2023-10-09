@@ -32,8 +32,7 @@ function MemoryNavigator() {
             headerTitleStyle: {
               fontSize: 22,
               color: 'black',
-              fontFamily:'Arial',
-              fontWeight: 'bold',
+              fontFamily:'arial-bold',
               marginLeft: 0,
             },
             headerShown: true,

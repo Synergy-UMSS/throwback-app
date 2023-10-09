@@ -43,7 +43,6 @@ const MemoryList = ({ navigation }) => {
   
   return (
       <View style={styles.container}>
-        
         <FlatList
           data={data}
           keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     color:'black'
   },
   messageText: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 18,
     marginLeft: 18,
     color:'black'

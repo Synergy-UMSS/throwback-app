@@ -72,9 +72,8 @@ const styles = StyleSheet.create({
   },
   titulo: {
     marginLeft:10,
-    fontFamily:'Arial',
+    fontFamily:'arial-bold',
     fontSize: 18,
-    fontWeight: 'bold',
     color: 'black',
     marginBottom:5,
   },

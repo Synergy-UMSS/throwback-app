@@ -104,7 +104,7 @@ const CrearMemoria = ({ navigation }) => {
         name="descripcionMemoria"
         defaultValue=""
       />
-
+      <Text style={styles.label}>Fecha:</Text>
       <TextInput
         style={styles.input}
         value={format(selectedDate, 'dd/MM/yyyy')} // Cambia el formato aquí
@@ -127,7 +127,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       )}
 
-      <Text style={styles.label}>Cancion Vinculada:</Text>
+      <Text style={styles.label}>Canción vinculada:</Text>
       <View style={styles.marginBottom}>
         <ItemSong
           song={currentSong.title}

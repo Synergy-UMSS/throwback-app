@@ -18,7 +18,9 @@ const bgColor = [
   '#FBBAA4',
   '#FFC1D8',
 ];
-
+function sumAsciiCodes(str) {
+  return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+}
 function aclararColor(hex, porcentaje=0.3) {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
@@ -29,29 +31,36 @@ function aclararColor(hex, porcentaje=0.3) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-const PreviewMemory = ({memoria, onPress, index}) => {
+const PreviewMemory = ({ memoria, onPress, index }) => {
   const song = songs.find(
     song => song.title === memoria.titulo_cancion && song.artist === memoria.artista_cancion
   );
   const songId = song ? song.id : 0;
-  const combinedId = songId + memoria.titulo_memoria.length + memoria.artista_cancion.length;
+  const combinedId = songId+memoria.titulo_memoria.length + memoria.artista_cancion.length;
   const color = bgColor[combinedId % bgColor.length];
   const colorOscurecido = aclararColor(color);
-  
+
   return (
     <TouchableOpacity
       onPress={() => onPress(memoria.id)}
-      style={{...styles.container, backgroundColor: color}}>
+      style={{ ...styles.container, backgroundColor: color }}
+    >
       <View style={styles.memoriaContainer}>
-        <Text style={styles.titulo}>{memoria.titulo_memoria}</Text>
-        <View style={{...styles.cancionContainer, backgroundColor: colorOscurecido}}>
+        <Text style={styles.titulo}>
+          {memoria.titulo_memoria}
+        </Text>
+        
+        <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
           <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>{memoria.titulo_cancion} - {memoria.artista_cancion}</Text>
+          <Text style={styles.cancion}>
+            {memoria.titulo_cancion} - {memoria.artista_cancion}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

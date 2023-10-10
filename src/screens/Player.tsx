@@ -62,7 +62,6 @@ const Player = ({navigation}) => {
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
     const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
-    
     const {isConnected, setIsConnected} =  useConnectionGlobal();
 
     useEffect(()=>{
@@ -149,7 +148,8 @@ const Player = ({navigation}) => {
                             {new Date(sliderWork.duration *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
                     </View>
-                    <Slider
+                    {isConnected && (
+                        <Slider
                         style={style.songSlider}
                         value = {sliderWork.position}
                         minimumValue ={0}
@@ -161,6 +161,8 @@ const Player = ({navigation}) => {
                             await TrackPlayer.seekTo(time);
                         }}
                     />
+                    )}
+                    
                 </View>
 
                 <View style={style.songControl}>

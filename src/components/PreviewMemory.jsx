@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 //import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Dimensions } from 'react-native';
 const screenHeight = Dimensions.get('window').height;
+import songs from '../../data/Prueba/Data';
 //import MarqueeLabel from 'react-native-marquee-label';
 // import TextTicker from 'react-native-text-ticker';
 // import Marquee from 'react-native-marquee';
@@ -18,25 +19,23 @@ const bgColor = [
   '#FFC1D8',
 ];
 
-
-
 function aclararColor(hex, porcentaje=0.3) {
-  // Convertir el color hex a RGB
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
   let b = parseInt(hex.slice(5, 7), 16);
-
-  // Aclarar cada componente del color
   r = Math.floor(r + (255 - r) * porcentaje);
   g = Math.floor(g + (255 - g) * porcentaje);
   b = Math.floor(b + (255 - b) * porcentaje);
-
-  // Convertir los componentes RGB de vuelta a hex
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
 const PreviewMemory = ({memoria, onPress, index}) => {
-  const color = bgColor[index % bgColor.length];
+  const song = songs.find(
+    song => song.title === memoria.titulo_cancion && song.artist === memoria.artista_cancion
+  );
+  const songId = song ? song.id : 0;
+  const combinedId = songId + memoria.titulo_memoria.length + memoria.artista_cancion.length;
+  const color = bgColor[combinedId % bgColor.length];
   const colorOscurecido = aclararColor(color);
   
   return (
@@ -63,8 +62,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderColor: 'black',
     borderWidth: 0,
-    elevation: 8,  
-    //height: screenHeight / 8.5,
+    elevation: 8,
     justifyContent: 'center',
   },
   memoriaContainer: {

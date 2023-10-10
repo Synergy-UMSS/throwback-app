@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 16,
     fontFamily: 'Arial',
+    color: 'black',
   },
   input: {
     fontSize: 16,
@@ -178,6 +179,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial',
     borderRadius: 10,
     backgroundColor: 'white',
+    color: 'black',
 
   },
   marginBottom: {

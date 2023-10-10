@@ -132,6 +132,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
     marginHorizontal: 5,
+    alignItems: 'center', 
+    justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
   },
   salmonButton: {
     backgroundColor: 'salmon',

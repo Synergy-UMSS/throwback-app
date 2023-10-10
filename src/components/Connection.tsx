@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 
 const Connection = () => {
     const style = StyleSheet.create({
@@ -11,10 +12,11 @@ const Connection = () => {
         },
     });
 
-    const [isConnected, setIsConnected] = useState(false);
+    const {isConnected, setIsConnected} = useConnectionGlobal();
+    
     useEffect(()=> {
         const unsubscribe = NetInfo.addEventListener(state => {
-            console.log("Connection type", state.type);
+            {/*console.log("Connection type", state.type);*/}
             console.log("Is connected?", state.isConnected);
             setIsConnected(state.isConnected);
          });

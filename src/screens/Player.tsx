@@ -11,7 +11,9 @@ import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayer
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
+import {useConnectionGlobal} from '../helpcomponents/connectionGlobal';
 import NetInfo from '@react-native-community/netinfo';
+import RNRestart from "react-native-restart";
 import { useFocusEffect } from '@react-navigation/native';
 
 let color: string[] = [
@@ -34,17 +36,19 @@ const Player = ({navigation}) => {
             await TrackPlayer.add(songs);
             {/*const trackList = await TrackPlayer.getQueue();*/}
             {/*console.log('*****track list', trackList);*/}
-            await TrackPlayer.play();
+            if(isConnected){
+                await TrackPlayer.play();
+            }
+            
         }catch(e){
             console.log('aca hay error',e)
         }
     };
     
     const playTrack = async (playState: State) => {
-        {/*console.log('-------------playState:', playState);*/}
         const track =  await TrackPlayer.getCurrentTrack();
-        if(track !== null && isConnected){
-            if(playState == State.Ready || playState == State.Paused){
+        if(track !== null){
+            if(playState == State.Ready || playState == State.Paused && isConnected){
                 await TrackPlayer.play();
             }else {
                 await TrackPlayer.pause();
@@ -58,9 +62,16 @@ const Player = ({navigation}) => {
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
     const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
+    
+    const {isConnected, setIsConnected} =  useConnectionGlobal();
+
+    useEffect(()=>{
+        playTrack();
+        console.log('El valor de isConnected es igual a: ',isConnected);
+    },[isConnected]);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-        if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null && isConnected) {
+        if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
           const track = await TrackPlayer.getTrack(event.nextTrack);
           const {title, artwork, artist} = track;
           setTrackTitle(title);
@@ -70,17 +81,6 @@ const Player = ({navigation}) => {
           await setCurrentSong(track);
         }
     });
-
-    const [isConnected, setIsConnected] = useState();
-    useEffect(()=> {
-        console.log('conexion cambiada');
-        const unsubscribe = NetInfo.addEventListener(state => {
-            setIsConnected(state.isConnected);
-         });
-        return ()=> {
-            unsubscribe();
-        }
-    },[isConnected]);
     
     const changeValuesTrack = async () => {
         try {
@@ -93,10 +93,14 @@ const Player = ({navigation}) => {
             if(isConnected){
                 if (currentSong != lastSong) {
                     await TrackPlayer.skip(currentSong.id); 
-                };
-                await TrackPlayer.play();
-                lastSong = currentSong;
+               };
+               await TrackPlayer.play();
+               lastSong = currentSong;
+            }else{
+                await TrackPlayer.pause();
             }
+            
+            
         } catch(e) {
             console.log('Hubo un error b:', e);
         }
@@ -164,8 +168,10 @@ const Player = ({navigation}) => {
                         <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
                     </TouchableOpacity>   
                 </View>
-
-                <Connection />
+                
+                <Connection/>
+                
+                
             </View>
         </SafeAreaView>
     );

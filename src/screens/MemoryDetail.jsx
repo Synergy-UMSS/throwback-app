@@ -5,9 +5,11 @@ import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import songs from '../../data/Prueba/Data';
 const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
-//import { usePlayerStore } from '../store/playerStore';
 import { usePlayerStore } from '../store/playerStore';
 
+function sumAsciiCodes(str) {
+  return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+}
 
 const formatDate = date => {
   const d = new Date(date);
@@ -17,11 +19,9 @@ const formatDate = date => {
   return `${day}/${month}/${year}`;
 };
 
-
 const MemoryDetail = ({ route, navigation }) => {
   const { memoriaId, index } = route.params;
   const [memory, setMemory] = useState(null);
-  
   const { setCurrentSong } = usePlayerStore();
   
   useEffect(() => {
@@ -33,12 +33,10 @@ const MemoryDetail = ({ route, navigation }) => {
       }
     }); 
 
-    return () => unsubscribe();  // Limpiar la suscripción al desmontar el componente
+    return () => unsubscribe();
   }, [memoriaId]);
 
-  if (!memory) return null;  // Si no hay memoria, no renderizar nada (o puedes mostrar un spinner)
-
-  const color = bgColor[index % bgColor.length];
+  if (!memory) return null;
 
   const songg = songs.find(s => s.title === memory.titulo_cancion);
   const songArtwork = songg ? songg.artwork : null;
@@ -50,32 +48,55 @@ const MemoryDetail = ({ route, navigation }) => {
     navigation.navigate('Player'); 
   };
 
+  const song = songs.find(
+    song => song.title === memory.titulo_cancion && song.artist === memory.artista_cancion
+  );
+  const songId = song ? song.id : 0;
+  const asciiSum = sumAsciiCodes(memory.titulo_memoria);
+  const combinedId = songId+memory.titulo_memoria.length + memory.artista_cancion.length;
+  const color = bgColor[combinedId % bgColor.length];
 
   return (
-    //<ScrollView style={{flex: 1}}>
-    <ScrollView style={{ ...styles.container, backgroundColor: color}}>
-      <Text style={styles.title}>{memory.titulo_memoria}</Text>
-      <Text style={styles.subtitle}>{"Descripción:"}</Text>
-      <Text style={styles.description}>{memory.descripcion_memoria}</Text>
-      <Text style={styles.tdate}>{"Fecha:"}</Text>
-      <Text style={styles.date}>{memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}</Text>
-      <Text style={styles.tsong}>{"Canción vinculada al recuerdo:"}</Text>
+    <ScrollView style={{ ...styles.container, backgroundColor: color }}>
+        
+      <Text style={styles.title}>
+        {memory.titulo_memoria}
+      </Text>
+        
+      <Text style={styles.subtitle}>
+        {"Descripción:"}
+      </Text>
+        
+      <Text style={styles.description}>
+        {memory.descripcion_memoria}
+      </Text>
+        
+      <Text style={styles.tdate}>
+        {"Fecha:"}
+      </Text>
+        
+      <Text style={styles.date}>
+        {memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}
+      </Text>
+        
+      <Text style={styles.tsong}>
+        {"Canción vinculada al recuerdo:"}
+      </Text>
+        
       <ItemSong
-        song={memory.titulo_cancion} //ok
-        artist={memory.artista_cancion} //ok
+        song={memory.titulo_cancion}
+        artist={memory.artista_cancion}
         onPlay={playSong}
         imageUri={songArtwork || placeholderImage}
         memoriaId={memoriaId}
       />
-      <Text>  </Text>
-      <Text>  </Text>
+        
+      <Text></Text>
+      <Text></Text>
+      
     </ScrollView>
-    //</ScrollView>
   );
 };
-
-
-
 
 
 const styles = StyleSheet.create({

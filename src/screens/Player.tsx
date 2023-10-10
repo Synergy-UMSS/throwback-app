@@ -148,7 +148,7 @@ const Player = ({navigation}) => {
                             {new Date(sliderWork.duration *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
                     </View>
-                    {isConnected && (
+                    
                         <Slider
                         style={style.songSlider}
                         value = {sliderWork.position}
@@ -157,11 +157,13 @@ const Player = ({navigation}) => {
                         thumbTintColor = 'pink'
                         minimumTrackTintColor='white'
                         maximumTrackTintColor='#FFFFFF80'
-                        onSlidingComplete={async time => {
+                        
+                        onSlidingComplete={isConnected? async time => {
                             await TrackPlayer.seekTo(time);
-                        }}
+                        }: undefined}
+                        
                     />
-                    )}
+                    
                     
                 </View>
 

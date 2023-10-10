@@ -66,7 +66,7 @@ const Player = ({navigation}) => {
 
     useEffect(()=>{
         playTrack();
-        console.log('El valor de isConnected es igual a: ',isConnected);
+        {/*console.log('El valor de isConnected es igual a: ',isConnected);*/}
     },[isConnected]);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
@@ -76,7 +76,7 @@ const Player = ({navigation}) => {
           setTrackTitle(title);
           setTrackArtist(artist);
           setTrackArtwork(artwork);
-          console.log(currentSong.title);
+          {/*console.log(currentSong.title);*/}
           await setCurrentSong(track);
         }
     });
@@ -148,8 +148,7 @@ const Player = ({navigation}) => {
                             {new Date(sliderWork.duration *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
                     </View>
-                    
-                        <Slider
+                    <Slider
                         style={style.songSlider}
                         value = {sliderWork.position}
                         minimumValue ={0}
@@ -157,13 +156,10 @@ const Player = ({navigation}) => {
                         thumbTintColor = 'pink'
                         minimumTrackTintColor='white'
                         maximumTrackTintColor='#FFFFFF80'
-                        
                         onSlidingComplete={isConnected? async time => {
                             await TrackPlayer.seekTo(time);
                         }: undefined}
-                        
                     />
-                    
                     
                 </View>
 
@@ -174,7 +170,6 @@ const Player = ({navigation}) => {
                 </View>
                 
                 <Connection/>
-                
                 
             </View>
         </SafeAreaView>

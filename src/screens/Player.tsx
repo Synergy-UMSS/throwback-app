@@ -11,6 +11,9 @@ import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayer
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
+import {useConnectionGlobal} from '../helpcomponents/connectionGlobal';
+import NetInfo from '@react-native-community/netinfo';
+import RNRestart from "react-native-restart";
 import { useFocusEffect } from '@react-navigation/native';
 
 let color: string[] = [
@@ -19,7 +22,7 @@ let color: string[] = [
     '#FFC1D860',
 ]
 
-let lastSong = null;
+let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
 const Player = ({navigation}) => {
     const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
@@ -32,19 +35,20 @@ const Player = ({navigation}) => {
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
             {/*const trackList = await TrackPlayer.getQueue();*/}
-            await TrackPlayer.play();
-            console.log('*****track list', trackList);
+            {/*console.log('*****track list', trackList);*/}
+            if(isConnected){
+                await TrackPlayer.play();
+            }
+            
         }catch(e){
             console.log('aca hay error',e)
         }
     };
     
-    
     const playTrack = async (playState: State) => {
-        {/*console.log('-------------playState:', playState);*/}
         const track =  await TrackPlayer.getCurrentTrack();
-        if(track !== null ){
-            if(playState == State.Ready || playState == State.Paused){
+        if(track !== null){
+            if(playState == State.Ready || playState == State.Paused && isConnected){
                 await TrackPlayer.play();
             }else {
                 await TrackPlayer.pause();
@@ -58,6 +62,12 @@ const Player = ({navigation}) => {
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
     const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
+    const {isConnected, setIsConnected} =  useConnectionGlobal();
+
+    useEffect(()=>{
+        playTrack();
+        {/*console.log('El valor de isConnected es igual a: ',isConnected);*/}
+    },[isConnected]);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
         if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
@@ -66,7 +76,7 @@ const Player = ({navigation}) => {
           setTrackTitle(title);
           setTrackArtist(artist);
           setTrackArtwork(artwork);
-          console.log(currentSong.title);
+          {/*console.log(currentSong.title);*/}
           await setCurrentSong(track);
         }
     });
@@ -79,11 +89,17 @@ const Player = ({navigation}) => {
             setTrackTitle(title);
             setTrackArtist(artist);
             setTrackArtwork(artwork);
-            if (currentSong != lastSong) {
-                await TrackPlayer.skip(currentSong.id); 
-            };
-            await TrackPlayer.play();
-            lastSong = currentSong;
+            if(isConnected){
+                if (currentSong != lastSong) {
+                    await TrackPlayer.skip(currentSong.id); 
+               };
+               await TrackPlayer.play();
+               lastSong = currentSong;
+            }else{
+                await TrackPlayer.pause();
+            }
+            
+            
         } catch(e) {
             console.log('Hubo un error b:', e);
         }
@@ -125,10 +141,10 @@ const Player = ({navigation}) => {
 
                 <View>
                     <View style={style.songDurationMain}>
-                        <Text style={style.songDuration}>
+                        <Text>
                             {new Date(sliderWork.position *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
-                        <Text style={style.songDuration}>
+                        <Text>
                             {new Date(sliderWork.duration *1000).toLocaleTimeString().substring(3,8)}
                         </Text>
                     </View>
@@ -140,10 +156,11 @@ const Player = ({navigation}) => {
                         thumbTintColor = 'pink'
                         minimumTrackTintColor='white'
                         maximumTrackTintColor='#FFFFFF80'
-                        onSlidingComplete={async time => {
+                        onSlidingComplete={isConnected? async time => {
                             await TrackPlayer.seekTo(time);
-                        }}
+                        }: undefined}
                     />
+                    
                 </View>
 
                 <View style={style.songControl}>
@@ -151,8 +168,9 @@ const Player = ({navigation}) => {
                         <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
                     </TouchableOpacity>   
                 </View>
-
+                
                 <Connection/>
+                
             </View>
         </SafeAreaView>
     );

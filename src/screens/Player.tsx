@@ -31,15 +31,13 @@ const Player = ({navigation}) => {
     const setPlayer = async () => {
         try{
             await TrackPlayer.setupPlayer();
-            // quiero las canciones desde 3.5
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
             {/*const trackList = await TrackPlayer.getQueue();*/}
             {/*console.log('*****track list', trackList);*/}
             if(isConnected){
                 await TrackPlayer.play();
-            }
-            
+            }          
         }catch(e){
             console.log('aca hay error',e)
         }
@@ -62,11 +60,14 @@ const Player = ({navigation}) => {
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
     const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
-    const {isConnected, setIsConnected} =  useConnectionGlobal();
+    const {isConnected} =  useConnectionGlobal();
+
+    useEffect(() => {
+        setPlayer();
+    }, []);
 
     useEffect(()=>{
         playTrack();
-        {/*console.log('El valor de isConnected es igual a: ',isConnected);*/}
     },[isConnected]);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
@@ -76,7 +77,6 @@ const Player = ({navigation}) => {
           setTrackTitle(title);
           setTrackArtist(artist);
           setTrackArtwork(artwork);
-          {/*console.log(currentSong.title);*/}
           await setCurrentSong(track);
         }
     });
@@ -98,17 +98,12 @@ const Player = ({navigation}) => {
             }else{
                 await TrackPlayer.pause();
             }
-            
-            
         } catch(e) {
             console.log('Hubo un error b:', e);
         }
     };
 
-    useEffect(() => {
-        setPlayer();
-    }, []);
-
+    
     useEffect(() => {
         changeValuesTrack();
     }, [currentSong]);

@@ -4,7 +4,18 @@ import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import songs from '../../data/Prueba/Data';
-const bgColor = ['#c7a9d5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
+
+const bgColor = [
+  '#C7A9D5',
+  '#CDF4C9',
+  '#B6BFD4',
+  '#F6EA7E',
+  '#F0CC8B',
+  '#FBBAA4',
+  '#FFC1D8',
+  '#9DE0D2',
+];
+
 import { usePlayerStore } from '../store/playerStore';
 
 function sumAsciiCodes(str) {

@@ -1,26 +1,20 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-//import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Dimensions } from 'react-native';
 const screenHeight = Dimensions.get('window').height;
 import songs from '../../data/Prueba/Data';
-//import MarqueeLabel from 'react-native-marquee-label';
-// import TextTicker from 'react-native-text-ticker';
-// import Marquee from 'react-native-marquee';
 
 const bgColor = [
-  '#c7a9d5',
+  '#C7A9D5',
+  '#CDF4C9',
   '#B6BFD4',
-  '#9DE0D2',
-  '#BFEAAF',
   '#F6EA7E',
   '#F0CC8B',
   '#FBBAA4',
   '#FFC1D8',
+  '#9DE0D2',
 ];
-function sumAsciiCodes(str) {
-  return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
+
 function aclararColor(hex, porcentaje=0.3) {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
@@ -30,6 +24,9 @@ function aclararColor(hex, porcentaje=0.3) {
   b = Math.floor(b + (255 - b) * porcentaje);
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
+
+
+
 
 const PreviewMemory = ({ memoria, onPress, index }) => {
   const song = songs.find(

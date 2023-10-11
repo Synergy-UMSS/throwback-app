@@ -21,7 +21,7 @@ const MiniPlayer = ({ navigation }) => {
       <View style={style.container}>
         <TouchableOpacity
           style={style.button}
-          onPress={() => navigation.navigate(Player)}>
+          onPress={() => navigation.navigate('Player')}>
           <Text> Regresar al reproductor </Text>
         </TouchableOpacity>
       </View>

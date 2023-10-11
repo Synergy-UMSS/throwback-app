@@ -5,22 +5,34 @@ import {useSearchStore} from '../store/searchStore';
 
 const RecentSearchItem = ({searchQuery}) => {
   const {clearRecentSearches, deleteRecentSearch} = useSearchStore();
+  const { addRecentSearch, showHistory, showHistoryTrue, showHistoryFalse, updateCurrentSearch } = useSearchStore();
+
   const handleDelete = () => {
     console.log('borrar');
     deleteRecentSearch(searchQuery);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.queryText}>{searchQuery}</Text>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => {
-          handleDelete();
-        }}>
-        <Feather name="x-circle" size={20} color="gray" />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      onPress={
+        () => {
+          console.log('presionado '+searchQuery);  
+          showHistoryFalse();
+          updateCurrentSearch(searchQuery);
+        }
+      }
+    >
+      <View style={styles.container}>
+        <Text style={styles.queryText}>{searchQuery}</Text>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => {
+            handleDelete();
+          }}>
+          <Feather name="x-circle" size={20} color="gray" />
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
   );
 };
 

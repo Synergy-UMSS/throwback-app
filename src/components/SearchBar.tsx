@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Keyboard } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Text, View, TextInput, TouchableOpacity, Keyboard} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-import { useSearchStore } from '../store/searchStore';
+import {useSearchStore} from '../store/searchStore';
 
 const SearchBar = () => {
   const [busqueda, setBusqueda] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [isSearchBoxFocused, setIsSearchBoxFocused] = useState(false);
-  const { addRecentSearch, showHistory, showHistoryTrue, showHistoryFalse, updateCurrentSearch } = useSearchStore();
+  const {
+    addRecentSearch,
+    showHistory,
+    showHistoryTrue,
+    showHistoryFalse,
+    updateCurrentSearch,
+  } = useSearchStore();
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyboardOpen(true);
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyboardOpen(false);
-    });
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setIsKeyboardOpen(true);
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setIsKeyboardOpen(false);
+      },
+    );
 
     return () => {
       keyboardDidShowListener.remove();
@@ -26,7 +38,7 @@ const SearchBar = () => {
   }, []);
 
   const handleSearch = () => {
-    const trimmedBusqueda = busqueda.trim(); //Bug: Los espacios al inicio de la búsqueda afectan al resultado
+    const trimmedBusqueda = busqueda.trim();
     if (trimmedBusqueda !== '') {
       addRecentSearch(trimmedBusqueda);
       updateCurrentSearch(trimmedBusqueda);
@@ -48,14 +60,12 @@ const SearchBar = () => {
           alignItems: 'center',
           padding: 10,
           height: 50,
-        }}
-      >
+        }}>
         {(isKeyboardOpen || busqueda !== '') && (
           <TouchableOpacity
             onPress={() => {
               handleBack();
-            }}
-          >
+            }}>
             <Animatable.View animation={'fadeIn'} duration={300}>
               <MaterialIcons name="arrow-back" size={30} color="gray" />
             </Animatable.View>
@@ -68,19 +78,17 @@ const SearchBar = () => {
             alignItems: 'center',
             borderWidth: 1,
             borderColor: 'gray',
-            borderRadius: 0,
+            borderRadius: 10, // Ajusta este valor para redondear las esquinas
             height: 40,
             paddingHorizontal: 10,
-          }}
-        >
-          {/* Icono de lupa (visible cuando showHistory es true) */}
+          }}>
           {showHistory && (
             <MaterialIcons name="search" size={20} color="gray" />
           )}
           <TextInput
             onFocus={() => setIsSearchBoxFocused(true)}
             onBlur={() => setIsSearchBoxFocused(false)}
-            onChangeText={(cambio) => {
+            onChangeText={cambio => {
               setBusqueda(cambio);
               showHistoryFalse();
             }}
@@ -92,7 +100,7 @@ const SearchBar = () => {
             maxLength={50}
             style={{
               flex: 1,
-              color:'black',
+              color: 'black',
               fontFamily: 'Arial',
             }}
           />
@@ -105,12 +113,8 @@ const SearchBar = () => {
               }}
               style={{
                 marginLeft: 10,
-              }}
-            >
-              <Animatable.View
-                animation={'fadeInRight'}
-                duration={300}
-              >
+              }}>
+              <Animatable.View animation={'fadeInRight'} duration={300}>
                 <Feather name="x-circle" size={30} color="gray" />
               </Animatable.View>
             </TouchableOpacity>

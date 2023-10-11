@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginRight: 4,
+    color: 'black',
   },
   asterisk: {
     fontSize: 16,

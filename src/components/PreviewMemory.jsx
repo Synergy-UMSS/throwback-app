@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import { Dimensions } from 'react-native';
 const screenHeight = Dimensions.get('window').height;
 import songs from '../../data/Prueba/Data';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const bgColor = [
   '#C7A9D5',
@@ -42,6 +43,7 @@ const PreviewMemory = ({ memoria, onPress, index }) => {
       onPress={() => onPress(memoria.id)}
       style={{ ...styles.container, backgroundColor: color }}
     >
+    
       <View style={styles.memoriaContainer}>
         <Text style={styles.titulo}>
           {memoria.titulo_memoria}
@@ -54,6 +56,23 @@ const PreviewMemory = ({ memoria, onPress, index }) => {
           </Text>
         </View>
       </View>
+
+      <TouchableOpacity 
+          style={styles.menuTouchContainer}
+          onPress={() => {
+              // mostrar el menú
+              console.log('acabas de precionar los 3 puntos, porque?');
+          }}
+      >
+          <Icon 
+              name="more-vert" 
+              size={24} 
+              color="black" 
+              style={styles.menuIcon}
+          />
+      </TouchableOpacity>
+
+
     </TouchableOpacity>
   );
 };
@@ -99,6 +118,20 @@ const styles = StyleSheet.create({
     fontFamily:'Arial',
     fontSize: 14,
     color: '#5C5C5C',
+  },
+  menuIcon: {
+   // position: 'absolute',
+    //top: 10,
+    //right: 10,
+  },
+  menuTouchContainer: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -16,6 +16,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RootStackParamList} from './src/utils/types';
 import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
+import { MenuProvider } from 'react-native-popup-menu';
+
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -98,6 +100,7 @@ const App = () => {
 
   return (
     <MusicPlayerProvider>
+      <MenuProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Splash">
           <Stack.Screen
@@ -136,6 +139,7 @@ const App = () => {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </MenuProvider>
     </MusicPlayerProvider>
   );
 };

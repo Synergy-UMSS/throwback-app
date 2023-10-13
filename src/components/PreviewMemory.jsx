@@ -4,6 +4,11 @@ import { Dimensions } from 'react-native';
 const screenHeight = Dimensions.get('window').height;
 import songs from '../../data/Prueba/Data';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import { MenuProvider } from 'react-native-popup-menu';
+import { Alert } from 'react-native';
+
+
 
 const bgColor = [
   '#C7A9D5',
@@ -37,51 +42,80 @@ const PreviewMemory = ({ memoria, onPress, index }) => {
   const combinedId = songId+memoria.titulo_memoria.length + memoria.artista_cancion.length;
   const color = bgColor[combinedId % bgColor.length];
   const colorOscurecido = aclararColor(color);
-
+  const showDeleteConfirmation = () => {
+    Alert.alert(
+        "Confirmación",
+        "¿Estás seguro de que deseas eliminar esta memoria?",
+        [
+            {
+                text: "No",
+                style: "cancel"
+            },
+            { text: "Sí", onPress: () => deleteMemoryFromFirebase(memoria.id) }
+        ]
+    );
+  }  
+  const deleteMemoryFromFirebase = (memoryId) => {
+    console.log('Toca eliminar de la BD');  
+    // const reference = database().ref(`ruta_a_tu_memoria/${memoryId}`);
+    // reference.remove()
+    // .then(() => {
+    //     // Aquí puedes actualizar la vista o informar al usuario que la memoria ha sido eliminada
+    //     console.log('Memoria eliminada con éxito');
+    // })
+    // .catch(error => {
+    //     console.error("Error eliminando memoria: ", error);
+    // });
+  }
   return (
     <TouchableOpacity
       onPress={() => onPress(memoria.id)}
       style={{ ...styles.container, backgroundColor: color }}
     >
-    
-      <View style={styles.memoriaContainer}>
+      <View style={styles.headerContainer}>
         <Text style={styles.titulo}>
           {memoria.titulo_memoria}
         </Text>
-        
-        <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
-          <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>
-            {memoria.titulo_cancion} - {memoria.artista_cancion}
-          </Text>
-        </View>
+        <Menu style={styles.menuContainer}>
+          <MenuTrigger>
+            <Icon
+                name="more-vert" 
+                size={24} 
+                color="black" 
+                style={styles.menuIcon}
+            />
+          </MenuTrigger>
+          <MenuOptions customStyles={optionsStyles}>
+            <MenuOption onSelect={showDeleteConfirmation}>
+              <Text style={styles.optionText}>Eliminar</Text>
+            </MenuOption>
+            {/* <MenuOption onSelect={() => {
+                console.log('Opción 2 seleccionada');
+            }}>
+              <Text style={styles.optionText}>Opción 2</Text>
+            </MenuOption> */}
+          </MenuOptions>
+        </Menu>
       </View>
-
-      <TouchableOpacity 
-          style={styles.menuTouchContainer}
-          onPress={() => {
-              // mostrar el menú
-              console.log('acabas de precionar los 3 puntos, porque?');
-          }}
-      >
-          <Icon 
-              name="more-vert" 
-              size={24} 
-              color="black" 
-              style={styles.menuIcon}
-          />
-      </TouchableOpacity>
-
-
+      <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
+        <Text style={styles.iconoMusica}>🎵</Text>
+        <Text style={styles.cancion}>
+          {memoria.titulo_cancion} - {memoria.artista_cancion}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
 
-
 const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   container: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 5,
+    marginRight: 5,
     marginTop: 20,
     padding: 11,
     borderRadius: 17,
@@ -120,19 +154,41 @@ const styles = StyleSheet.create({
     color: '#5C5C5C',
   },
   menuIcon: {
-   // position: 'absolute',
-    //top: 10,
-    //right: 10,
-  },
-  menuTouchContainer: {
     position: 'absolute',
-    top: 5,
-    right: 5,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
+    top: -20,
+    right: -5,
+    width:35,
+    height:35,
+    //justifyContent: 'space-between',
     alignItems: 'center',
+    // backgroundColor:'red',
+    
+  },
+  optionText: {
+    color: 'black',
+    fontFamily: 'Arial',
+    padding: 5,
+    fontSize: 16,
   },
 });
+const optionsStyles = {
+  optionsContainer: {
+    marginTop: 10,
+    marginLeft: 0,
+    width : 130, //ancho
+    elevation: 15,
+    borderWidth: 0,
+    borderRadius: 15,
+    borderColor: 'black',
+    backgroundColor:'#EBF2F9',
+    justifyContent: 'center',
+  },
+  optionWrapper: {
+    // backgroundColor: 'black',
+    margin: 5,
+    alignItems: 'center',
+    // borderRadius: 10,
+  },
+};
 
 export default PreviewMemory;

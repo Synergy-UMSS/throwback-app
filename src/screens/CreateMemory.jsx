@@ -11,6 +11,8 @@ import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 
 
+
+
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());

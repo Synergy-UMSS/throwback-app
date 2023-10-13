@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Alert } from 'react-native';
-
+import firestore from '@react-native-firebase/firestore';
 
 
 const bgColor = [
@@ -51,22 +51,23 @@ const PreviewMemory = ({ memoria, onPress, index }) => {
                 text: "No",
                 style: "cancel"
             },
-            { text: "Sí", onPress: () => deleteMemoryFromFirebase(memoria.id) }
+            { text: "Sí", onPress: () => deleteMemoryFromFirestore(memoria.id) }
         ]
     );
   }  
-  const deleteMemoryFromFirebase = (memoryId) => {
-    console.log('Toca eliminar de la BD');  
-    // const reference = database().ref(`ruta_a_tu_memoria/${memoryId}`);
-    // reference.remove()
-    // .then(() => {
-    //     // Aquí puedes actualizar la vista o informar al usuario que la memoria ha sido eliminada
-    //     console.log('Memoria eliminada con éxito');
-    // })
-    // .catch(error => {
-    //     console.error("Error eliminando memoria: ", error);
-    // });
+  const deleteMemoryFromFirestore = (memoryId) => {
+    console.log('Memoria a eliminar');
+    console.log(memoryId);
+    const reference = firestore().collection('memorias').doc(memoryId);
+    reference.delete()
+    .then(() => {
+        console.log('Memoria eliminada con éxito');
+    })
+    .catch(error => {
+        console.error("Error eliminando memoria: ", error);
+    });
   }
+
   return (
     <TouchableOpacity
       onPress={() => onPress(memoria.id)}

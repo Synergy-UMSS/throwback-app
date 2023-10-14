@@ -14,14 +14,14 @@ import { MusicPlayerContext } from '../components/MusicPlayerContext';
 
 const MiniPlayer = ({ navigation }) => {
   const { isPlaying } = useContext(MusicPlayerContext);
-  console.log('isPlaying:', isPlaying);
+  {/*console.log('isPlaying:', isPlaying);*/}
   if (isPlaying) {
-    console.log('isPlaying:', isPlaying);
+    {/*console.log('isPlaying:', isPlaying);*/}
     return (
       <View style={style.container}>
         <TouchableOpacity
           style={style.button}
-          onPress={() => navigation.navigate(Player)}>
+          onPress={() => navigation.navigate('Player')}>
           <Text> Regresar al reproductor </Text>
         </TouchableOpacity>
       </View>
@@ -37,7 +37,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#96EAD280',
+    backgroundColor: '#96EAD2',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',

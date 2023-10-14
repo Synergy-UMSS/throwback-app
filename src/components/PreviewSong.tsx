@@ -4,16 +4,25 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
 const ItemSong = ({ song, artist, onPlay, imageUri, memoriaId }) => {
-  return (
+    return (
       <TouchableOpacity style={styles.listItem} onPress={onPlay}>
-          <Image source={typeof imageUri === 'string' ? { uri: imageUri } : imageUri} style={styles.listItemImage} />
-          <View style={styles.textContainer}>
-              <Text style={styles.songTitle}>{song}</Text>
-              <Text style={styles.songArtist}>{artist}</Text>
-          </View>
+        <Image 
+          source={typeof imageUri === 'string' ? { uri: imageUri } : imageUri} 
+          style={styles.listItemImage} 
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.songTitle}>
+            {song}
+          </Text>
+          <Text style={styles.songArtist}>
+            {artist}
+          </Text>
+        </View>
+  
       </TouchableOpacity>
-  );
-};
+    );
+  };
+  
 
 const styles = StyleSheet.create({
     listItem: {

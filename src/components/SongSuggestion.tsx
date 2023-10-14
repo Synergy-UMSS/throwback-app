@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
+import firestore from '@react-native-firebase/firestore';
 
 const SongSuggestion = ({ songData }) => {
   const { id, title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
-  const { setCurrentSong,currentSong } = usePlayerStore();
+  const { setCurrentSong, currentSong } = usePlayerStore();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
@@ -28,10 +22,33 @@ const SongSuggestion = ({ songData }) => {
     navigation.navigate('Player', { songData });
   };
 
-  const createMemory = () => {
+  const checkSongMemory = async (song) => {      //Bug: Alerta de memoria asociada
+    const memoriesRef = firestore().collection('memorias');
+    const querySnapshot = await memoriesRef.where('titulo_cancion', '==', song.title).get();
+
+    if (!querySnapshot.empty) {
+      Alert.alert(
+        '¿Volver a crear una memoria con esta canción?',
+        'Esta canción ya está asociada.',
+        [
+            { text: 'Aceptar', onPress: redirectToCreateMemory },
+            { text: 'Cancelar', onPress: handleOptionPress}
+        ],
+        { cancelable: false }
+    );
+    } else {
+      redirectToCreateMemory();
+    }
+  };
+
+  const redirectToCreateMemory = () => {
     navigation.navigate('CreateMemory', { currentSong });
   };
-  
+
+  const createMemory = () => {
+    checkSongMemory(currentSong);
+  };
+
   return (
     <TouchableOpacity onPress={handlePlayPress}>
       <View style={styles.container}>
@@ -98,6 +115,7 @@ const styles = StyleSheet.create({
   songName: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#777',
   },
   artistName: {
     fontSize: 14,
@@ -131,6 +149,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
     marginHorizontal: 5,
+    alignItems: 'center', 
+    justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
   },
   salmonButton: {
     backgroundColor: 'salmon',

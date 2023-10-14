@@ -4,6 +4,8 @@ import PreviewMemory from '../components/PreviewMemory';
 import MemoryDetail from './MemoryDetail';
 import firestore from '@react-native-firebase/firestore';
 import MiniPlayer from '../components/MiniPlayer';
+import Emocion from '../components/Emotion';
+import EmotionWithMemory from '../components/EmotionWithMemory';
 
 const MemoryList = ({ navigation }) => {
   const abrirDetalles = (id, index) => {
@@ -49,17 +51,18 @@ const MemoryList = ({ navigation }) => {
         data={data}
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
         renderItem={({ item, index }) => (
-          <PreviewMemory 
+          <EmotionWithMemory 
             memoria={item} 
             onPress={(id) => abrirDetalles(id, index)} 
             index={index} 
+            alignment={index % 2 === 0 ? 'right' : 'left'}
           />
         )}
         contentContainerStyle={{ paddingBottom: 50 }}
       />
-
       <View style={styles.miniPlayerContainer}>
         <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
+        
       </View>
     </View>
   );

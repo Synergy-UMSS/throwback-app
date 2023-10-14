@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import {TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import {TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import Connection from '../components/Connection';
@@ -12,9 +11,6 @@ import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
 import {useConnectionGlobal} from '../helpcomponents/connectionGlobal';
-import NetInfo from '@react-native-community/netinfo';
-import RNRestart from "react-native-restart";
-import { useFocusEffect } from '@react-navigation/native';
 
 let color: string[] = [
     '#C7A9D560',
@@ -50,12 +46,13 @@ const Player = ({navigation}) => {
                 await TrackPlayer.play();
             }else {
                 await TrackPlayer.pause();
+                isPausedForMini = true;
             }
         }
     };
     const playState: State = usePlaybackState();
     const sliderWork = useProgress(); 
-    const [songIndex, setsongIndex] = useState(0);
+    let isPausedForMini = false;
     const [trackTitle, setTrackTitle] = useState();
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
@@ -94,7 +91,9 @@ const Player = ({navigation}) => {
                     if (currentSong != lastSong) {
                         await TrackPlayer.skip(currentSong.id); 
                 };
-                await TrackPlayer.play();
+                if(!isPausedForMini){
+                    await TrackPlayer.play();
+                }
                 lastSong = currentSong;
                 }else{
                     await TrackPlayer.pause();

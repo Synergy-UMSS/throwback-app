@@ -34,6 +34,8 @@ function aclararColor(hex, porcentaje=0.3) {
 
 
 
+
+
 const PreviewMemory = ({ memoria, onPress, index }) => {
   const song = songs.find(
     song => song.title === memoria.titulo_cancion && song.artist === memoria.artista_cancion

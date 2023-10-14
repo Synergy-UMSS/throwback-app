@@ -33,8 +33,8 @@ const Player = ({navigation}) => {
             await TrackPlayer.setupPlayer();
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
-            {/*const trackList = await TrackPlayer.getQueue();*/}
-            {/*console.log('*****track list', trackList);*/}
+            let indexArb = Math.floor(Math.random()*(songs.length-1));
+            await TrackPlayer.add([songs[indexArb]]);
             if(isConnected){
                 await TrackPlayer.play();
             }          
@@ -71,13 +71,13 @@ const Player = ({navigation}) => {
     },[isConnected]);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-        if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-          const track = await TrackPlayer.getTrack(event.nextTrack);
-          const {title, artwork, artist} = track;
-          setTrackTitle(title);
-          setTrackArtist(artist);
-          setTrackArtwork(artwork);
-          await setCurrentSong(track);
+        if (event.type === Event.PlaybackTrackChanged  && event.nextTrack !== null){
+            const track = await TrackPlayer.getTrack(event.nextTrack);
+            const {title, artwork, artist} = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            await setCurrentSong(track);
         }
     });
     
@@ -85,18 +85,20 @@ const Player = ({navigation}) => {
         try {
             const trackIndex = await TrackPlayer.getCurrentTrack();
             const track = await TrackPlayer.getTrack(currentSong.id);
-            const {title, artwork, artist} = track;
-            setTrackTitle(title);
-            setTrackArtist(artist);
-            setTrackArtwork(artwork);
-            if(isConnected){
-                if (currentSong != lastSong) {
-                    await TrackPlayer.skip(currentSong.id); 
-               };
-               await TrackPlayer.play();
-               lastSong = currentSong;
-            }else{
-                await TrackPlayer.pause();
+            if(track !== null){
+                const {title, artwork, artist} = track;
+                setTrackTitle(title);
+                setTrackArtist(artist);
+                setTrackArtwork(artwork);
+                if(isConnected){
+                    if (currentSong != lastSong) {
+                        await TrackPlayer.skip(currentSong.id); 
+                };
+                await TrackPlayer.play();
+                lastSong = currentSong;
+                }else{
+                    await TrackPlayer.pause();
+                }
             }
         } catch(e) {
             console.log('Hubo un error b:', e);
@@ -111,7 +113,7 @@ const Player = ({navigation}) => {
     useEffect(() => {
         setIsPlaying(true);
     }, [isPlaying]);
-                         
+                     
     return (
         <SafeAreaView style={{
             flex: 1,

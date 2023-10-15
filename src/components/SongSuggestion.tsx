@@ -13,7 +13,7 @@ const SongSuggestion = ({ songData }) => {
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
-    console.log('cancion actual  ' + currentSong.title);
+    console.log('canción actual  ' + currentSong.title);
     setShowOptions(!showOptions);
   };
 
@@ -22,7 +22,7 @@ const SongSuggestion = ({ songData }) => {
     navigation.navigate('Player', { songData });
   };
 
-  const checkSongMemory = async (song) => {      //Bug: Alerta de memoria asociada
+  const checkSongMemory = async (song) => {
     const memoriesRef = firestore().collection('memorias');
     const querySnapshot = await memoriesRef.where('titulo_cancion', '==', song.title).get();
 
@@ -31,11 +31,11 @@ const SongSuggestion = ({ songData }) => {
         '¿Volver a crear una memoria con esta canción?',
         'Esta canción ya está asociada.',
         [
-            { text: 'Aceptar', onPress: redirectToCreateMemory },
-            { text: 'Cancelar', onPress: handleOptionPress}
+          { text: 'Aceptar', onPress: redirectToCreateMemory },
+          { text: 'Cancelar', onPress: handleOptionPress },
         ],
         { cancelable: false }
-    );
+      );
     } else {
       redirectToCreateMemory();
     }
@@ -66,21 +66,20 @@ const SongSuggestion = ({ songData }) => {
       <Modal visible={showOptions} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <View style={styles.closeButtonContainer}>
+              <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                <MaterialCommunityIcons name="close" size={30} color="gray" />
+              </TouchableOpacity>
+            </View>
             <Image source={artwork} style={styles.imageSelected} />
             <Text style={styles.songName}>{title}</Text>
             <Text style={styles.artistName}>{artist}</Text>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.cyanButton]}
-                onPress={createMemory}
-              >
+              <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
                 <Text style={styles.buttonText}>Crear Memoria Musical</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.salmonButton]}
-                onPress={handleOptionPress}
-              >
-                <Text style={styles.buttonText}>Cerrar</Text>
+              <TouchableOpacity style={[styles.button, styles.salmonButton]}>
+                <Text style={styles.buttonText}>Guardar en una playlist</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -149,11 +148,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
     marginHorizontal: 5,
-    alignItems: 'center', 
-    justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   salmonButton: {
-    backgroundColor: 'salmon',
+    backgroundColor: '#DAA1D1',
   },
   cyanButton: {
     backgroundColor: '#4ADCC8',
@@ -162,6 +161,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  closeButtonContainer: {
+    position: 'absolute',
+    top: 0.5,
+    right: 0.5,
+  },
+  closeButton: {
+    padding: 5,
   },
 });
 

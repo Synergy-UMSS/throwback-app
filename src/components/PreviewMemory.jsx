@@ -7,31 +7,25 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 const screenWidth = Dimensions.get('window').width;
-// const bgColor = [
-//   '#C7A9D5',
-//   '#CDF4C9',
-//   '#B6BFD4',
-//   '#F6EA7E',
-//   '#F0CC8B',
-//   '#FBBAA4',
-//   '#FFC1D8',
-//   '#9DE0D2',
-// ];
 
-const bgColor = [
-  '#B69B77',
-  '#B4B2A2',
-  '#D2E6A6',
-  '#778391',
-  '#7DA4C1',
-  '#39CE7D',
-  '#FED65D',
-  '#FFAE5D',
-  '#FF526B',
-  '#FFACA8',
-  '#CCA7D7',
-];
-
+// obtener el color de la memoria basado en la emocion
+function getColorForEmotion(emotion) {
+  return emociones[emotion] || "#000000";
+}
+const emociones = {
+  happy: "#FED65D",       // oro para "feliz"
+  no_trouble: "#39CE7D",  // verde lima para "sin problemas"
+  angry: "#FF526B",       // naranja rojizo para "enojado"
+  worried: "#CCA7D7",     // melocotón para "preocupado"
+  genial: "#FFAE5D",      // azul cielo profundo para "genial"
+  tired: "#7DA4C1",       // gris oscuro para "cansado"
+  sad: "#778391",         // azul acero para "triste"
+  leisurely: "#D2E6A6",   // cardo para "ocio"
+  confused: "#B4B2A2",    // rosa fuerte para "confundido"
+  speechless: "#B69B77",  // ciruela para "sin palabras"
+  pluff: "#FFACA8",       // pálido dorado para "pluff" (asumiendo que es alguna emoción o estado)
+};
+// aclarar un color hexadecimal
 function aclararColor(hex, porcentaje=0.2) {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
@@ -42,16 +36,11 @@ function aclararColor(hex, porcentaje=0.2) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-const PreviewMemory = ({ memoria, onPress, index/*, alignment = 'left'*/ }) => {
-  alignment = 'left';
-
-  const song = songs.find(
-    song => song.title === memoria.titulo_cancion && song.artist === memoria.artista_cancion
-  );
-  const songId = song ? song.id : 0;
-  const combinedId = songId+memoria.titulo_memoria.length + memoria.artista_cancion.length;
-  const color = bgColor[combinedId % bgColor.length];
+const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
+  // color de memoria
+  const color = getColorForEmotion(emotion);  
   const colorOscurecido = aclararColor(color);
+  // borrado de memoria
   const showDeleteConfirmation = () => {
     Alert.alert(
         "Confirmación",
@@ -77,10 +66,8 @@ const PreviewMemory = ({ memoria, onPress, index/*, alignment = 'left'*/ }) => {
         console.error("Error eliminando memoria: ", error);
     });
   }
-
   return (
     <View style={styles.mainContainer}>
-
       <TouchableOpacity 
         onPress={() => onPress(memoria.id)}
         style={{ ...styles.container, backgroundColor: color }}
@@ -198,7 +185,7 @@ const optionsStyles = {
   optionsContainer: {
     marginTop: 10,
     marginLeft: 0,
-    width : 130, //ancho
+    width : 130,
     elevation: 0,
     borderWidth: 0,
     borderRadius: 15,

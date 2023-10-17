@@ -4,17 +4,20 @@ import Emocion from './Emotion';
 import PreviewMemory from './PreviewMemory';
 import Spacer from './Spacer'
 
-const EmotionWithMemory = ({ memoria, onPress, index, alignment }) => {
+
+
+const EmotionWithMemory = ({ memoria, onPress, index, alignment , emotion}) => {
     return (
         <View style={styles.container}>
             {alignment === 'right' && <>
-            <Emocion nombre={'genial'} />
+            <Emocion nombre={emotion} />
             <Spacer />
         </>}
-            <PreviewMemory memoria={memoria} onPress={onPress} index={index} style={styles.previewMemory} />
+            <PreviewMemory memoria={memoria} onPress={onPress} index={index} emotion={emotion} style={styles.previewMemory} />
             {alignment === 'left' && <>
             <Spacer />
-            <Emocion nombre={'angry'} />
+            <Emocion nombre={emotion} />
+             
         </>}
         </View>
     );

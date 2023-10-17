@@ -83,6 +83,7 @@ const CrearMemoria = ({ navigation }) => {
           required: 'Este campo es obligatorio',
           validate: {
             noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
+            noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
           },
         }}
       />

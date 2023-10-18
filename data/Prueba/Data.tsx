@@ -79,7 +79,7 @@ const songs = [
     {
         id: 12,
         title: 'Claire de Lune',
-        artist: 'Bethoveen',
+        artist: ' Claude Debussy',
         artwork: require('../../assets-prueba/images/desconocida.png'),
         url:require('../../assets-prueba/songs/ClairdeLune.mp3'),
     },

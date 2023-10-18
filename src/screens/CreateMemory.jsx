@@ -32,14 +32,9 @@ const CrearMemoria = ({ navigation }) => {
       artista_cancion: currentSong.artist,
     };
 
-    {/*const isSpecialCharacter = (value) => {
-      return /^[a-zA-Z0-9\s\-]+$/.test(value); // Expresión regular que permite letras, números, espacios y guiones
-    };*/}
-
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
-      showSuccessAlert();
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
@@ -91,6 +86,7 @@ const CrearMemoria = ({ navigation }) => {
           required: 'Este campo es obligatorio',
           validate: {
             noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
+            noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
           },
         }}
       />
@@ -145,7 +141,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
+      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit) && showSuccessAlert} style={styles.button}>
         <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
       </Pressable>
     </View>

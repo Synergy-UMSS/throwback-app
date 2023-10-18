@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import {TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import {TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import songs from '../../data/Prueba/Data';
 import Connection from '../components/Connection';
@@ -12,15 +11,15 @@ import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
 import {useConnectionGlobal} from '../helpcomponents/connectionGlobal';
-import NetInfo from '@react-native-community/netinfo';
-import RNRestart from "react-native-restart";
-import { useFocusEffect } from '@react-navigation/native';
+import {useControlPlayer} from '../helpcomponents/controlPlayer';
 
 let color: string[] = [
     '#C7A9D560',
     '#96ead280',
     '#FFC1D860',
 ]
+
+let isPausedForMini = false;
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
@@ -33,8 +32,8 @@ const Player = ({navigation}) => {
             await TrackPlayer.setupPlayer();
             await TrackPlayer.add([currentSong]);
             await TrackPlayer.add(songs);
-            {/*const trackList = await TrackPlayer.getQueue();*/}
-            {/*console.log('*****track list', trackList);*/}
+            let indexArb = Math.floor(Math.random()*(songs.length-1));
+            await TrackPlayer.add([songs[indexArb]]);
             if(isConnected){
                 await TrackPlayer.play();
             }          
@@ -48,19 +47,21 @@ const Player = ({navigation}) => {
         if(track !== null){
             if(playState == State.Ready || playState == State.Paused && isConnected){
                 await TrackPlayer.play();
+                setIsPaused(false);
             }else {
                 await TrackPlayer.pause();
+                setIsPaused(true);
             }
         }
     };
     const playState: State = usePlaybackState();
     const sliderWork = useProgress(); 
-    const [songIndex, setsongIndex] = useState(0);
     const [trackTitle, setTrackTitle] = useState();
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
     const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
     const {isConnected} =  useConnectionGlobal();
+    const {isPaused, setIsPaused} = useControlPlayer();
 
     useEffect(() => {
         setPlayer();
@@ -71,13 +72,13 @@ const Player = ({navigation}) => {
     },[isConnected]);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-        if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-          const track = await TrackPlayer.getTrack(event.nextTrack);
-          const {title, artwork, artist} = track;
-          setTrackTitle(title);
-          setTrackArtist(artist);
-          setTrackArtwork(artwork);
-          await setCurrentSong(track);
+        if (event.type === Event.PlaybackTrackChanged  && event.nextTrack !== null){
+            const track = await TrackPlayer.getTrack(event.nextTrack);
+            const {title, artwork, artist} = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            await setCurrentSong(track);
         }
     });
     
@@ -85,24 +86,29 @@ const Player = ({navigation}) => {
         try {
             const trackIndex = await TrackPlayer.getCurrentTrack();
             const track = await TrackPlayer.getTrack(currentSong.id);
-            const {title, artwork, artist} = track;
-            setTrackTitle(title);
-            setTrackArtist(artist);
-            setTrackArtwork(artwork);
-            if(isConnected){
-                if (currentSong != lastSong) {
-                    await TrackPlayer.skip(currentSong.id); 
-               };
-               await TrackPlayer.play();
-               lastSong = currentSong;
-            }else{
-                await TrackPlayer.pause();
+            if(track !== null){
+                const {title, artwork, artist} = track;
+                setTrackTitle(title);
+                setTrackArtist(artist);
+                setTrackArtwork(artwork);
+                if(isConnected){
+                    if (currentSong != lastSong) {
+                        await TrackPlayer.skip(currentSong.id); 
+                    };
+                    if(!isPaused){
+                        await TrackPlayer.play();
+                        setIsPaused(false);
+                    }
+                    lastSong = currentSong;
+                }else{
+                    await TrackPlayer.pause();
+                    setIsPaused(true);
+                }
             }
         } catch(e) {
             console.log('Hubo un error b:', e);
         }
     };
-
     
     useEffect(() => {
         changeValuesTrack();
@@ -111,7 +117,7 @@ const Player = ({navigation}) => {
     useEffect(() => {
         setIsPlaying(true);
     }, [isPlaying]);
-                         
+                     
     return (
         <SafeAreaView style={{
             flex: 1,

@@ -33,6 +33,7 @@ const CrearMemoria = ({ navigation }) => {
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
+      showSuccessAlert();
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
@@ -139,7 +140,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit) && showSuccessAlert} style={styles.button}>
+      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
         <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
       </Pressable>
     </View>

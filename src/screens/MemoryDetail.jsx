@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import songs from '../../data/Prueba/Data';
+import Emocion from '../components/Emotion';
 
 const bgColor = [
   '#C7A9D5',
@@ -68,8 +69,9 @@ const MemoryDetail = ({ route, navigation }) => {
   const color = bgColor[combinedId % bgColor.length];
 
   return (
-    <ScrollView style={{ ...styles.container, backgroundColor: color }}>
-        
+    <ScrollView >
+    {/* <Emocion nombre={'happy'} /> */}
+    <View style={{ ...styles.container, backgroundColor: color}}>
       <Text style={styles.title}>
         {memory.titulo_memoria}
       </Text>
@@ -101,10 +103,9 @@ const MemoryDetail = ({ route, navigation }) => {
         imageUri={songArtwork || placeholderImage}
         memoriaId={memoriaId}
       />
-        
       <Text></Text>
       <Text></Text>
-      
+      </View>
     </ScrollView>
   );
 };

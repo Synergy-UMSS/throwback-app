@@ -11,12 +11,15 @@ import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import {useSearchStore} from '../store/searchStore';
 import {usePlayerStore} from '../store/playerStore';
 import {useConnectionGlobal} from '../helpcomponents/connectionGlobal';
+import {useControlPlayer} from '../helpcomponents/controlPlayer';
 
 let color: string[] = [
     '#C7A9D560',
     '#96ead280',
     '#FFC1D860',
 ]
+
+let isPausedForMini = false;
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
@@ -44,20 +47,21 @@ const Player = ({navigation}) => {
         if(track !== null){
             if(playState == State.Ready || playState == State.Paused && isConnected){
                 await TrackPlayer.play();
+                setIsPaused(false);
             }else {
                 await TrackPlayer.pause();
-                isPausedForMini = true;
+                setIsPaused(true);
             }
         }
     };
     const playState: State = usePlaybackState();
     const sliderWork = useProgress(); 
-    let isPausedForMini = false;
     const [trackTitle, setTrackTitle] = useState();
     const [trackArtist, setTrackArtist] = useState();
     const [trackArtwork, setTrackArtwork] = useState();
     const {isPlaying, setIsPlaying} = useContext(MusicPlayerContext);
     const {isConnected} =  useConnectionGlobal();
+    const {isPaused, setIsPaused} = useControlPlayer();
 
     useEffect(() => {
         setPlayer();
@@ -90,20 +94,21 @@ const Player = ({navigation}) => {
                 if(isConnected){
                     if (currentSong != lastSong) {
                         await TrackPlayer.skip(currentSong.id); 
-                };
-                if(!isPausedForMini){
-                    await TrackPlayer.play();
-                }
-                lastSong = currentSong;
+                    };
+                    if(!isPaused){
+                        await TrackPlayer.play();
+                        setIsPaused(false);
+                    }
+                    lastSong = currentSong;
                 }else{
                     await TrackPlayer.pause();
+                    setIsPaused(true);
                 }
             }
         } catch(e) {
             console.log('Hubo un error b:', e);
         }
     };
-
     
     useEffect(() => {
         changeValuesTrack();

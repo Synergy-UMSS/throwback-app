@@ -35,6 +35,7 @@ const CrearMemoria = ({ navigation }) => {
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
+      showSuccessAlert();
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }
@@ -55,7 +56,7 @@ const CrearMemoria = ({ navigation }) => {
         {
           text: 'Aceptar',
           onPress: () => {
-            navigation.navigate('Home'); // Redirige a la vista "home"
+            navigation.navigate('Tus memorias musicales'); // Redirige a la vista "home"
           },
         },
       ],
@@ -141,7 +142,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit) && showSuccessAlert} style={styles.button}>
+      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit) /*&& showSuccessAlert*/} style={styles.button}>
         <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
       </Pressable>
     </View>

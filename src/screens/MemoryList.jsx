@@ -9,8 +9,27 @@ import EmotionWithMemory from '../components/EmotionWithMemory';
 const MemoryList = ({ navigation }) => {
   // navegacion
   const abrirDetalles = (id, index) => {
+
+
     navigation.navigate('MemoryDetail', { memoriaId: id, index: index });
+    // navigation.navigate('handleOpenMemoryDetail', { memoria: id, index: index });
+    // onPress={handleOpenMemoryDetail}
   };
+  // const navigation = useNavigation();
+  // const handleOpenMemoryDetail = () => {
+  //   // Navegar a MemoryDetail como un modal
+  //   navigation.navigate('MemoryDetailStack', {
+  //     screen: 'MemoryDetail',
+  //     params: {
+  //       // Puedes pasar parámetros a MemoryDetail si es necesario
+  //     },
+  //   });
+  // };
+
+
+
+
+
   // firebase
   const [data, setData] = useState([]);
   useEffect(() => {

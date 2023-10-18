@@ -7,6 +7,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 const screenWidth = Dimensions.get('window').width;
+import { useNavigation } from '@react-navigation/native';
 
 // obtener el color de la memoria basado en la emocion
 function getColorForEmotion(emotion) {
@@ -37,6 +38,8 @@ function aclararColor(hex, porcentaje=0.2) {
 }
 
 const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
+  
+
   // color de memoria
   const color = getColorForEmotion(emotion);  
   const colorOscurecido = aclararColor(color);
@@ -70,6 +73,7 @@ const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
     <View style={styles.mainContainer}>
       <TouchableOpacity 
         onPress={() => onPress(memoria.id)}
+        // onPress={handleOpenMemoryDetail}
         style={{ ...styles.container, backgroundColor: color }}
       >
         <View style={styles.headerContainer}>

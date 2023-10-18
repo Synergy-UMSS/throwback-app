@@ -30,14 +30,9 @@ const CrearMemoria = ({ navigation }) => {
       artista_cancion: currentSong.artist,
     };
 
-    {/*const isSpecialCharacter = (value) => {
-      return /^[a-zA-Z0-9\s\-]+$/.test(value); // Expresión regular que permite letras, números, espacios y guiones
-    };*/}
-
     try {
       await firestore().collection('memorias').add(memoria);
       console.log('Memoria guardada correctamente.');
-      {/*showSuccessAlert();*/}
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
     }

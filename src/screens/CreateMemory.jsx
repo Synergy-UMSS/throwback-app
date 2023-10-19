@@ -22,16 +22,16 @@ const CrearMemoria = ({ navigation }) => {
 
   const onSubmit = async (data) => {
     const memoria = {
-      titulo_memoria: data.tituloMemoria,
-      descripcion_memoria: data.descripcionMemoria,
-      fecha_creacion: firestore.Timestamp.now(),
-      fecha_memoria: firestore.Timestamp.fromDate(selectedDate),
-      titulo_cancion: currentSong.title,
-      artista_cancion: currentSong.artist,
+      title: data.tituloMemoria,
+      description: data.descripcionMemoria,
+      createDate: firestore.Timestamp.now(),
+      memoryDate: firestore.Timestamp.fromDate(selectedDate),
+      song: currentSong.id,
+
     };
 
     try {
-      await firestore().collection('memorias').add(memoria);
+      await firestore().collection('memories').add(memoria);
       console.log('Memoria guardada correctamente.');
       showSuccessAlert();
     } catch (error) {
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 20, // Ajusta el tamaño horizontal según tus preferencias
-    borderRadius: 10,
+    borderRadius: 200,
     elevation: 3,
     backgroundColor: 'black',
     alignSelf: 'center',

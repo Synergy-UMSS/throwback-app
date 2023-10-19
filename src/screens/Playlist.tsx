@@ -3,7 +3,7 @@ import { Image, StyleSheet, View } from 'react-native';
 
 const Playlist = () => {
     let imgs;
-    let cond = true;
+    let cond = false;
     const imagePlaylist={
         display: 'flex',
         backgroundColor: 'white',

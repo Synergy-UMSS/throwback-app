@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -10,11 +9,13 @@ import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
 import Playlist from './src/screens/Playlist';
+import Library from './src/screens/Library';
 import Home from './src/screens/Home';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {RootStackParamList} from './src/utils/types';
 import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
@@ -94,14 +95,24 @@ const App = () => {
             headerShown: false,
           }}
         />
-
+        <Tab.Screen
+          name="Library"
+          component={Library}
+          options={{
+            tabBarLabel: 'Library',
+            tabBarIcon: ({color, size}) => (
+              <Ionicons name="library" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
         <Tab.Screen
           name="Playlist"
           component={Playlist}
           options={{
             tabBarLabel: 'Playlist',
             tabBarIcon: ({color, size}) => (
-              <Ionicons name="library" color={color} size={size} />
+              <MaterialIcons name="library-music" color={color} size={size} />
             ),
             headerShown: false,
           }}
@@ -146,6 +157,16 @@ const App = () => {
           <Stack.Screen
             name="CreateMemory"
             component={CreateMemory}
+            options={{headerShown: false}}
+          />
+          {/*<Stack.Screen
+            name="Library"
+            component={Library}
+            options={{headerShown: false}}
+          />*/}
+          <Stack.Screen
+            name="Playlist"
+            component={Playlist}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

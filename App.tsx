@@ -9,10 +9,12 @@ import MemoryList from './src/screens/MemoryList';
 import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
+import Playlist from './src/screens/Playlist';
 import Home from './src/screens/Home';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import {RootStackParamList} from './src/utils/types';
 import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
@@ -88,6 +90,18 @@ const App = () => {
             tabBarLabel: 'Buscar',
             tabBarIcon: ({color, size}) => (
               <FontAwesomeIcon name="search" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
+
+        <Tab.Screen
+          name="Playlist"
+          component={Playlist}
+          options={{
+            tabBarLabel: 'Playlist',
+            tabBarIcon: ({color, size}) => (
+              <Ionicons name="library" color={color} size={size} />
             ),
             headerShown: false,
           }}

@@ -142,7 +142,7 @@ const CrearMemoria = ({ navigation }) => {
         />
       </View>
 
-      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit) /*&& showSuccessAlert*/} style={styles.button}>
+      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
         <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
       </Pressable>
     </View>

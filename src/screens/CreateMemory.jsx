@@ -11,6 +11,8 @@ import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 
 
+
+
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -54,7 +56,7 @@ const CrearMemoria = ({ navigation }) => {
         {
           text: 'Aceptar',
           onPress: () => {
-            navigation.navigate('Home'); // Redirige a la vista "home"
+            navigation.navigate('Tus memorias musicales'); // Redirige a la vista "home"
           },
         },
       ],

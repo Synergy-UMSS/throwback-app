@@ -4,10 +4,13 @@ import MemoryList from '../screens/MemoryList';
 import MemoryDetail from '../screens/MemoryDetail';
 import {Stack} from '../../App';
 
+
 export function MemoryNavigator() {
   // Navigation from home
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    
+    >
       <Stack.Screen
         name="Tus memorias musicales"
         component={MemoryList}
@@ -30,11 +33,13 @@ export function MemoryNavigator() {
         name="MemoryDetail"
         component={MemoryDetail}
         options={{
-          title: ' ',
+          title: 'ui',
           headerStyle: {
-            backgroundColor: '#e4e6dc',
+            // backgroundColor: '#e4e6dc',
+            backgroundColor: 'd',
           },
-          cardStyle: {backgroundColor: '#e4e6dc'},
+          // cardStyle: {backgroundColor: '#e4e6dc'},
+          cardStyle: {backgroundColor: 'transparent'},
         }}
       />
     </Stack.Navigator>

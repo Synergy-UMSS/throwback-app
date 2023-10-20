@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 import firestore from '@react-native-firebase/firestore';
 
-const SongSuggestion = ({ songData }) => {
+const SongSuggestion = ({ songData, screenSelected}) => {
   const { id, title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
@@ -69,6 +69,7 @@ const SongSuggestion = ({ songData }) => {
             <Image source={artwork} style={styles.imageSelected} />
             <Text style={styles.songName}>{title}</Text>
             <Text style={styles.artistName}>{artist}</Text>
+            { screenSelected === 'search' && (
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={[styles.button, styles.cyanButton]}
@@ -83,6 +84,10 @@ const SongSuggestion = ({ songData }) => {
                 <Text style={styles.buttonText}>Cerrar</Text>
               </TouchableOpacity>
             </View>
+            )}
+            {screenSelected === 'playlist' && (
+              <Text>'Hola'</Text>
+            )}
           </View>
         </View>
       </Modal>

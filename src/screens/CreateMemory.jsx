@@ -11,6 +11,8 @@ import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 
 
+
+
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -29,10 +31,6 @@ const CrearMemoria = ({ navigation }) => {
       titulo_cancion: currentSong.title,
       artista_cancion: currentSong.artist,
     };
-
-    {/*const isSpecialCharacter = (value) => {
-      return /^[a-zA-Z0-9\s\-]+$/.test(value); // Expresión regular que permite letras, números, espacios y guiones
-    };*/}
 
     try {
       await firestore().collection('memorias').add(memoria);
@@ -58,7 +56,7 @@ const CrearMemoria = ({ navigation }) => {
         {
           text: 'Aceptar',
           onPress: () => {
-            navigation.navigate('Home'); // Redirige a la vista "home"
+            navigation.navigate('Tus memorias musicales'); // Redirige a la vista "home"
           },
         },
       ],
@@ -89,6 +87,7 @@ const CrearMemoria = ({ navigation }) => {
           required: 'Este campo es obligatorio',
           validate: {
             noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
+            noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
           },
         }}
       />

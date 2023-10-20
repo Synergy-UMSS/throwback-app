@@ -6,7 +6,7 @@ import { usePlayerStore } from '../store/playerStore';
 import firestore from '@react-native-firebase/firestore';
 
 const SongSuggestion = ({ songData, screenSelected}) => {
-  const { id, title, artist, artwork, url } = songData;
+  const {title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();

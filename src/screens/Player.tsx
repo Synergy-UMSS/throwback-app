@@ -19,8 +19,6 @@ let color: string[] = [
     '#FFC1D860',
 ]
 
-let isPausedForMini = false;
-
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
 const Player = ({navigation}) => {

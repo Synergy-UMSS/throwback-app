@@ -49,6 +49,31 @@ const SongSuggestion = ({ songData, screenSelected }) => {
     checkSongMemory(currentSong);
   };
 
+  const backToPlaylist = async (song) => {
+    const docRef = firestore().collection('playlists').doc('playlist_id');
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (Array.isArray(data.songs)) {
+          data.songs.push(song);
+          docRef.update({
+            songs: data.songs
+          })
+          .then(() => {
+            console.log('Dato agregado con éxito');
+          })
+          .catch((error) => {
+            console.error('Error al actualizar el documento:', error);
+          });
+        } else {
+          console.error('El campo songs no es un arreglo o no existe');
+        }
+      } else {
+        console.error('No se encontró el documento');
+      }
+    });
+  }
+
   return (
     <TouchableOpacity onPress={handlePlayPress}>
       <View style={styles.container}>
@@ -79,7 +104,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
               <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
                 <Text style={styles.buttonText}>Crear Memoria Musical</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={navigation.navigate('Playlist', {currentSong})}>
+              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
                 <Text style={styles.buttonText}>Guardar en una playlist</Text>
               </TouchableOpacity>
             </View>

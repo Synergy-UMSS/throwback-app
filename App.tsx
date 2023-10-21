@@ -8,6 +8,7 @@ import Reproductor from './src/screens/Reproductor';
 import MemoryList from './src/screens/MemoryList';
 import Player from './src/screens/Player';
 import Search from './src/screens/Search';
+import SearchAlgolia from './src/screens/SearchAlgolia';
 import Splash from './src/screens/Splash';
 import Home from './src/screens/Home';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
@@ -66,7 +67,7 @@ const App = () => {
           tabBarActiveTintColor: '#ffffff',
           tabBarInactiveTintColor: '#b5b3b3',
           tabBarStyle: {
-            backgroundColor: '#787474',
+            backgroundColor: 'black',
           },
         }}>
         <Tab.Screen
@@ -83,7 +84,7 @@ const App = () => {
 
         <Tab.Screen
           name="Search"
-          component={Search}
+          component={SearchAlgolia}
           options={{
             tabBarLabel: 'Buscar',
             tabBarIcon: ({color, size}) => (
@@ -121,7 +122,7 @@ const App = () => {
           />
           <Stack.Screen
             name="Search"
-            component={Search}
+            component={SearchAlgolia}
             options={{headerShown: false}}
           />
           <Stack.Screen

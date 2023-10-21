@@ -13,7 +13,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
-    console.log('cancion actual  ' + currentSong.title);
+    console.log('canción actual  ' + currentSong.title);
     setShowOptions(!showOptions);
   };
 
@@ -22,7 +22,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
     navigation.navigate('Player', { songData });
   };
 
-  const checkSongMemory = async (song) => {      //Bug: Alerta de memoria asociada
+  const checkSongMemory = async (song) => {
     const memoriesRef = firestore().collection('memorias');
     const querySnapshot = await memoriesRef.where('titulo_cancion', '==', song.title).get();
 
@@ -32,7 +32,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
         'Esta canción ya está asociada.',
         [
           { text: 'Aceptar', onPress: redirectToCreateMemory },
-          { text: 'Cancelar', onPress: handleOptionPress }
+          { text: 'Cancelar', onPress: handleOptionPress },
         ],
         { cancelable: false }
       );
@@ -48,6 +48,31 @@ const SongSuggestion = ({ songData, screenSelected }) => {
   const createMemory = () => {
     checkSongMemory(currentSong);
   };
+
+  const backToPlaylist = async (song) => {
+    const docRef = firestore().collection('playlists').doc('playlist_id');
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (Array.isArray(data.songs)) {
+          data.songs.push(song);
+          docRef.update({
+            songs: data.songs
+          })
+          .then(() => {
+            console.log('Dato agregado con éxito');
+          })
+          .catch((error) => {
+            console.error('Error al actualizar el documento:', error);
+          });
+        } else {
+          console.error('El campo songs no es un arreglo o no existe');
+        }
+      } else {
+        console.error('No se encontró el documento');
+      }
+    });
+  }
 
   return (
     <TouchableOpacity onPress={handlePlayPress}>
@@ -67,23 +92,22 @@ const SongSuggestion = ({ songData, screenSelected }) => {
         <Modal visible={showOptions} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Image source={artwork} style={styles.imageSelected} />
-              <Text style={styles.songName}>{title}</Text>
-              <Text style={styles.artistName}>{artist}</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={[styles.button, styles.cyanButton]}
-                  onPress={createMemory}
-                >
-                  <Text style={styles.buttonText}>Crear Memoria Musical</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.salmonButton]}
-                  onPress={handleOptionPress}
-                >
-                  <Text style={styles.buttonText}>Cerrar</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.closeButtonContainer}>
+              <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                <MaterialCommunityIcons name="close" size={30} color="gray" />
+              </TouchableOpacity>
+            </View>
+            <Image source={artwork} style={styles.imageSelected} />
+            <Text style={styles.songName}>{title}</Text>
+            <Text style={styles.artistName}>{artist}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
+                <Text style={styles.buttonText}>Crear Memoria Musical</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
+                <Text style={styles.buttonText}>Guardar en una playlist</Text>
+              </TouchableOpacity>
+            </View>
             </View>
           </View>
         </Modal>
@@ -158,7 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
   },
   salmonButton: {
-    backgroundColor: 'salmon',
+    backgroundColor: '#DAA1D1',
   },
   cyanButton: {
     backgroundColor: '#4ADCC8',
@@ -167,6 +191,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  closeButtonContainer: {
+    position: 'absolute',
+    top: 0.5,
+    right: 0.5,
+  },
+  closeButton: {
+    padding: 5,
   },
 });
 

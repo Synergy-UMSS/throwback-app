@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
@@ -6,11 +6,27 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
+import firestore from '@react-native-firebase/firestore';
 
 const Playlist = ({ navigation }) => {
+	const [songsAdded, setSongsAdded] = useState([]);
+	useEffect(() => {
+		const unsubscribe = firestore().collection('playlists').doc('playlist_id').onSnapshot(
+			(doc) => {
+        const playlistData = doc.data();
+        const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
+        setSongsAdded(songsData);
+      },
+      (error) => {
+        console.error('Error al obtener el documento:', error);
+      }
+    );
+
+    return () => unsubscribe();
+	}, []);
 	let imgs;
-	let songsAdded = songs;
-	let cond = songsAdded.length > 1;
+	/*let songsAdded = songs;*/
+	let cond = songsAdded.length > 3;
 	const displaySongsInPlayLists = () => {
 		return (
 			<View>
@@ -27,6 +43,7 @@ const Playlist = ({ navigation }) => {
 	const imagePlaylist = {
 		display: 'flex',
 		backgroundColor: 'white',
+		margin: 2,
 		width: cond ? 90 : 190,
 		height: cond ? 110 : 230,
 	};
@@ -34,16 +51,16 @@ const Playlist = ({ navigation }) => {
 		imgs = (
 			<>
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[0].artwork}
 					style={imagePlaylist} />
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[1].artwork}
 					style={imagePlaylist} />
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[2].artwork}
 					style={imagePlaylist} />
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[3].artwork}
 					style={imagePlaylist} />
 			</>
 		);

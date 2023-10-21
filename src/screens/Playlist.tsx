@@ -10,7 +10,7 @@ import songs from '../../data/Prueba/Data';
 const Playlist = ({ navigation }) => {
 	let imgs;
 	let songsAdded = songs;
-	let cond = songsAdded.length > 1;
+	let cond = songsAdded.length > 3;
 	const displaySongsInPlayLists = () => {
 		return (
 			<View>
@@ -27,6 +27,7 @@ const Playlist = ({ navigation }) => {
 	const imagePlaylist = {
 		display: 'flex',
 		backgroundColor: 'white',
+		margin: 2,
 		width: cond ? 90 : 190,
 		height: cond ? 110 : 230,
 	};
@@ -34,16 +35,16 @@ const Playlist = ({ navigation }) => {
 		imgs = (
 			<>
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[0].artwork}
 					style={imagePlaylist} />
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[1].artwork}
 					style={imagePlaylist} />
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[2].artwork}
 					style={imagePlaylist} />
 				<Image
-					source={require('../../assets-prueba/images/Lust_for_Life.png')}
+					source={songsAdded[3].artwork}
 					style={imagePlaylist} />
 			</>
 		);

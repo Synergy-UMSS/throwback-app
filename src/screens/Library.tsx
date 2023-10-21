@@ -8,6 +8,7 @@ const Library = () => {
   const [playlists, setPlaylists] = useState<string[]>([]);
   const [colorIndex, setColorIndex] = useState(0);
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
+  const [error, setError] = useState('');
 
   const initialColors = ['#C7A9D5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 
@@ -17,12 +18,16 @@ const Library = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setError('');
   };
 
   const MAX_NAME_LENGTH = 50;
 
   const handleCreatePlaylist = (name: string) => {
-    if (name.trim() !== '') {
+    if (name.trim() === '') {
+      setError('Este campo es obligatorio.');
+    } else {
+      setError('');
       console.log('Se ha creado la playlist:', name);
       const updatedPlaylists = [name, ...playlists];
       setPlaylists(updatedPlaylists);
@@ -41,7 +46,7 @@ const Library = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Tu biblioteca</Text>
+        <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={[styles.buttonContainer, { justifyContent: 'space-between', width: '30%', marginRight: 20 }]}>
           <TouchableOpacity style={styles.button} onPress={handleSearch}>
             <Ionicons name="search" size={28} color="black" />
@@ -68,32 +73,37 @@ const Library = () => {
           })}
         </ScrollView>
       )}
-
-      <Modal visible={showModal} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.customModalContent}>
-            <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nombre de la playlist"
-              value={playlistName}
-              onChangeText={(text) => setPlaylistName(text.slice(0, MAX_NAME_LENGTH))}
-            />
-            <View style={styles.buttonGroup}>
-              <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
-                <Text style={styles.buttonText}>Crear</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
-                <Text style={styles.buttonText}>Cerrar</Text>
-              </TouchableOpacity>
+        <Modal visible={showModal} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.customModalContent}>
+              <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
+              <View style={{ marginBottom: 20, width: '100%' }}>
+                <TextInput
+                  style={[styles.input, { width: '100%' }]}
+                  value={playlistName}
+                  onChangeText={(text) => {
+                    setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                    setError('');
+                  }}
+                />
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              </View>
+              <View style={styles.buttonGroup}>
+                <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
+                  <Text style={styles.buttonText}>Crear</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
+                  <Text style={styles.buttonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
     </View>
   );
 };
-
+ 
+//My styleees
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -149,7 +159,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: '100%',
+     width: '100%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -200,6 +210,12 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 14,
     textAlign: 'left',
+  },
+  errorText: {
+    color: 'red',
+    alignSelf: 'flex-start',
+    fontSize: 12,
+    marginTop: -20, 
   },
 });
 

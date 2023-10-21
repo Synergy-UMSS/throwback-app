@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
@@ -15,6 +15,27 @@ const Library = () => {
   const handlePressMore = () => {
     setShowModal(true);
   };
+
+useEffect(() => {
+  const unsubscribe = firestore()
+    .collection('playlists')
+    .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+    .onSnapshot((querySnapshot) => {
+      const playlistsData: string[] = [];
+      const colorsData: { [key: string]: string } = {};
+      querySnapshot.forEach((doc) => {
+        const { name, createDate } = doc.data();
+        playlistsData.push(name);
+        // Puedes ajustar esta lógica según tu implementación específica para obtener el color
+        const color = initialColors[Math.floor(Math.random() * initialColors.length)];
+        colorsData[name] = color;
+      });
+      setPlaylists(playlistsData);
+      setPlaylistColors(colorsData);
+    });
+
+          return () => unsubscribe();
+  }, []);
   const handleCloseModal = () => {
     setShowModal(false);
     setError('');

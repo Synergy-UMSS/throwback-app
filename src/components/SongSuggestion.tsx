@@ -79,14 +79,13 @@ const SongSuggestion = ({ songData, screenSelected }) => {
               <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
                 <Text style={styles.buttonText}>Crear Memoria Musical</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
+              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={navigation.navigate('Playlist', {currentSong})}>
                 <Text style={styles.buttonText}>Guardar en una playlist</Text>
               </TouchableOpacity>
             </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       )}
       {screenSelected === 'playlist' && (
         <View></View>

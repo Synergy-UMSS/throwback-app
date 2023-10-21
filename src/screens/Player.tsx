@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import {TouchableOpacity } from 'react-native-gesture-handler';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import songs from '../../data/Prueba/Data';
 import Connection from '../components/Connection';
 import TrackPlayer, { Event, State, usePlaybackState,useProgress, useTrackPlayerEvents} from 'react-native-track-player';
@@ -18,8 +18,6 @@ let color: string[] = [
     '#96ead280',
     '#FFC1D860',
 ]
-
-let isPausedForMini = false;
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 

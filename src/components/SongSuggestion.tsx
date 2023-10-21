@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 import firestore from '@react-native-firebase/firestore';
 
-const SongSuggestion = ({ songData }) => {
-  const { id, title, artist, artwork, url } = songData;
+const SongSuggestion = ({ songData, screenSelected }) => {
+  const { title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
@@ -31,11 +31,11 @@ const SongSuggestion = ({ songData }) => {
         '¿Volver a crear una memoria con esta canción?',
         'Esta canción ya está asociada.',
         [
-            { text: 'Aceptar', onPress: redirectToCreateMemory },
-            { text: 'Cancelar', onPress: handleOptionPress}
+          { text: 'Aceptar', onPress: redirectToCreateMemory },
+          { text: 'Cancelar', onPress: handleOptionPress }
         ],
         { cancelable: false }
-    );
+      );
     } else {
       redirectToCreateMemory();
     }
@@ -63,29 +63,34 @@ const SongSuggestion = ({ songData }) => {
           <MaterialCommunityIcons name="dots-vertical" size={30} color="gray" />
         </TouchableOpacity>
       </View>
-      <Modal visible={showOptions} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Image source={artwork} style={styles.imageSelected} />
-            <Text style={styles.songName}>{title}</Text>
-            <Text style={styles.artistName}>{artist}</Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.cyanButton]}
-                onPress={createMemory}
-              >
-                <Text style={styles.buttonText}>Crear Memoria Musical</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.salmonButton]}
-                onPress={handleOptionPress}
-              >
-                <Text style={styles.buttonText}>Cerrar</Text>
-              </TouchableOpacity>
+      {screenSelected === 'search' && (
+        <Modal visible={showOptions} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Image source={artwork} style={styles.imageSelected} />
+              <Text style={styles.songName}>{title}</Text>
+              <Text style={styles.artistName}>{artist}</Text>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.button, styles.cyanButton]}
+                  onPress={createMemory}
+                >
+                  <Text style={styles.buttonText}>Crear Memoria Musical</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.salmonButton]}
+                  onPress={handleOptionPress}
+                >
+                  <Text style={styles.buttonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      )}
+      {screenSelected === 'playlist' && (
+        <View></View>
+      )}
     </TouchableOpacity>
   );
 };
@@ -149,7 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
     marginHorizontal: 5,
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
   },
   salmonButton: {

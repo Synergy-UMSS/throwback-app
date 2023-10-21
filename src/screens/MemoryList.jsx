@@ -43,7 +43,8 @@ const MemoryList = ({ navigation }) => {
     );
   }
   
-  const listaEmociones = ['worried', 'genial', 'tired',  'leisurely', 'no_trouble', 'sad','happy','confused', 'speechless', 'angry',  'pluff'];
+  // const listaEmociones = ['worried', 'genial', 'tired',  'leisurely', 'no_trouble', 'sad','happy','confused', 'speechless', 'angry',  'pluff'];
+  const listaEmociones = ['emo1','emo2','emo3','emo4','emo5','emo6','emo7','emo8','emo9','emo10','emo11','emo12','emo13','emo14',];
   return (
     <View style={styles.container}>
       <FlatList

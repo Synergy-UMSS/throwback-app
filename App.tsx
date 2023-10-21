@@ -64,7 +64,7 @@ function MemoryNavigator() {
       }}
       >
       <Stack.Screen 
-          name="Tus memorias musicales" 
+          name="Tus Memorias Musicales" 
           component={MemoryList} 
           options={{
             headerStyle: {

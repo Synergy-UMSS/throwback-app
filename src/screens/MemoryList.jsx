@@ -31,6 +31,7 @@ const MemoryList = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
   // control de lista vacia
+  // if (true) {
   if (data.length === 0) {
     return (
       <View style={styles.container}>

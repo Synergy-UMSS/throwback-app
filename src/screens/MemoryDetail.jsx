@@ -96,10 +96,6 @@ const MemoryDetail = ({ route, navigation}) => {
           {memory.descripcion_memoria}
         </Text>
 
-        <Text style={styles.tdate}>
-          {"Fecha:"}
-        </Text>
-        
         <Text style={styles.tsong}>
           {"Canción vinculada al recuerdo:"}
         </Text>

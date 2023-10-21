@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import firestore from '@react-native-firebase/firestore';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -23,21 +24,37 @@ const Library = () => {
 
   const MAX_NAME_LENGTH = 50;
 
+
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
     } else {
       setError('');
-      console.log('Se ha creado la playlist:', name);
-      const updatedPlaylists = [name, ...playlists];
-      setPlaylists(updatedPlaylists);
       const color = initialColors[colorIndex % initialColors.length];
-      setPlaylistColors({ ...playlistColors, [name]: color });
-      setColorIndex((prevIndex) => prevIndex + 1);
-      setPlaylistName('');
-      setShowModal(false);
+      const timestamp = new Date().getTime();
+      const playlistData = {
+        name: name,
+        createDate: timestamp,
+      };
+
+      firestore()
+        .collection('playlists') 
+        .add(playlistData)
+        .then((docRef) => {
+          console.log('Se ha creado la playlist:', name);
+          const updatedPlaylists = [name, ...playlists];
+          setPlaylists(updatedPlaylists);
+          setPlaylistColors({ ...playlistColors, [name]: color });
+          setColorIndex((prevIndex) => prevIndex + 1);
+          setPlaylistName('');
+          setShowModal(false);
+        })
+        .catch((error) => {
+          console.error('Error al crear la playlist:', error);
+        });
     }
   };
+
 
   const handleSearch = () => {
     // Posible lógica para el Search

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
-import PreviewMemory from '../components/PreviewMemory';
-import MemoryDetail from './MemoryDetail';
 import firestore from '@react-native-firebase/firestore';
 import MiniPlayer from '../components/MiniPlayer';
 import EmotionWithMemory from '../components/EmotionWithMemory';
@@ -9,7 +7,8 @@ import EmotionWithMemory from '../components/EmotionWithMemory';
 const MemoryList = ({ navigation }) => {
   // navegacion
   const abrirDetalles = (id, index) => {
-    navigation.navigate('MemoryDetail', { memoriaId: id, index: index });
+    emotionWrapp = listaEmociones[index % listaEmociones.length];
+    navigation.navigate('MemoryDetail', { memoriaId: id, index: index, emotion: emotionWrapp});
   };
   
   // firebase

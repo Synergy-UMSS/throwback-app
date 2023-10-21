@@ -53,10 +53,10 @@ const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
         "¿Estás seguro de que deseas eliminar esta memoria?",
         [
             {
-                text: "No",
+                text: "Cancelar",
                 style: "cancel"
             },
-            { text: "Sí", onPress: () => deleteMemoryFromFirestore(memoria.id) }
+            { text: "Aceptar", onPress: () => deleteMemoryFromFirestore(memoria.id) }
         ]
     );
   }

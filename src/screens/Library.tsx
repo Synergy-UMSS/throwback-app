@@ -33,7 +33,6 @@ const Library = () => {
       setShowModal(false);
     }
   };
-   
 
   const handleSearch = () => {
     // Posible lógica para el Search
@@ -43,7 +42,7 @@ const Library = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu biblioteca</Text>
-        <View style={styles.buttonContainer}>
+        <View style={[styles.buttonContainer, { justifyContent: 'space-between', width: '30%', marginRight: 20 }]}>
           <TouchableOpacity style={styles.button} onPress={handleSearch}>
             <Ionicons name="search" size={28} color="black" />
           </TouchableOpacity>
@@ -75,11 +74,11 @@ const Library = () => {
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
             <TextInput
-  style={styles.input}
-  placeholder="Nombre de la playlist"
-  value={playlistName}
-  onChangeText={(text) => setPlaylistName(text.slice(0, MAX_NAME_LENGTH))}
-/>
+              style={styles.input}
+              placeholder="Nombre de la playlist"
+              value={playlistName}
+              onChangeText={(text) => setPlaylistName(text.slice(0, MAX_NAME_LENGTH))}
+            />
             <View style={styles.buttonGroup}>
               <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
                 <Text style={styles.buttonText}>Crear</Text>
@@ -94,6 +93,7 @@ const Library = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    marginRight: 20,
   },
   button: {
     paddingHorizontal: 20,
@@ -203,7 +202,5 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
 });
-
-
 
 export default Library;

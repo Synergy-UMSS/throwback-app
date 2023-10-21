@@ -47,7 +47,7 @@ const Library = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
-        <View style={[styles.buttonContainer, { justifyContent: 'space-between', width: '30%', marginRight: 20 }]}>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleSearch}>
             <Ionicons name="search" size={28} color="black" />
           </TouchableOpacity>
@@ -58,10 +58,10 @@ const Library = () => {
       </View>
       {playlists.length === 0 ? (
         <View style={styles.content}>
-          <Text style={styles.message}>Aún no tienes ninguna playlist, presiona "+".</Text>
+          <Text style={styles.message}>Aún no tienes ninguna playlist, presiona "+" para crear una.</Text>
         </View>
       ) : (
-        <ScrollView style={styles.content}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           {playlists.map((playlist, index) => {
             const color = playlistColors[playlist] || initialColors[index % initialColors.length];
             return (
@@ -73,37 +73,36 @@ const Library = () => {
           })}
         </ScrollView>
       )}
-        <Modal visible={showModal} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.customModalContent}>
-              <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
-              <View style={{ marginBottom: 20, width: '100%' }}>
-                <TextInput
-                  style={[styles.input, { width: '100%' }]}
-                  value={playlistName}
-                  onChangeText={(text) => {
-                    setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
-                    setError('');
-                  }}
-                />
-                {error ? <Text style={styles.errorText}>{error}</Text> : null}
-              </View>
-              <View style={styles.buttonGroup}>
-                <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
-                  <Text style={styles.buttonText}>Crear</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
-                  <Text style={styles.buttonText}>Cerrar</Text>
-                </TouchableOpacity>
-              </View>
+      <Modal visible={showModal} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.customModalContent}>
+            <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
+            <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+              <TextInput
+                style={styles.input}
+                value={playlistName}
+                onChangeText={(text) => {
+                  setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                  setError('');
+                }}
+              />
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            </View>
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
+                <Text style={styles.buttonText}>Crear</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
+                <Text style={styles.buttonText}>Cerrar</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
     </View>
   );
 };
- 
-//My styleees
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -113,13 +112,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 10,
   },
   title: {
     fontFamily: 'Arial',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
   },
@@ -131,12 +129,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: 50,
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  scrollContent: {
+    paddingHorizontal: 10,
   },
   modalContainer: {
     flex: 1,
@@ -159,7 +162,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-     width: '100%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -176,14 +178,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     borderRadius: 10,
-    marginRight: 10,
+    marginRight: 5,
   },
   closeButton: {
     backgroundColor: '#4ADCC8',
     flex: 1,
     padding: 15,
     borderRadius: 10,
-    marginLeft: 10,
+    marginLeft: 5,
   },
   buttonText: {
     color: '#FFFFFF',
@@ -193,12 +195,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#9DE0D2',
     padding: 20,
     marginVertical: 10,
+    marginHorizontal: 10,
     borderRadius: 10,
-  },
-  playlistText: {
-    color: 'black',
-    fontSize: 16,
-    textAlign: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 5,
   },
   playlistName: {
     color: 'black',
@@ -215,7 +221,18 @@ const styles = StyleSheet.create({
     color: 'red',
     alignSelf: 'flex-start',
     fontSize: 12,
-    marginTop: -20, 
+    marginTop: -20,
+  },
+  inputContainer: {
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.55,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 

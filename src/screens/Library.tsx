@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 
-type LibraryProps = {
-  navigation: StackNavigationProp<{}>;
-};
-
-const Library: React.FC<LibraryProps> = ({ navigation }) => {
+const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
-  const nav = useNavigation();
-  
-const initialColors = ['#C7A9D5','#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
-const [colorIndex, setColorIndex] = useState(0);
-const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
+  const [colorIndex, setColorIndex] = useState(0);
+  const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
 
+  const initialColors = ['#C7A9D5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
 
   const handlePressMore = () => {
     setShowModal(true);
@@ -27,13 +19,24 @@ const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     setShowModal(false);
   };
 
+  const MAX_NAME_LENGTH = 50;
+
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() !== '') {
+      console.log('Se ha creado la playlist:', name);
       const updatedPlaylists = [name, ...playlists];
       setPlaylists(updatedPlaylists);
+      const color = initialColors[colorIndex % initialColors.length];
+      setPlaylistColors({ ...playlistColors, [name]: color });
+      setColorIndex((prevIndex) => prevIndex + 1);
       setPlaylistName('');
       setShowModal(false);
     }
+  };
+   
+
+  const handleSearch = () => {
+    // Posible lógica para el Search
   };
 
   return (
@@ -41,6 +44,9 @@ const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
       <View style={styles.header}>
         <Text style={styles.title}>Tu biblioteca</Text>
         <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSearch}>
+            <Ionicons name="search" size={28} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handlePressMore}>
             <Ionicons name="add" size={28} color="black" />
           </TouchableOpacity>
@@ -52,23 +58,16 @@ const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
         </View>
       ) : (
         <ScrollView style={styles.content}>
-        {playlists.map((playlist, index) => {
-          let color;
-          if (playlistColors[playlist]) {
-            color = playlistColors[playlist];
-          } else {
-            color = initialColors[colorIndex % initialColors.length];
-            setColorIndex(colorIndex + 1);
-            setPlaylistColors({ ...playlistColors, [playlist]: color });
-          }
-          return (
-            <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
-              <Text style={styles.playlistName}>{playlist}</Text>
-              <Text style={styles.playlistLabel}>Playlist</Text>
-            </View>
-          );
-        }).reverse()}
-      </ScrollView>
+          {playlists.map((playlist, index) => {
+            const color = playlistColors[playlist] || initialColors[index % initialColors.length];
+            return (
+              <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
+                <Text style={styles.playlistName}>{playlist}</Text>
+                <Text style={styles.playlistLabel}>Playlist</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
       )}
 
       <Modal visible={showModal} animationType="slide" transparent={true}>
@@ -76,11 +75,11 @@ const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
             <TextInput
-              style={styles.input}
-              placeholder="Nombre de la playlist"
-              value={playlistName}
-              onChangeText={(text) => setPlaylistName(text)}
-            />
+  style={styles.input}
+  placeholder="Nombre de la playlist"
+  value={playlistName}
+  onChangeText={(text) => setPlaylistName(text.slice(0, MAX_NAME_LENGTH))}
+/>
             <View style={styles.buttonGroup}>
               <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
                 <Text style={styles.buttonText}>Crear</Text>
@@ -115,12 +114,12 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   buttonContainer: {
-    alignItems: 'flex-end',
     flexDirection: 'row',
+    marginRight: 20,
   },
   button: {
-    padding: 10,
-    marginLeft: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   content: {
     paddingHorizontal: 20,
@@ -168,14 +167,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     borderRadius: 10,
-    marginRight: 5,
+    marginRight: 10,
   },
   closeButton: {
     backgroundColor: '#4ADCC8',
     flex: 1,
     padding: 15,
     borderRadius: 10,
-    marginLeft: 5,
+    marginLeft: 10,
   },
   buttonText: {
     color: '#FFFFFF',
@@ -204,5 +203,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
 });
+
+
 
 export default Library;

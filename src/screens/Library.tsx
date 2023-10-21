@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -10,13 +11,10 @@ const Library = () => {
   const [colorIndex, setColorIndex] = useState(0);
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState('');
-
   const initialColors = ['#C7A9D5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
-
   const handlePressMore = () => {
     setShowModal(true);
   };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setError('');
@@ -31,7 +29,7 @@ const Library = () => {
     } else {
       setError('');
       const color = initialColors[colorIndex % initialColors.length];
-      const timestamp = new Date().getTime();
+      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
@@ -55,11 +53,9 @@ const Library = () => {
     }
   };
 
-
   const handleSearch = () => {
     // Posible lógica para el Search
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -119,7 +115,6 @@ const Library = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -252,5 +247,4 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-
 export default Library;

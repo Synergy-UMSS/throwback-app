@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -11,7 +11,13 @@ type LibraryProps = {
 const Library: React.FC<LibraryProps> = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
+  const [playlists, setPlaylists] = useState<string[]>([]);
   const nav = useNavigation();
+  
+const initialColors = ['#C7A9D5','#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
+const [colorIndex, setColorIndex] = useState(0);
+const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
+
 
   const handlePressMore = () => {
     setShowModal(true);
@@ -21,10 +27,13 @@ const Library: React.FC<LibraryProps> = ({ navigation }) => {
     setShowModal(false);
   };
 
-  const handleCreatePlaylist = (playlistName) => {
-    // Lógica para crear la playlist
-    console.log(`Se creó la playlist con el nombre: ${playlistName}`);
-    setShowModal(false);
+  const handleCreatePlaylist = (name: string) => {
+    if (name.trim() !== '') {
+      const updatedPlaylists = [name, ...playlists];
+      setPlaylists(updatedPlaylists);
+      setPlaylistName('');
+      setShowModal(false);
+    }
   };
 
   return (
@@ -37,33 +46,46 @@ const Library: React.FC<LibraryProps> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.content}>
-        <Text style={styles.message}>
-          Aún no tienes ninguna playlist, presiona "+".
-        </Text>
-      </View>
+      {playlists.length === 0 ? (
+        <View style={styles.content}>
+          <Text style={styles.message}>Aún no tienes ninguna playlist, presiona "+".</Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.content}>
+        {playlists.map((playlist, index) => {
+          let color;
+          if (playlistColors[playlist]) {
+            color = playlistColors[playlist];
+          } else {
+            color = initialColors[colorIndex % initialColors.length];
+            setColorIndex(colorIndex + 1);
+            setPlaylistColors({ ...playlistColors, [playlist]: color });
+          }
+          return (
+            <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
+              <Text style={styles.playlistName}>{playlist}</Text>
+              <Text style={styles.playlistLabel}>Playlist</Text>
+            </View>
+          );
+        }).reverse()}
+      </ScrollView>
+      )}
 
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.customModalContent}>
-            <Text style={styles.modalTitle}>Dale un nombre a tu playlist</Text>
+            <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
             <TextInput
               style={styles.input}
-              
+              placeholder="Nombre de la playlist"
               value={playlistName}
               onChangeText={(text) => setPlaylistName(text)}
             />
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.createButton]}
-                onPress={() => handleCreatePlaylist(playlistName)}
-              >
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
                 <Text style={styles.buttonText}>Crear</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.closeButton]}
-                onPress={handleCloseModal}
-              >
+              <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
                 <Text style={styles.buttonText}>Cerrar</Text>
               </TouchableOpacity>
             </View>
@@ -73,7 +95,6 @@ const Library: React.FC<LibraryProps> = ({ navigation }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -95,22 +116,13 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'flex-end',
-     flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: 'row',
   },
   button: {
     padding: 10,
     marginLeft: 10,
-    
-  button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
   },
   content: {
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: 20,
     marginTop: 50,
   },
@@ -126,6 +138,7 @@ const styles = StyleSheet.create({
   },
   customModalContent: {
     width: '80%',
+    maxWidth: 400,
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
@@ -138,31 +151,58 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: '100%', 
+    width: '100%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
+    borderRadius: 10,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   createButton: {
     backgroundColor: '#FA8071',
-    width: '45%',
-    marginRight: '5%',
+    flex: 1,
+    padding: 15,
     borderRadius: 10,
+    marginRight: 5,
   },
   closeButton: {
     backgroundColor: '#4ADCC8',
-    width: '45%',
-    marginLeft: '5%',
+    flex: 1,
+    padding: 15,
     borderRadius: 10,
+    marginLeft: 5,
   },
   buttonText: {
     color: '#FFFFFF',
     textAlign: 'center',
   },
-
-
+  playlistBox: {
+    backgroundColor: '#9DE0D2',
+    padding: 20,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  playlistText: {
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  playlistName: {
+    color: 'black',
+    fontSize: 18,
+    textAlign: 'left',
+    marginBottom: 5,
+  },
+  playlistLabel: {
+    color: 'gray',
+    fontSize: 14,
+    textAlign: 'left',
+  },
 });
 
 export default Library;

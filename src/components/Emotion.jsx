@@ -3,32 +3,39 @@ import { Image } from 'react-native';
 import { Dimensions } from 'react-native';
 import { StyleSheet } from 'react-native';
 
-import happy from '../assets/emotion/emo01.png';
-import no_trouble from '../assets/emotion/emo02.png';
-import angry from '../assets/emotion/emo03.png';
-import worried from '../assets/emotion/emo04.png';
-import genial from '../assets/emotion/emo05.png';
-import tired from '../assets/emotion/emo06.png';
-import sad from '../assets/emotion/emo07.png';
-import leisurely from '../assets/emotion/emo08.png';
-import confused from '../assets/emotion/emo09.png';
-import speechless from '../assets/emotion/emo10.png';
-import pluff from '../assets/emotion/emo11.png';
+import emo1 from '../assets/emotion/1.png';
+import emo2 from '../assets/emotion/2.png';
+import emo3 from '../assets/emotion/3.png';
+import emo4 from '../assets/emotion/4.png';
+import emo5 from '../assets/emotion/5.png';
+import emo6 from '../assets/emotion/6.png';
+import emo7 from '../assets/emotion/7.png';
+import emo8 from '../assets/emotion/8.png';
+import emo9 from '../assets/emotion/9.png';
+import emo10 from '../assets/emotion/10.png';
+import emo11 from '../assets/emotion/11.png';
+import emo12 from '../assets/emotion/12.png';
+import emo13 from '../assets/emotion/13.png';
+import emo14 from '../assets/emotion/14.png';
+
 
 const screenWidth = Dimensions.get('window').width;
 const Emocion = ({ nombre }) => {
     const emociones = {
-        happy,
-        no_trouble,
-        angry,
-        worried,
-        genial,
-        tired,
-        sad,
-        leisurely,
-        confused,
-        speechless,
-        pluff,
+        emo1,
+        emo2,
+        emo3,
+        emo4,
+        emo5,
+        emo6,
+        emo7,
+        emo8,
+        emo9,
+        emo10,
+        emo11,
+        emo12,
+        emo13,
+        emo14,
     };
     return <Image 
     style={styles.imagen}

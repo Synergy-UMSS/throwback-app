@@ -14,17 +14,20 @@ function getColorForEmotion(emotion) {
   return emociones[emotion] || "#000000";
 }
 const emociones = {
-  happy: "#FED65D",       
-  no_trouble: "#39CE7D",  
-  angry: "#FF526B",       
-  worried: "#CCA7D7",     
-  genial: "#FFAE5D",      
-  tired: "#7DA4C1",       
-  sad: "#778391",         
-  leisurely: "#D2E6A6",   
-  confused: "#B4B2A2",     
-  speechless: "#B69B77",
-  pluff: "#FFACA8",  
+  emo1: "#F6EA7E",       
+  emo2: "#FBBAA4",  
+  emo3: "#C7A9D5",       
+  emo4: "#FFC1D8",     
+  emo5: "#F0CC8B",      
+  emo6: "#B6BFD4",       
+  emo7: "#FFC1D8",         
+  emo8: "#FBBAA4",   
+  emo9: "#F6EA7E",     
+  emo10: "#9DE0D2",
+  emo11: "#B6BFD4",
+  emo12: "#F0CC8B",
+  emo13: "#9DE0D2",
+  emo14: "#C7A9D5",  
 };
 // aclarar un color hexadecimal
 function aclararColor(hex, porcentaje=0.2) {

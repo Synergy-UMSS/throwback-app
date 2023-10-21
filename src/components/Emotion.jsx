@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
       width: screenWidth * 0.2,
       height: screenWidth * 0.2, // control
       resizeMode: 'contain',
-    //   elevation:10,
     //   backgroundColor:'red',
     //   marginRight:10,
     //   marginLeft:10,

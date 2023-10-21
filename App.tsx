@@ -12,7 +12,6 @@ import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
 import Playlist from './src/screens/Playlist';
 import Library from './src/screens/Library';
-import Home from './src/screens/Home';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -22,7 +21,7 @@ import {RootStackParamList} from './src/utils/types';
 import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
 import { MenuProvider } from 'react-native-popup-menu';
-
+import LinearGradient from 'react-native-linear-gradient';
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -103,20 +102,48 @@ const App = () => {
   function Movible() {
     return (
       <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: '#ffffff',
-          tabBarInactiveTintColor: '#b5b3b3',
-          tabBarStyle: {
-            backgroundColor: '#787474',
+      screenOptions={({ route }) => ({
+        tabBarBackground: () => (
+            <LinearGradient
+                colors={['rgba(120, 116, 116, 0.0)', 'rgba(38, 38, 38, 0.9)']}
+                style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: -1,
+                    height: 60,
+                }}
+            />
+        ),
+        tabBarActiveTintColor: '#ffffff',
+        // tabBarInactiveTintColor: '#e4e6dc', 
+        
+        tabBarInactiveTintColor: '#CECFC8',
+        tabBarStyle: {
+            backgroundColor: 'transparent',
+            borderTopWidth: 0,
+            borderColor:'black',
+            position: 'absolute',
+            elevation:0,
           },
-        }}>
+    })}
+        // // // //  
+        // screenOptions={{
+        //   tabBarActiveTintColor: '#ffffff',
+        //   tabBarInactiveTintColor: '#b5b3b3',
+        //   tabBarStyle: {
+        //     backgroundColor: '#787474',
+        //     // backgroundColor: 'transparent',
+        //   },
+        // }}
+        >
         <Tab.Screen
           name="Home_memory"
           component={MemoryNavigator}
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({color, size}) => (
-              <Icon name="home" color={color} size={size} />
+              <Icon name="home" color={color} size={size+8} />
             ),
             headerShown: false,
           }}

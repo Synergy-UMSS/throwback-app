@@ -1,27 +1,21 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
 
-const Playlist = () => {
+const Playlist = ({ navigation }) => {
 	let imgs;
-	let cond = false;
-	const imagePlaylist = {
-		display: 'flex',
-		backgroundColor: 'white',
-		width: cond ? 90 : 190,
-		height: cond ? 110 : 230,
-	};
-
-		
 	let songsAdded = songs;
-	console.log('musics', songsAdded);
+	let cond = songsAdded.length > 1;
 	const displaySongsInPlayLists = () => {
 		return (
 			<View>
 				{songsAdded.map((song, index) => (
-					<SongSuggestion 
+					<SongSuggestion
 						key={index}
 						songData={song}
 						screenSelected='playlist'
@@ -30,7 +24,12 @@ const Playlist = () => {
 			</View>
 		)
 	};
-	
+	const imagePlaylist = {
+		display: 'flex',
+		backgroundColor: 'white',
+		width: cond ? 90 : 190,
+		height: cond ? 110 : 230,
+	};
 	if (cond) {
 		imgs = (
 			<>
@@ -56,22 +55,27 @@ const Playlist = () => {
 	}
 	return (
 		<SafeAreaView style={style.MainMainContainer}>
-			<View style={style.portada}>
-				<View style={style.containerimgs}>
-					{imgs}
-				</View>
-			</View>
-			<View style={style.mainContainer}>
-				<View style={style.container}>
-					<Image source={require('../../assets-prueba/images/Lust_for_Life.png')}
-						style={style.img} />
-					<View style={style.textContainer}>
-						<Text style={style.texts}>'13 beaches'</Text>
-						<Text style={style.texts}>'Lana del Rey'</Text>
+			<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
+				<Ionicons name="arrow-back" size={30} color="white" />
+			</TouchableOpacity>
+			<ScrollView>
+				<View style={style.portada}>
+					<View style={style.containerimgs}>
+						{imgs}
 					</View>
 				</View>
-				{displaySongsInPlayLists()}
-			</View>
+				<View style={style.mainContainer}>
+					<View style={style.container}>
+						<TouchableOpacity style={style.add} onPress={() => navigation.navigate('Search')}>
+							<Octicons name='diff-added' size={40} color='black' />
+						</TouchableOpacity>
+						<View style={style.textContainer}>
+							<Text style={style.texts}>Agregar una canción</Text>
+						</View>
+					</View>
+					{displaySongsInPlayLists()}
+				</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
@@ -114,10 +118,11 @@ const style = StyleSheet.create({
 		/*justifyContent: 'center',*/
 		marginTop: 20,
 		margin: 5,
-		height: 50,
+		/*height: 50,*/
 		borderWidth: 1,
 		borderColor: 'black',
 		backgroundColor: 'white',
+		borderRadius: 20,
 	},
 	img: {
 		margin: 10,
@@ -127,5 +132,13 @@ const style = StyleSheet.create({
 	texts: {
 		color: 'black',
 	},
-
+	flechita: {
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
+		paddingLeft: 15,
+		paddingTop: 15,
+	},
+	add: {
+		margin: 10,
+	}
 });

@@ -45,24 +45,38 @@ const formatDate = date => {
 const MemoryDetail = ({ route, navigation}) => {
   const {emotion} = route.params;
   const { memoriaId, index } = route.params;
-  const [memory, setMemory] = useState(null);
-  const { setCurrentSong } = usePlayerStore();
+  const { memorie, song } = route.params;
 
-  useEffect(() => {
-    const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
-      if (doc.exists) {
-        setMemory({ id: doc.id, ...doc.data() });
-      } else {
-        console.log('Documento no existe!');
-      }
-    });
-    return () => unsubscribe();
-  }, [memoriaId]);
+  // if (memorie !== undefined) {
+  //   console.log(memorie.title);
+  // } else {
+  //   console.log("memo is undefined");
+  // }
+  // if (song !== undefined) {
+  //   console.log(song.title);
+  // } else {
+  //   console.log("Song is undefined");
+  // }
 
-  if (!memory) return null;
 
-  const songg = songs.find(s => s.title === memory.titulo_cancion);
-  const songArtwork = songg ? songg.artwork : null;
+  // const [memory, setMemory] = useState(null);
+  // const { setCurrentSong } = usePlayerStore();
+
+  // useEffect(() => {
+  //   const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
+  //     if (doc.exists) {
+  //       setMemory({ id: doc.id, ...doc.data() });
+  //     } else {
+  //       console.log('Documento no existe!');
+  //     }
+  //   });
+  //   return () => unsubscribe();
+  // }, [memoriaId]);
+
+  // if (!memory) return null;
+
+  // const songg = songs.find(s => s.title === memory.titulo_cancion);
+  // const songArtwork = songg ? songg.artwork : null;
 
   const playSong = async () => {
     const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
@@ -75,17 +89,24 @@ const MemoryDetail = ({ route, navigation}) => {
     <ScrollView style={styles.scrollView}>
       <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(emotion)}]}>
         <Text style={styles.fechaText}>
-          {memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}
+          { typeof memorie !== 'undefined' ? memorie.memoryDate && formatDate(memorie.memoryDate.toDate()) : "FECHA" }
         </Text>
       </View>
       <View style={[styles.container, { backgroundColor: getColorForEmotion(emotion)}]}>
 
+        
         <View style={styles.emoContainer}>
-          <EmocionWrapped nombre={emotion} />
+          {/* <EmocionWrapped nombre={emotion} /> */}
+          {/* { typeof memorie !== 'undefined' ? memorie.emotion  : "EMOCION" } */}
+          <Text style={styles.fechaText}>
+          {"*IMAGEN DE LA EMOCION* "}
+          { typeof memorie !== 'undefined' ? memorie.emotion  : "EMOCION" }
+          </Text>
         </View>
 
         <Text style={styles.title}>
-          {memory.titulo_memoria}
+          { typeof memorie !== 'undefined' ? memorie.title  : "TITLE" }
+          {/* {memory.titulo_memoria} */}
         </Text>
 
         <Text style={styles.subtitle}>
@@ -93,7 +114,8 @@ const MemoryDetail = ({ route, navigation}) => {
         </Text>
 
         <Text style={styles.description}>
-          {memory.descripcion_memoria}
+        { typeof memorie !== 'undefined' ? memorie.description  : "DESCRIPCION" }
+          {/* {memory.descripcion_memoria} */}
         </Text>
 
         <Text style={styles.tsong}>
@@ -101,17 +123,16 @@ const MemoryDetail = ({ route, navigation}) => {
         </Text>
 
         <ItemSong
-          song={memory.titulo_cancion}
-          artist={memory.artista_cancion}
+          song={song.title}
+          artist={song.artist}
           onPlay={playSong}
-          imageUri={songArtwork || placeholderImage}
-          memoriaId={memoriaId}
+          imageUri={song.coverURL || placeholderImage}
+          // memoriaId={memoriaId}
         />
       </View>
     </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   scrollView: {

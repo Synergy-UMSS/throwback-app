@@ -1,46 +1,90 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 
-type LibraryProps = {
-  navigation: StackNavigationProp<{}>;
-};
-
-const Library: React.FC<LibraryProps> = ({ navigation }) => {
+const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
-  const nav = useNavigation();
-  
-const initialColors = ['#C7A9D5','#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
-const [colorIndex, setColorIndex] = useState(0);
-const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
-
-
+  const [colorIndex, setColorIndex] = useState(0);
+  const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
+  const [error, setError] = useState('');
+  const initialColors = ['#C7A9D5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
   const handlePressMore = () => {
     setShowModal(true);
   };
 
+useEffect(() => {
+  const unsubscribe = firestore()
+    .collection('playlists')
+    .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+    .onSnapshot((querySnapshot) => {
+      const playlistsData: string[] = [];
+      const colorsData: { [key: string]: string } = {};
+      querySnapshot.forEach((doc) => {
+        const { name, createDate } = doc.data();
+        playlistsData.push(name);
+        // Puedes ajustar esta lógica según tu implementación específica para obtener el color
+        const color = initialColors[Math.floor(Math.random() * initialColors.length)];
+        colorsData[name] = color;
+      });
+      setPlaylists(playlistsData);
+      setPlaylistColors(colorsData);
+    });
+
+          return () => unsubscribe();
+  }, []);
   const handleCloseModal = () => {
     setShowModal(false);
+    setError('');
   };
 
+  const MAX_NAME_LENGTH = 50;
+
+
   const handleCreatePlaylist = (name: string) => {
-    if (name.trim() !== '') {
-      const updatedPlaylists = [name, ...playlists];
-      setPlaylists(updatedPlaylists);
-      setPlaylistName('');
-      setShowModal(false);
+    if (name.trim() === '') {
+      setError('Este campo es obligatorio.');
+    } else {
+      setError('');
+      const color = initialColors[colorIndex % initialColors.length];
+      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+      const playlistData = {
+        name: name,
+        createDate: timestamp,
+      };
+
+      firestore()
+        .collection('playlists') 
+        .add(playlistData)
+        .then((docRef) => {
+          console.log('Se ha creado la playlist:', name);
+          const updatedPlaylists = [name, ...playlists];
+          setPlaylists(updatedPlaylists);
+          setPlaylistColors({ ...playlistColors, [name]: color });
+          setColorIndex((prevIndex) => prevIndex + 1);
+          setPlaylistName('');
+          setShowModal(false);
+        })
+        .catch((error) => {
+          console.error('Error al crear la playlist:', error);
+        });
     }
   };
 
+  const handleSearch = () => {
+    // Posible lógica para el Search
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Tu biblioteca</Text>
+        <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSearch}>
+            <Ionicons name="search" size={28} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handlePressMore}>
             <Ionicons name="add" size={28} color="black" />
           </TouchableOpacity>
@@ -48,39 +92,36 @@ const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
       </View>
       {playlists.length === 0 ? (
         <View style={styles.content}>
-          <Text style={styles.message}>Aún no tienes ninguna playlist, presiona "+".</Text>
+          <Text style={styles.message}>Aún no tienes ninguna playlist, presiona "+" para crear una.</Text>
         </View>
       ) : (
-        <ScrollView style={styles.content}>
-        {playlists.map((playlist, index) => {
-          let color;
-          if (playlistColors[playlist]) {
-            color = playlistColors[playlist];
-          } else {
-            color = initialColors[colorIndex % initialColors.length];
-            setColorIndex(colorIndex + 1);
-            setPlaylistColors({ ...playlistColors, [playlist]: color });
-          }
-          return (
-            <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
-              <Text style={styles.playlistName}>{playlist}</Text>
-              <Text style={styles.playlistLabel}>Playlist</Text>
-            </View>
-          );
-        }).reverse()}
-      </ScrollView>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {playlists.map((playlist, index) => {
+            const color = playlistColors[playlist] || initialColors[index % initialColors.length];
+            return (
+              <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
+                <Text style={styles.playlistName}>{playlist}</Text>
+                <Text style={styles.playlistLabel}>Playlist</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
       )}
-
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'left' }]}>Dale un nombre a tu playlist</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nombre de la playlist"
-              value={playlistName}
-              onChangeText={(text) => setPlaylistName(text)}
-            />
+            <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+              <TextInput
+                style={styles.input}
+                value={playlistName}
+                onChangeText={(text) => {
+                  setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                  setError('');
+                }}
+              />
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            </View>
             <View style={styles.buttonGroup}>
               <TouchableOpacity style={styles.createButton} onPress={() => handleCreatePlaylist(playlistName)}>
                 <Text style={styles.buttonText}>Crear</Text>
@@ -104,31 +145,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 10,
   },
   title: {
     fontFamily: 'Arial',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
   },
   buttonContainer: {
-    alignItems: 'flex-end',
     flexDirection: 'row',
   },
   button: {
-    padding: 10,
-    marginLeft: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: 50,
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  scrollContent: {
+    paddingHorizontal: 10,
   },
   modalContainer: {
     flex: 1,
@@ -151,7 +195,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: '100%',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -185,12 +228,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#9DE0D2',
     padding: 20,
     marginVertical: 10,
+    marginHorizontal: 10,
     borderRadius: 10,
-  },
-  playlistText: {
-    color: 'black',
-    fontSize: 16,
-    textAlign: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 5,
   },
   playlistName: {
     color: 'black',
@@ -203,6 +250,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'left',
   },
+  errorText: {
+    color: 'red',
+    alignSelf: 'flex-start',
+    fontSize: 12,
+    marginTop: -20,
+  },
+  inputContainer: {
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.55,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
 });
-
 export default Library;

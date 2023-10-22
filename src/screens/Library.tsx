@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/native';
+import { usePlaylistStore } from '../store/playlistStore';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -15,6 +16,7 @@ const Library = () => {
   const colorSequence = ['#FBBAA4', '#F0CC8B', '#F6EA7E', '#BFEAAF', '#9DE0D2', '#B6BFD4', '#C7A9D5', '#FFC1D8'];
   const initialColors = ['#FBBAA4', '#F0CC8B', '#F6EA7E', '#BFEAAF', '#9DE0D2', '#B6BFD4', '#C7A9D5', '#FFC1D8'];
   const navigation = useNavigation();
+	const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
 
   const handlePressMore = () => {
     setShowModal(true);
@@ -26,8 +28,10 @@ const Library = () => {
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
+        setCurrentPlaylist({ id: playlistId }); 
         navigation.navigate('Playlist', { playlistName, playlistId });
-        console.log(playlistName, playlistId);
+        console.log(playlistId, playlistName);
+        console.log(currentPlaylist);
       } else {
         console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
       }

@@ -12,13 +12,15 @@ import { useRoute } from '@react-navigation/native';
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
 	const { playlistName, playlistId } = ruta.params;
-	const [songsAdded, setSongsAdded] = useState([]);
+	console.log('el view dice', playlistId);
+	const [localSongsAdded, setLocalSongsAdded] = useState([]);
+
 	useEffect(() => {
 		const unsubscribe = firestore().collection('playlists').doc(playlistId).onSnapshot(
 			(doc) => {
 				const playlistData = doc.data();
 				const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
-				setSongsAdded(songsData);
+				setLocalSongsAdded(songsData);
 			},
 			(error) => {
 				console.error('Error al obtener el documento:', error);
@@ -26,14 +28,15 @@ const Playlist = ({ navigation }) => {
 		);
 
 		return () => unsubscribe();
-	}, []);
+	}, [playlistId]);
+
 	let imgs;
-	/*let songsAdded = songs;*/
-	let cond = songsAdded.length > 3;
+	let cond = localSongsAdded.length > 3;
+
 	const displaySongsInPlayLists = () => {
 		return (
 			<View>
-				{songsAdded.map((song, index) => (
+				{localSongsAdded.map((song, index) => (
 					<SongSuggestion
 						key={index}
 						songData={song}
@@ -53,38 +56,38 @@ const Playlist = ({ navigation }) => {
 	if (cond) {
 		imgs = (
 			<>
-				{songsAdded[0].artwork ? (
-					typeof songsAdded[0].artwork === 'number' ? (
-						<Image source={songsAdded[0].artwork} style={imagePlaylist} />
+				{localSongsAdded[0].artwork ? (
+					typeof localSongsAdded[0].artwork === 'number' ? (
+						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
 					) : (
-						<Image source={{ uri: songsAdded[0].artwork }} style={imagePlaylist} />
+						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
 					)
 				) : (
 					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
 				)}
-				{songsAdded[1].artwork ? (
-					typeof songsAdded[1].artwork === 'number' ? (
-						<Image source={songsAdded[1].artwork} style={imagePlaylist} />
+				{localSongsAdded[1].artwork ? (
+					typeof localSongsAdded[1].artwork === 'number' ? (
+						<Image source={localSongsAdded[1].artwork} style={imagePlaylist} />
 					) : (
-						<Image source={{ uri: songsAdded[1].artwork }} style={imagePlaylist} />
+						<Image source={{ uri: localSongsAdded[1].artwork }} style={imagePlaylist} />
 					)
 				) : (
 					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
 				)}
-				{songsAdded[2].artwork ? (
-					typeof songsAdded[2].artwork === 'number' ? (
-						<Image source={songsAdded[2].artwork} style={imagePlaylist} />
+				{localSongsAdded[2].artwork ? (
+					typeof localSongsAdded[2].artwork === 'number' ? (
+						<Image source={localSongsAdded[2].artwork} style={imagePlaylist} />
 					) : (
-						<Image source={{ uri: songsAdded[2].artwork }} style={imagePlaylist} />
+						<Image source={{ uri: localSongsAdded[2].artwork }} style={imagePlaylist} />
 					)
 				) : (
 					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
 				)}
-				{songsAdded[3].artwork ? (
-					typeof songsAdded[3].artwork === 'number' ? (
-						<Image source={songsAdded[3].artwork} style={imagePlaylist} />
+				{localSongsAdded[3].artwork ? (
+					typeof localSongsAdded[3].artwork === 'number' ? (
+						<Image source={localSongsAdded[3].artwork} style={imagePlaylist} />
 					) : (
-						<Image source={{ uri: songsAdded[3].artwork }} style={imagePlaylist} />
+						<Image source={{ uri: localSongsAdded[3].artwork }} style={imagePlaylist} />
 					)
 				) : (
 					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
@@ -93,15 +96,15 @@ const Playlist = ({ navigation }) => {
 		);
 
 	} else {
-		if (songsAdded.length > 0) {
+		if (localSongsAdded.length > 0) {
 			imgs = (
 				<>
 				{
-				songsAdded[0].artwork ? (
-					typeof songsAdded[0].artwork === 'number' ? (
-						<Image source={songsAdded[0].artwork} style={imagePlaylist} />
+				localSongsAdded[0].artwork ? (
+					typeof localSongsAdded[0].artwork === 'number' ? (
+						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
 					) : (
-						<Image source={{ uri: songsAdded[0].artwork }} style={imagePlaylist} />
+						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
 					)
 				) : (
 				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
@@ -122,6 +125,9 @@ return (
 				<View style={style.containerimgs}>
 					{imgs}
 				</View>
+			</View>
+			<View style={style.textTitle}>
+				<Text style={style.mtext}>{playlistName}</Text>
 			</View>
 			<View style={style.mainContainer}>
 				<View style={style.container}>
@@ -164,6 +170,17 @@ const style = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: 15,
+	},
+	textTitle:{
+		alignItems: 'center',
+		justifyContent: 'center',
+		padding: 10,
+	},
+	mtext:{
+		color: 'black', 
+		fontSize: 20,
+		fontWeight: '400',
+		textTransform: 'uppercase',
 	},
 	mainContainer: {
 		backgroundColor: 'pink',

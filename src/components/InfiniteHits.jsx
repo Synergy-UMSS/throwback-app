@@ -19,7 +19,7 @@ export function InfiniteHits({ hitComponent: Hit, ...props }) {
         }
       }}
       renderItem={({ item }) => (
-        <View style={styles.item}>
+        <View>
           <Hit hit={item} />
         </View>
       )}
@@ -31,8 +31,5 @@ const styles = StyleSheet.create({
   separator: {
     borderBottomWidth: 1,
     borderColor: '#ddd',
-  },
-  item: {
-    padding: 18,
   },
 });

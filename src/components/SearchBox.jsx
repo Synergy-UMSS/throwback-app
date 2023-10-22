@@ -31,10 +31,11 @@ export function SearchBox(props) {
           style={styles.input}
           value={inputValue}
           onChangeText={setQuery}
-          placeholder="Buscar en Spotify"
+          placeholder="¿Qué es lo que quieres escuchar?"
         />
       </View>
     </View>
+    
   );
 }
 

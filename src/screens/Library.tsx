@@ -24,19 +24,19 @@ const Library = () => {
   };
 
   const MAX_NAME_LENGTH = 50;
-
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
     } else {
       setError('');
-      const color = colorSequence[playlists.length % colorSequence.length];
+      const colorIndex = playlists.length % colorSequence.length;
+      const color = colorSequence[colorIndex];
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
       };
-
+  
       firestore()
         .collection('playlists')
         .add(playlistData)
@@ -53,11 +53,10 @@ const Library = () => {
         });
     }
   };
-
   const handleSearch = () => {
     // Posible lógica para el Search
   };
-
+  
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')

@@ -8,11 +8,13 @@ import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
+import { usePlaylistStore } from '../store/playlistStore';
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
 	const { playlistName, playlistId } = ruta.params;
-	console.log('el view dice', playlistId);
+	const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+	console.log('el view dice', currentPlaylist.id);
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
 
 	useEffect(() => {
@@ -33,7 +35,7 @@ const Playlist = ({ navigation }) => {
 	let imgs;
 	let cond = localSongsAdded.length > 3;
 
-	const displaySongsInPlayLists = () => {
+	const displaySongsInPlayLists = () => { 
 		return (
 			<View>
 				{localSongsAdded.map((song, index) => (

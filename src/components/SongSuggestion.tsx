@@ -8,6 +8,7 @@ import firestore from '@react-native-firebase/firestore';
 
 const SongSuggestion = ({ songData, screenSelected }) => {
   const { title, artist, artwork, url } = songData;
+  console.log(title, artist, artwork);
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
@@ -58,15 +59,15 @@ const SongSuggestion = ({ songData, screenSelected }) => {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
           data.songs.push(song);
-          docRef.update({
+    docRef.update({
             songs: data.songs
-          })
-            .then(() => {
-              console.log('Dato agregado con éxito');
-            })
-            .catch((error) => {
-              console.error('Error al actualizar el documento:', error);
-            });
+    })
+      .then(() => {
+        console.log('Dato agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al actualizar el documento:', error);
+      });
             navigation.navigate('Playlist', {currentSong});
         } else {
           console.error('El campo songs no es un arreglo o no existe');

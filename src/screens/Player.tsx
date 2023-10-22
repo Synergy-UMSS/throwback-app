@@ -12,7 +12,7 @@ import { useSearchStore } from '../store/searchStore';
 import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
-import firestore, {firebase} from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 
 let color: string[] = [
 	'#C7A9D560',
@@ -28,23 +28,6 @@ const tracks = [];
 const Player = ({ navigation }) => {
 	const db = firebase.firestore();
 	const songsRef = db.collection('songs');
-	songsRef.get().then((querySnapshot) => {
-		const songs1 = [];
-		querySnapshot.forEach((doc) => {
-			const song = doc.data();
-			songs1.push(song);
-		});
-		songs1.forEach((song, index) => {
-		const track = {
-			id: song.id.toString(), 
-			url: song.songURL,
-			title: song.title,
-			artist: song.artist,
-			artwork: song.coverURL,
-		};
-		tracks.push(track);
-		});
-	});
 
 	const { clearRecentSearches, recentSearches, showHistory, currentSearch } =
 		useSearchStore();
@@ -86,7 +69,31 @@ const Player = ({ navigation }) => {
 	const { isPaused, setIsPaused } = useControlPlayer();
 
 	useEffect(() => {
-		setPlayer();
+		const fetchSongs = async () => {
+			try {
+				const querySnapshot = await songsRef.get();
+				const songs1 = [];
+				querySnapshot.forEach((doc) => {
+					const song = doc.data();
+					songs1.push(song);
+				});
+				songs1.forEach((song, index) => {
+					const track = {
+						id: song.id.toString(),
+						url: song.songURL,
+						title: song.title,
+						artist: song.artist,
+						artwork: song.coverURL,
+					};
+					tracks.push(track);
+				});
+				setPlayer();
+			} catch (e) {
+				console.error('Error al obtener las canciones:', e);
+			}
+		};
+
+		fetchSongs();
 	}, []);
 
 	useEffect(() => {
@@ -106,6 +113,10 @@ const Player = ({ navigation }) => {
 
 	const changeValuesTrack = async () => {
 		try {
+			const isPlayerInitialized = await TrackPlayer.isInitialized();
+			if (!isPlayerInitialized) {
+				await TrackPlayer.setupPlayer();
+			}
 			const trackIndex = await TrackPlayer.getCurrentTrack();
 			const track = await TrackPlayer.getTrack(currentSong.id);
 			if (track !== null) {
@@ -113,7 +124,7 @@ const Player = ({ navigation }) => {
 				setTrackTitle(title);
 				setTrackArtist(artist);
 				setTrackArtwork(artwork);
-				console.log('artwoooork:', artwork);
+				console.log('artwoooork:', artwork.uri);
 				if (isConnected) {
 					if (currentSong != lastSong) {
 						await TrackPlayer.skip(currentSong.id);
@@ -135,6 +146,7 @@ const Player = ({ navigation }) => {
 
 	useEffect(() => {
 		changeValuesTrack();
+		console.log('artwoooork real:', trackArtwork);
 	}, [currentSong]);
 
 	useEffect(() => {
@@ -153,10 +165,17 @@ const Player = ({ navigation }) => {
 
 			<View style={style.container}>
 				<View style={[style.imageWrapper, style.elevation]}>
-					<Image
-						source={trackArtwork || require('../assets/logo.png')}
-						style={style.musicImage}
-					/>
+					{trackArtwork && trackArtwork.uri ? (
+						<Image
+							source={{ uri: trackArtwork.uri }}
+							style={style.musicImage}
+						/>
+					) : (
+						<Image
+							source={require('../assets/logo.png')}
+							style={style.musicImage}
+						/>
+					)}
 				</View>
 				<View>
 					<Text style={style.songTitle}>{trackTitle}</Text>

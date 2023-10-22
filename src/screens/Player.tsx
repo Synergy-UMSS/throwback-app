@@ -146,7 +146,8 @@ const Player = ({ navigation }) => {
 
 	useEffect(() => {
 		changeValuesTrack();
-		console.log('artwoooork real:', trackArtwork);
+		console.log('artwoooork real b:', trackArtwork);
+		console.log('trackArtwork:', trackArtwork);
 	}, [currentSong]);
 
 	useEffect(() => {
@@ -165,16 +166,23 @@ const Player = ({ navigation }) => {
 
 			<View style={style.container}>
 				<View style={[style.imageWrapper, style.elevation]}>
-					{trackArtwork && trackArtwork.uri ? (
-						<Image
-							source={{ uri: trackArtwork.uri }}
-							style={style.musicImage}
-						/>
+					{trackArtwork ? (
+						trackArtwork.uri ? (
+							<Image
+								source={{ uri: trackArtwork.uri }}
+								style={style.musicImage}
+							/>
+						) : (
+							<Image
+								source={{uri: trackArtwork}}
+								style={style.musicImage}
+							/>
+						)
 					) : (
-						<Image
-							source={require('../assets/logo.png')}
-							style={style.musicImage}
-						/>
+					<Image
+						source={require('../assets/logo.png')}
+						style={style.musicImage}
+					/>
 					)}
 				</View>
 				<View>

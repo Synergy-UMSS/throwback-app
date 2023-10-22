@@ -9,6 +9,7 @@ import { usePlayerStore } from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
 import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
+import EmotionPicker from '../components/EmotionPicker';
 
 
 
@@ -108,16 +109,17 @@ const CrearMemoria = ({ navigation }) => {
         name="descripcionMemoria"
         defaultValue=""
       />
-          
-      <Text style={styles.label}>Fecha:</Text>
-      <TextInput
-        style={styles.input}
-        value={format(selectedDate, 'dd/MM/yyyy')} // Cambia el formato aquí
-        onFocus={() => setShowDatePicker(true)}
-        placeholder="dd/mm/aaaa"
-      />
-
-      {showDatePicker && (
+      //mostrar el campo de fecha y emocion en una sola linea    
+      <View style={styles.rowContainer}>
+        <View style={styles.rowItem}>
+          <Text style={styles.label}>Fecha:</Text>
+          <TextInput
+            style={styles.input}
+            value={format(selectedDate, 'dd/MM/yyyy')}
+            onFocus={() => setShowDatePicker(true)}
+            placeholder="dd/mm/aaaa"
+          />
+          {showDatePicker && (
         <DateTimePicker
           value={selectedDate}
           mode="date"
@@ -131,6 +133,12 @@ const CrearMemoria = ({ navigation }) => {
           maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
         />
       )}
+        </View>
+        <View style={styles.rowItem}>
+          <Text style={styles.label}>Emoción:</Text>
+          <EmotionPicker />
+        </View>
+      </View>
 
       <Text style={styles.label}>Canción vinculada:</Text>
       <View style={styles.marginBottom}>
@@ -199,6 +207,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignSelf: 'center',
   },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rowItem: {
+    flex: 1,
+    marginHorizontal: 8,
+  },  
 });
 
 export default CrearMemoria;

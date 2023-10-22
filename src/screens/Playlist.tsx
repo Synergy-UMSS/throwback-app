@@ -11,7 +11,7 @@ import firestore from '@react-native-firebase/firestore';
 const Playlist = ({ navigation }) => {
 	const [songsAdded, setSongsAdded] = useState([]);
 	useEffect(() => {
-		const unsubscribe = firestore().collection('playlists').doc('playlist_id').onSnapshot(
+		const unsubscribe = firestore().collection('playlists').doc('1lyE2g89CutAQXo25yKk').onSnapshot(
 			(doc) => {
         const playlistData = doc.data();
         const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío

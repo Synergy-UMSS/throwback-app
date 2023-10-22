@@ -40,9 +40,7 @@ function aclararColor(hex, porcentaje=0.2) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
-  
-
+const PreviewMemory = ({ memoria, song, onPress, index, emotion}) => {
   // color de memoria
   const color = getColorForEmotion(emotion);  
   const colorOscurecido = aclararColor(color);
@@ -63,7 +61,7 @@ const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
   const deleteMemoryFromFirestore = (memoryId) => {
     console.log('Memoria a eliminar');
     console.log(memoryId);
-    const reference = firestore().collection('memorias').doc(memoryId);
+    const reference = firestore().collection('memories').doc(memoryId);
     reference.delete()
     .then(() => {
         console.log('Memoria eliminada con éxito');
@@ -81,7 +79,8 @@ const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
       >
         <View style={styles.headerContainer}>
           <Text style={{...styles.titulo}}>
-            {memoria.titulo_memoria}
+            {/* {memoria.titulo_memoria} */}
+            {memoria.title}
           </Text>
           <Menu style={styles.menuContainer}>
             <MenuTrigger>
@@ -108,7 +107,7 @@ const PreviewMemory = ({ memoria, onPress, index, emotion}) => {
         <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
           <Text style={styles.iconoMusica}>🎵</Text>
           <Text style={styles.cancion}>
-            {memoria.titulo_cancion} - {memoria.artista_cancion}
+            { typeof song !== 'undefined' ? song.title : "TITLE" } - { typeof song !== 'undefined' ? song.artist : "ARTIST" }
           </Text>
         </View>
         </TouchableOpacity>

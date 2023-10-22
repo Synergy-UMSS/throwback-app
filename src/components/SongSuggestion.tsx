@@ -59,12 +59,12 @@ const SongSuggestion = ({ songData, screenSelected }) => {
           docRef.update({
             songs: data.songs
           })
-          .then(() => {
-            console.log('Dato agregado con éxito');
-          })
-          .catch((error) => {
-            console.error('Error al actualizar el documento:', error);
-          });
+            .then(() => {
+              console.log('Dato agregado con éxito');
+            })
+            .catch((error) => {
+              console.error('Error al actualizar el documento:', error);
+            });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -78,7 +78,15 @@ const SongSuggestion = ({ songData, screenSelected }) => {
     <TouchableOpacity onPress={handlePlayPress}>
       <View style={styles.container}>
         <View style={styles.songContainer}>
-          <Image source={artwork} style={styles.image} />
+          {artwork ? (
+            typeof artwork === 'number' ? (
+              <Image source={artwork} style={styles.image} />
+            ) : (
+              <Image source={{ uri: artwork }} style={styles.image} />
+            )
+          ) : (
+            <Image source={require('../assets/logo.png')} style={styles.image} />
+          )}
           <View style={styles.textContainer}>
             <Text style={styles.songName}>{title}</Text>
             <Text style={styles.artistName}>{artist}</Text>
@@ -92,22 +100,30 @@ const SongSuggestion = ({ songData, screenSelected }) => {
         <Modal visible={showOptions} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-            <View style={styles.closeButtonContainer}>
-              <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
-                <MaterialCommunityIcons name="close" size={30} color="gray" />
-              </TouchableOpacity>
-            </View>
-            <Image source={artwork} style={styles.imageSelected} />
-            <Text style={styles.songName}>{title}</Text>
-            <Text style={styles.artistName}>{artist}</Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
-                <Text style={styles.buttonText}>Crear Memoria Musical</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
-                <Text style={styles.buttonText}>Guardar en una playlist</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.closeButtonContainer}>
+                <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                  <MaterialCommunityIcons name="close" size={30} color="gray" />
+                </TouchableOpacity>
+              </View>
+              {artwork ? (
+                typeof artwork === 'number' ? (
+                  <Image source={artwork} style={styles.imageSelected} />
+                ) : (
+                  <Image source={{ uri: artwork }} style={styles.imageSelected} />
+                )
+              ) : (
+                <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
+              )}
+              <Text style={styles.songName}>{title}</Text>
+              <Text style={styles.artistName}>{artist}</Text>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
+                  <Text style={styles.buttonText}>Crear Memoria Musical</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
+                  <Text style={styles.buttonText}>Guardar en una playlist</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>

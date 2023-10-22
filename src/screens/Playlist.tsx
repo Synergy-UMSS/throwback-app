@@ -11,14 +11,12 @@ import { useRoute } from '@react-navigation/native';
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
-	const {playlistName} = ruta.params;
-	console.log(playlistName);
+	const {playlistName, playlistId} = ruta.params;
 	const [songsAdded, setSongsAdded] = useState([]);
 	useEffect(() => {
-		const unsubscribe = firestore().collection('playlists').doc(playlistName).onSnapshot(
+		const unsubscribe = firestore().collection('playlists').doc(playlistId).onSnapshot(
 			(doc) => {
 				const playlistData = doc.data();
-				console.log(playlistData);
 				const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
 				setSongsAdded(songsData);
 			},

@@ -20,9 +20,20 @@ const Library = () => {
     setShowModal(true);
   };
 
-  const handlePlayListView = (playlistName) => {
-    navigation.navigate('Playlist', {playlistName});
-    console.log(playlistName);
+  const handlePlayListView = async (playlistName) => {
+    try {
+      const playlistRef = await firestore().collection('playlists').where('name', '==', playlistName).get();
+      if (!playlistRef.empty) {
+        const playlistDoc = playlistRef.docs[0];
+        const playlistId = playlistDoc.id;
+        navigation.navigate('Playlist', { playlistName, playlistId });
+        console.log(playlistName, playlistId);
+      } else {
+        console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
+      }
+    } catch (error) {
+      console.error('Error al obtener la playlist:', error);
+    }
   };
 
 useEffect(() => {

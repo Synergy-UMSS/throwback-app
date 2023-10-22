@@ -3,13 +3,16 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'r
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
+import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
 
 const SongSuggestion = ({ songData, screenSelected }) => {
   const { title, artist, artwork, url } = songData;
+  console.log(artwork, 'this is the artwork');
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
+  const {currentPlaylist} = usePlaylistStore();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
@@ -49,8 +52,8 @@ const SongSuggestion = ({ songData, screenSelected }) => {
     checkSongMemory(currentSong);
   };
 
-  const backToPlaylist = async (song) => {
-    const docRef = firestore().collection('playlists').doc('playlist_id');
+  const addSongPlaylist = async (song) => {
+    const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
     docRef.get().then((doc) => {
       if (doc.exists) {
         const data = doc.data();
@@ -65,6 +68,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
             .catch((error) => {
               console.error('Error al actualizar el documento:', error);
             });
+            navigation.navigate('Playlist', {currentSong});
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -73,6 +77,11 @@ const SongSuggestion = ({ songData, screenSelected }) => {
       }
     });
   }
+
+  const backToPlaylist = () => {
+    addSongPlaylist(currentSong);
+  }
+
 
   return (
     <TouchableOpacity onPress={handlePlayPress}>

@@ -11,7 +11,7 @@ import { useRoute } from '@react-navigation/native';
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
-	const {playlistName, playlistId} = ruta.params;
+	const { playlistName, playlistId } = ruta.params;
 	const [songsAdded, setSongsAdded] = useState([]);
 	useEffect(() => {
 		const unsubscribe = firestore().collection('playlists').doc(playlistId).onSnapshot(
@@ -53,51 +53,90 @@ const Playlist = ({ navigation }) => {
 	if (cond) {
 		imgs = (
 			<>
-				<Image
-					source={songsAdded[0].artwork}
-					style={imagePlaylist} />
-				<Image
-					source={songsAdded[1].artwork}
-					style={imagePlaylist} />
-				<Image
-					source={songsAdded[2].artwork}
-					style={imagePlaylist} />
-				<Image
-					source={songsAdded[3].artwork}
-					style={imagePlaylist} />
+				{songsAdded[0].artwork ? (
+					typeof songsAdded[0].artwork === 'number' ? (
+						<Image source={songsAdded[0].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: songsAdded[0].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
+				{songsAdded[1].artwork ? (
+					typeof songsAdded[1].artwork === 'number' ? (
+						<Image source={songsAdded[1].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: songsAdded[1].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
+				{songsAdded[2].artwork ? (
+					typeof songsAdded[2].artwork === 'number' ? (
+						<Image source={songsAdded[2].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: songsAdded[2].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
+				{songsAdded[3].artwork ? (
+					typeof songsAdded[3].artwork === 'number' ? (
+						<Image source={songsAdded[3].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: songsAdded[3].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
 			</>
 		);
 
 	} else {
-		imgs = <Image
-			source={require('../../assets-prueba/images/Lust_for_Life.png')}
-			style={imagePlaylist} />;
+		if (songsAdded.length > 0) {
+			imgs = (
+				<>
+				{
+				songsAdded[0].artwork ? (
+					typeof songsAdded[0].artwork === 'number' ? (
+						<Image source={songsAdded[0].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: songsAdded[0].artwork }} style={imagePlaylist} />
+					)
+				) : (
+				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)
+				};</>
+			)
+		} else {
+	imgs = <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+}
 	}
-	return (
-		<SafeAreaView style={style.MainMainContainer}>
-			<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
-				<Ionicons name="arrow-back" size={30} color="white" />
-			</TouchableOpacity>
-			<ScrollView>
-				<View style={style.portada}>
-					<View style={style.containerimgs}>
-						{imgs}
+return (
+	<SafeAreaView style={style.MainMainContainer}>
+		<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
+			<Ionicons name="arrow-back" size={30} color="white" />
+		</TouchableOpacity>
+		<ScrollView>
+			<View style={style.portada}>
+				<View style={style.containerimgs}>
+					{imgs}
+				</View>
+			</View>
+			<View style={style.mainContainer}>
+				<View style={style.container}>
+					<TouchableOpacity style={style.add} onPress={() => navigation.navigate('Search')}>
+						<Octicons name='diff-added' size={40} color='black' />
+					</TouchableOpacity>
+					<View style={style.textContainer}>
+						<Text style={style.texts}>Agregar una canción</Text>
 					</View>
 				</View>
-				<View style={style.mainContainer}>
-					<View style={style.container}>
-						<TouchableOpacity style={style.add} onPress={() => navigation.navigate('Search')}>
-							<Octicons name='diff-added' size={40} color='black' />
-						</TouchableOpacity>
-						<View style={style.textContainer}>
-							<Text style={style.texts}>Agregar una canción</Text>
-						</View>
-					</View>
-					{displaySongsInPlayLists()}
-				</View>
-			</ScrollView>
-		</SafeAreaView>
-	);
+				{displaySongsInPlayLists()}
+			</View>
+		</ScrollView>
+	</SafeAreaView>
+);
 };
 
 export default Playlist;

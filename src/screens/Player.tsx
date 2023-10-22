@@ -36,7 +36,7 @@ const Player = ({ navigation }) => {
 		});
 		songs1.forEach((song, index) => {
 		const track = {
-			id: song.id, 
+			id: song.id.toString(), 
 			url: song.songURL,
 			title: song.title,
 			artist: song.artist,
@@ -45,7 +45,7 @@ const Player = ({ navigation }) => {
 		tracks.push(track);
 		});
 	});
-	
+
 	const { clearRecentSearches, recentSearches, showHistory, currentSearch } =
 		useSearchStore();
 	const { setCurrentSong, currentSong } = usePlayerStore();
@@ -53,9 +53,9 @@ const Player = ({ navigation }) => {
 		try {
 			await TrackPlayer.setupPlayer();
 			await TrackPlayer.add([currentSong]);
-			await TrackPlayer.add(songs);
-			let indexArb = Math.floor(Math.random() * (songs.length - 1));
-			await TrackPlayer.add([songs[indexArb]]);
+			await TrackPlayer.add(tracks);
+			let indexArb = Math.floor(Math.random() * (tracks.length - 1));
+			await TrackPlayer.add([tracks[indexArb]]);
 			if (isConnected) {
 				await TrackPlayer.play();
 			}
@@ -113,6 +113,7 @@ const Player = ({ navigation }) => {
 				setTrackTitle(title);
 				setTrackArtist(artist);
 				setTrackArtwork(artwork);
+				console.log('artwoooork:', artwork);
 				if (isConnected) {
 					if (currentSong != lastSong) {
 						await TrackPlayer.skip(currentSong.id);

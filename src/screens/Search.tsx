@@ -55,6 +55,7 @@ const Search = ({navigation}) => {
             key={index}
             songData={song}
             onOptionPress={handlePress}
+            screenSelected='search'
           />
         ))}
         {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}

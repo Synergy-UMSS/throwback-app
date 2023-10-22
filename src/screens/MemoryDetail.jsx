@@ -4,17 +4,29 @@ import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import songs from '../../data/Prueba/Data';
+import EmocionWrapped from '../components/EmotionWrapped';
+import { Dimensions } from 'react-native';
 
-const bgColor = [
-  '#C7A9D5',
-  '#CDF4C9',
-  '#B6BFD4',
-  '#F6EA7E',
-  '#F0CC8B',
-  '#FBBAA4',
-  '#FFC1D8',
-  '#9DE0D2',
-];
+const screenHeight = Dimensions.get('window').height;
+function getColorForEmotion(emotion) {
+  return emociones[emotion] || "#000000";
+}
+const emociones = {
+  emo1: "#F6EA7E",       
+  emo2: "#FBBAA4",  
+  emo3: "#C7A9D5",       
+  emo4: "#FFC1D8",     
+  emo5: "#F0CC8B",      
+  emo6: "#B6BFD4",       
+  emo7: "#FFC1D8",         
+  emo8: "#FBBAA4",   
+  emo9: "#F6EA7E",     
+  emo10: "#9DE0D2",
+  emo11: "#B6BFD4",
+  emo12: "#F0CC8B",
+  emo13: "#9DE0D2",
+  emo14: "#C7A9D5",  
+};
 
 import { usePlayerStore } from '../store/playerStore';
 
@@ -30,11 +42,12 @@ const formatDate = date => {
   return `${day}/${month}/${year}`;
 };
 
-const MemoryDetail = ({ route, navigation }) => {
+const MemoryDetail = ({ route, navigation}) => {
+  const {emotion} = route.params;
   const { memoriaId, index } = route.params;
   const [memory, setMemory] = useState(null);
   const { setCurrentSong } = usePlayerStore();
-  
+
   useEffect(() => {
     const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
       if (doc.exists) {
@@ -42,8 +55,7 @@ const MemoryDetail = ({ route, navigation }) => {
       } else {
         console.log('Documento no existe!');
       }
-    }); 
-
+    });
     return () => unsubscribe();
   }, [memoriaId]);
 
@@ -56,73 +68,86 @@ const MemoryDetail = ({ route, navigation }) => {
     const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
     if (!songToPlay) return;
     await setCurrentSong(songToPlay);
-    navigation.navigate('Player'); 
+    navigation.navigate('Player');
   };
 
-  const song = songs.find(
-    song => song.title === memory.titulo_cancion && song.artist === memory.artista_cancion
-  );
-  const songId = song ? song.id : 0;
-  const asciiSum = sumAsciiCodes(memory.titulo_memoria);
-  const combinedId = songId+memory.titulo_memoria.length + memory.artista_cancion.length;
-  const color = bgColor[combinedId % bgColor.length];
-
   return (
-    <ScrollView style={{ ...styles.container, backgroundColor: color }}>
-        
-      <Text style={styles.title}>
-        {memory.titulo_memoria}
-      </Text>
-        
-      <Text style={styles.subtitle}>
-        {"Descripción:"}
-      </Text>
-        
-      <Text style={styles.description}>
-        {memory.descripcion_memoria}
-      </Text>
-        
-      <Text style={styles.tdate}>
-        {"Fecha:"}
-      </Text>
-        
-      <Text style={styles.date}>
-        {memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}
-      </Text>
-        
-      <Text style={styles.tsong}>
-        {"Canción vinculada al recuerdo:"}
-      </Text>
-        
-      <ItemSong
-        song={memory.titulo_cancion}
-        artist={memory.artista_cancion}
-        onPlay={playSong}
-        imageUri={songArtwork || placeholderImage}
-        memoriaId={memoriaId}
-      />
-        
-      <Text></Text>
-      <Text></Text>
-      
+    <ScrollView style={styles.scrollView}>
+      <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(emotion)}]}>
+        <Text style={styles.fechaText}>
+          {memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}
+        </Text>
+      </View>
+      <View style={[styles.container, { backgroundColor: getColorForEmotion(emotion)}]}>
+
+        <View style={styles.emoContainer}>
+          <EmocionWrapped nombre={emotion} />
+        </View>
+
+        <Text style={styles.title}>
+          {memory.titulo_memoria}
+        </Text>
+
+        <Text style={styles.subtitle}>
+          {"Descripción:"}
+        </Text>
+
+        <Text style={styles.description}>
+          {memory.descripcion_memoria}
+        </Text>
+
+        <Text style={styles.tsong}>
+          {"Canción vinculada al recuerdo:"}
+        </Text>
+
+        <ItemSong
+          song={memory.titulo_cancion}
+          artist={memory.artista_cancion}
+          onPlay={playSong}
+          imageUri={songArtwork || placeholderImage}
+          memoriaId={memoriaId}
+        />
+      </View>
     </ScrollView>
   );
 };
 
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  fechaContainer: {
+    marginTop:100,
+    marginBottom:19,
+    marginRight:17,
+    paddingVertical: 3,
+    paddingHorizontal: 17,
+    alignItems: 'center',
+    borderRadius:18,
+    alignSelf: 'flex-end',
+  },
+  fechaText: {
+    fontSize: 18,
+    color: 'black',
+  },
   container: {
     flex: 1,
-    marginHorizontal: 23,
     marginBottom: 23,
-    marginTop: 5,
     borderColor: 'black',
     borderWidth: 0,
-    borderRadius: 17,
+    borderRadius:40,
+    marginBottom:30,
     padding: 25,
-    backgroundColor: 'white',
-    elevation:10,
-    shadowColor:'black',
+    paddingRight:50,
+    paddingLeft:50,
+    elevation: 10,
+    shadowColor: 'black',
+    minHeight:screenHeight*0.9,
+  },
+  emoContainer:{
+    alignItems:'center',
+
   },
   title: {
     fontFamily:'Quicksand-VariableFont',
@@ -133,47 +158,36 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
   description: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 18,
     color:'#5C5C5C',
     marginBottom: 20,
     borderColor: 'black',
     textAlign: 'justify',
   },
-  date: {
-    fontFamily:'Quicksand-VariableFont',
-    fontSize: 18,
-    color:'#5C5C5C',
-    marginBottom: 20,
-  },
-  tdate: {
-    fontFamily:'Quicksand-VariableFont',
-    fontSize: 20,
-    color: 'black',
-    fontWeight: 'bold',
-  },
   tsong: {
-    fontFamily:'Quicksand-VariableFont',
+    fontFamily:'Arial',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
     marginBottom: 7,
   },
-  songButton: {
-    fontFamily:'Quicksand-VariableFont',
-    flexDirection: 'row',
-    alignItems: 'center', 
-    padding: 10,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 10,
-  }
+  // songButton: {
+  //   fontFamily:'Arial',
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   padding: 10,
+  //   borderColor: 'grey',
+  //   borderWidth: 1,
+  //   borderRadius: 10,
+  //   flex:1
+  // }
 });
 
 export default MemoryDetail;

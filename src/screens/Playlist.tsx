@@ -99,19 +99,14 @@ const Playlist = ({ navigation }) => {
 
 	} else {
 		if (localSongsAdded.length > 0) {
-			imgs = (
-				<>
-				{
-				localSongsAdded[0].artwork ? (
-					typeof localSongsAdded[0].artwork === 'number' ? (
-						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-					)
+			imgs =  localSongsAdded[0].artwork ? (
+				typeof localSongsAdded[0].artwork === 'number' ? (
+					<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
 				) : (
-				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+					<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
 				)
-				};</>
+			) : (
+				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
 			)
 		} else {
 	imgs = <Image source={require('../assets/logo.png')} style={imagePlaylist} />

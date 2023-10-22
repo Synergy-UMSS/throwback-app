@@ -1,5 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import { useSearchBox } from 'react-instantsearch-core';
 
 export function SearchBox(props) {
@@ -22,33 +24,39 @@ export function SearchBox(props) {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        ref={inputRef}
-        style={styles.input}
-        value={inputValue}
-        onChangeText={setQuery}
-        clearButtonMode="while-editing"
-        autoCapitalize="none"
-        autoCorrect={false}
-        spellCheck={false}
-        autoComplete="off"
-      />
+      <View style={styles.searchBar}>
+        <Feather name="search" size={20} color="#888" style={styles.searchIcon} />
+        <TextInput
+          ref={inputRef}
+          style={styles.input}
+          value={inputValue}
+          onChangeText={setQuery}
+          placeholder="Buscar en Spotify"
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#252b33',
-    padding: 18,
+    padding: 10,
   },
-  input: {
-    height: 48,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white', 
+    borderRadius: 30,  
+},
+  searchIcon: {
+    margin: 10,
+},
+input: {
+  flex: 1,
+    height: 40,
+    color: 'black',
+  }
 });
+
+export default SearchBox;
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StatusBar, StyleSheet, Text, View, Image} from 'react-native';
 import algoliasearch from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-core';
 import { SearchBox } from '../components/SearchBox';
@@ -23,7 +23,10 @@ export default function SearchAlgolia() {
 
 function Hit({ hit }) {
   return (
-    <Text>{hit.title}</Text>
+    <View>
+      <Text>{hit.title}</Text>
+      <Image source="gs://synergy-umss.appspot.com/covers/A Head Full of Dreams.jpeg" />
+    </View>
   );
 }
 

@@ -11,60 +11,40 @@ const Library = () => {
   const [colorIndex, setColorIndex] = useState(0);
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState('');
-  const initialColors = ['#C7A9D5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
+  const colorSequence = ['#FBBAA4', '#F0CC8B', '#F6EA7E', '#BFEAAF', '#9DE0D2', '#B6BFD4', '#C7A9D5', '#FFC1D8'];
+  const initialColors = ['#FBBAA4', '#F0CC8B', '#F6EA7E', '#BFEAAF', '#9DE0D2', '#B6BFD4', '#C7A9D5', '#FFC1D8'];
+
   const handlePressMore = () => {
     setShowModal(true);
   };
 
-useEffect(() => {
-  const unsubscribe = firestore()
-    .collection('playlists')
-    .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
-    .onSnapshot((querySnapshot) => {
-      const playlistsData: string[] = [];
-      const colorsData: { [key: string]: string } = {};
-      querySnapshot.forEach((doc) => {
-        const { name, createDate } = doc.data();
-        playlistsData.push(name);
-        // Puedes ajustar esta lógica según tu implementación específica para obtener el color
-        const color = initialColors[Math.floor(Math.random() * initialColors.length)];
-        colorsData[name] = color;
-      });
-      setPlaylists(playlistsData);
-      setPlaylistColors(colorsData);
-    });
-
-          return () => unsubscribe();
-  }, []);
   const handleCloseModal = () => {
     setShowModal(false);
     setError('');
   };
 
   const MAX_NAME_LENGTH = 50;
-
-
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
     } else {
       setError('');
-      const color = initialColors[colorIndex % initialColors.length];
+      const colorIndex = playlists.length % colorSequence.length;
+      const color = colorSequence[colorIndex];
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
       };
-
+  
       firestore()
-        .collection('playlists') 
+        .collection('playlists')
         .add(playlistData)
         .then((docRef) => {
           console.log('Se ha creado la playlist:', name);
           const updatedPlaylists = [name, ...playlists];
           setPlaylists(updatedPlaylists);
           setPlaylistColors({ ...playlistColors, [name]: color });
-          setColorIndex((prevIndex) => prevIndex + 1);
           setPlaylistName('');
           setShowModal(false);
         })
@@ -73,10 +53,31 @@ useEffect(() => {
         });
     }
   };
-
   const handleSearch = () => {
     // Posible lógica para el Search
   };
+  
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('playlists')
+      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+      .onSnapshot((querySnapshot) => {
+        const playlistsData: string[] = [];
+        const colorsData: { [key: string]: string } = {};
+        let index = 0;
+        querySnapshot.forEach((doc) => {
+          const { name, createDate } = doc.data();
+          playlistsData.push(name);
+          const color = colorSequence[index % colorSequence.length];
+          colorsData[name] = color;
+          index++;
+        });
+        setPlaylists(playlistsData);
+        setPlaylistColors(colorsData);
+      });
+
+    return () => unsubscribe();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -99,9 +100,12 @@ useEffect(() => {
           {playlists.map((playlist, index) => {
             const color = playlistColors[playlist] || initialColors[index % initialColors.length];
             return (
-              <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
-                <Text style={styles.playlistName}>{playlist}</Text>
-                <Text style={styles.playlistLabel}>Playlist</Text>
+              <View key={index} style={[styles.playlistContainer]}>
+                <View style={[styles.playlistBackground, { backgroundColor: `${color}B3` }]} />
+                <View style={styles.playlistBox}>
+                  <Text style={styles.playlistName}>{playlist}</Text>
+                  <Text style={styles.playlistLabel}>Playlist</Text>
+                </View>
               </View>
             );
           })}
@@ -136,6 +140,8 @@ useEffect(() => {
     </View>
   );
 };
+
+//My Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -178,7 +184,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   customModalContent: {
     width: '80%',
@@ -225,19 +231,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   playlistBox: {
-    backgroundColor: '#9DE0D2',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: 'rgba(0, 0, 0, 0.8)', 
     padding: 20,
-    marginVertical: 10,
-    marginHorizontal: 10,
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 6,
-    elevation: 5,
   },
   playlistName: {
     color: 'black',
@@ -249,6 +247,21 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 14,
     textAlign: 'left',
+  },
+  playlistContainer: {
+    marginVertical: 10,
+    marginHorizontal: 10,
+    position: 'relative',
+  },
+  playlistBackground: {
+    position: 'absolute',
+    top: -5,
+    left: -5,
+    right: -5,
+    bottom: -5,
+    zIndex: -1,
+    borderRadius: 15,
+    opacity: 0.8, 
   },
   errorText: {
     color: 'red',

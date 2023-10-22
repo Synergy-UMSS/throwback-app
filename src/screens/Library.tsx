@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
+import { useNavigation } from '@react-navigation/native';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -13,10 +14,37 @@ const Library = () => {
   const [error, setError] = useState('');
   const colorSequence = ['#FBBAA4', '#F0CC8B', '#F6EA7E', '#BFEAAF', '#9DE0D2', '#B6BFD4', '#C7A9D5', '#FFC1D8'];
   const initialColors = ['#FBBAA4', '#F0CC8B', '#F6EA7E', '#BFEAAF', '#9DE0D2', '#B6BFD4', '#C7A9D5', '#FFC1D8'];
+  const navigation = useNavigation();
 
   const handlePressMore = () => {
     setShowModal(true);
   };
+
+  const handlePlayListView = (playlistName) => {
+    navigation.navigate('Playlist', {playlistName});
+    console.log(playlistName);
+  };
+
+useEffect(() => {
+  const unsubscribe = firestore()
+    .collection('playlists')
+    .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+    .onSnapshot((querySnapshot) => {
+      const playlistsData: string[] = [];
+      const colorsData: { [key: string]: string } = {};
+      querySnapshot.forEach((doc) => {
+        const { name, createDate } = doc.data();
+        playlistsData.push(name);
+        // Puedes ajustar esta lógica según tu implementación específica para obtener el color
+        const color = initialColors[Math.floor(Math.random() * initialColors.length)];
+        colorsData[name] = color;
+      });
+      setPlaylists(playlistsData);
+      setPlaylistColors(colorsData);
+    });
+
+          return () => unsubscribe();
+  }, []);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -100,13 +128,13 @@ const Library = () => {
           {playlists.map((playlist, index) => {
             const color = playlistColors[playlist] || initialColors[index % initialColors.length];
             return (
-              <View key={index} style={[styles.playlistContainer]}>
+              <TouchableOpacity key={index} onPress={()=>handlePlayListView(playlist)} style={[styles.playlistContainer]}>
                 <View style={[styles.playlistBackground, { backgroundColor: `${color}B3` }]} />
                 <View style={styles.playlistBox}>
                   <Text style={styles.playlistName}>{playlist}</Text>
                   <Text style={styles.playlistLabel}>Playlist</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>

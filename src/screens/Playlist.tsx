@@ -1,28 +1,33 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
 import firestore from '@react-native-firebase/firestore';
+import { useRoute } from '@react-navigation/native';
 
 const Playlist = ({ navigation }) => {
+	const ruta = useRoute();
+	const {playlistName} = ruta.params;
+	console.log(playlistName);
 	const [songsAdded, setSongsAdded] = useState([]);
 	useEffect(() => {
-		const unsubscribe = firestore().collection('playlists').doc('playlist_id').onSnapshot(
+		const unsubscribe = firestore().collection('playlists').doc(playlistName).onSnapshot(
 			(doc) => {
-        const playlistData = doc.data();
-        const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
-        setSongsAdded(songsData);
-      },
-      (error) => {
-        console.error('Error al obtener el documento:', error);
-      }
-    );
+				const playlistData = doc.data();
+				console.log(playlistData);
+				const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
+				setSongsAdded(songsData);
+			},
+			(error) => {
+				console.error('Error al obtener el documento:', error);
+			}
+		);
 
-    return () => unsubscribe();
+		return () => unsubscribe();
 	}, []);
 	let imgs;
 	/*let songsAdded = songs;*/

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
+import { useNavigation } from '@react-navigation/native';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -12,8 +13,14 @@ const Library = () => {
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>({});
   const [error, setError] = useState('');
   const initialColors = ['#C7A9D5', '#B6BFD4', '#9DE0D2', '#BFEAAF', '#F6EA7E', '#F0CC8B', '#FBBAA4', '#FFC1D8'];
+  const navigation = useNavigation();
   const handlePressMore = () => {
     setShowModal(true);
+  };
+
+  const handlePlayListView = (playlistName) => {
+    navigation.navigate('Playlist', {playlistName});
+    console.log(playlistName);
   };
 
 useEffect(() => {
@@ -99,10 +106,10 @@ useEffect(() => {
           {playlists.map((playlist, index) => {
             const color = playlistColors[playlist] || initialColors[index % initialColors.length];
             return (
-              <View key={index} style={[styles.playlistBox, { backgroundColor: color }]}>
+              <TouchableOpacity key={index} onPress={()=>handlePlayListView(playlist)} style={[styles.playlistBox, { backgroundColor: color }]}>
                 <Text style={styles.playlistName}>{playlist}</Text>
                 <Text style={styles.playlistLabel}>Playlist</Text>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>

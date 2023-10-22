@@ -146,8 +146,7 @@ const Player = ({ navigation }) => {
 
 	useEffect(() => {
 		changeValuesTrack();
-		console.log('artwoooork real b:', trackArtwork);
-		console.log('trackArtwork:', trackArtwork);
+		console.log('currentSong', currentSong);
 	}, [currentSong]);
 
 	useEffect(() => {

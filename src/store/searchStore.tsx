@@ -111,4 +111,24 @@ export const useSearchStore = create<SearchStore>(set => ({
       showSuggestions: false,
     }));
   },
+  updateRecentSearches: async () => {
+    let res: string[] = [];
+    const historyQuery = collection(db, 'history');
+    try {
+      const historyQuerySnapshot = await getDocs(historyQuery);
+      historyQuerySnapshot.forEach(doc => {
+        const history = doc.data();
+        res.push(history.searchQuery);
+      });
+      console.log('Historial de búsquedas:', res);
+      // quiero que se actualice el estado de recentSearches
+      set (state => ({
+        recentSearches: res,
+      }));
+      return res;
+    } catch (error) {
+      console.error('Error al obtener las búsquedas recientes:', error);
+      return [];
+    }
+  },
 }));

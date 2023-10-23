@@ -81,8 +81,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 0,
     flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 10
   },
   emotion: {
     width: 50,
@@ -93,6 +91,7 @@ const styles = StyleSheet.create({
   emotionName: {
     textAlign: 'center',
     fontSize: 11,
+    color: 'black'
   },
 });
 

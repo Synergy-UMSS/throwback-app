@@ -11,9 +11,36 @@ import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
 
-
-
-
+// obtener el color de la memoria basado en la emocion
+function getColorForEmotion(emotion) {
+  return emociones[emotion] || "#000000";
+}
+const emociones = {
+  emo1: "#F6EA7E",       
+  emo2: "#FBBAA4",  
+  emo3: "#C7A9D5",       
+  emo4: "#FFC1D8",     
+  emo5: "#F0CC8B",      
+  emo6: "#B6BFD4",       
+  emo7: "#FFC1D8",         
+  emo8: "#FBBAA4",   
+  emo9: "#F6EA7E",     
+  emo10: "#9DE0D2",
+  emo11: "#B6BFD4",
+  emo12: "#F0CC8B",
+  emo13: "#9DE0D2",
+  emo14: "#C7A9D5",  
+};
+// aclarar un color hexadecimal
+function aclararColor(hex, porcentaje=0.2) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  r = Math.floor(r + (255 - r) * porcentaje);
+  g = Math.floor(g + (255 - g) * porcentaje);
+  b = Math.floor(b + (255 - b) * porcentaje);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
 const CrearMemoria = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -35,7 +62,7 @@ const CrearMemoria = ({ navigation }) => {
       emotion: selectedEmotion,
       createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
-      song: currentSong.id
+      song: parseInt(currentSong.id) //debe ser un entero
     };
 
     try {
@@ -62,7 +89,7 @@ const CrearMemoria = ({ navigation }) => {
         {
           text: 'Aceptar',
           onPress: () => {
-            navigation.navigate('Tus memorias musicales'); // Redirige a la vista "home"
+            navigation.navigate('Tus Memorias Musicales'); // Redirige a la vista "home"
           },
         },
       ],
@@ -72,7 +99,7 @@ const CrearMemoria = ({ navigation }) => {
 
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: aclararColor(getColorForEmotion(selectedEmotion))}]}>
     
       <Text style={styles.pageTitle}>Crear memoria musical</Text>
 
@@ -135,7 +162,7 @@ const CrearMemoria = ({ navigation }) => {
           maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
         />
       )}
-      <Text style={styles.label}>Emoción:</Text>
+      <RequiredField style={styles.label}>Emoción:</RequiredField>
       <EmotionPicker onEmotionChange={handleEmotionSelected}/>
 
       <Text style={styles.label}>Canción vinculada:</Text>

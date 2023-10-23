@@ -30,9 +30,6 @@ const emociones = {
 
 import { usePlayerStore } from '../store/playerStore';
 
-function sumAsciiCodes(str) {
-  return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
 
 const formatDate = date => {
   const d = new Date(date);
@@ -47,43 +44,35 @@ const MemoryDetail = ({ route, navigation}) => {
   const { memoriaId, index } = route.params;
   const { memorie, song } = route.params;
 
-  // if (memorie !== undefined) {
-  //   console.log(memorie.title);
-  // } else {
-  //   console.log("memo is undefined");
-  // }
-  // if (song !== undefined) {
-  //   console.log(song.title);
-  // } else {
-  //   console.log("Song is undefined");
-  // }
-
-
-  // const [memory, setMemory] = useState(null);
-  // const { setCurrentSong } = usePlayerStore();
-
-  // useEffect(() => {
-  //   const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
-  //     if (doc.exists) {
-  //       setMemory({ id: doc.id, ...doc.data() });
-  //     } else {
-  //       console.log('Documento no existe!');
-  //     }
-  //   });
-  //   return () => unsubscribe();
-  // }, [memoriaId]);
-
-  // if (!memory) return null;
-
-  // const songg = songs.find(s => s.title === memory.titulo_cancion);
-  // const songArtwork = songg ? songg.artwork : null;
-
+  const { setCurrentSong } = usePlayerStore();
   const playSong = async () => {
-    const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
-    if (!songToPlay) return;
-    await setCurrentSong(songToPlay);
-    navigation.navigate('Player');
+    if (!song || !song.title) {
+      console.warn("No hay datos de la canción en 'memorie'.");
+      return;
+    }
+    await setCurrentSong({
+      title: song.title,
+      artist: song.artist,
+      artwork: song.coverURL,
+      url: song.songURL
+    });
+    navigation.navigate('Player', {
+      songData: {
+        title: song.title,
+        artist: song.artist,
+        artwork: song.coverURL,
+        url: song.songURL
+      }
+    });
   };
+
+
+  // const playSong = async () => {
+  //   const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
+  //   if (!songToPlay) return;
+  //   await setCurrentSong(songToPlay);
+  //   navigation.navigate('Player');
+  // };
 
   return (
     <ScrollView style={styles.scrollView}>

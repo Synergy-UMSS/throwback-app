@@ -1,54 +1,64 @@
 import React, { useContext } from 'react';
-import {
-  View,
-  Modal,
-  Button,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Image,
-  StyleSheet,
-} from 'react-native';
-import Player from '../screens/Player';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
+import TrackPlayer, { usePlaybackState, State } from 'react-native-track-player';
 
 const MiniPlayer = ({ navigation }) => {
-  const { isPlaying } = useContext(MusicPlayerContext);
-  {/*console.log('isPlaying:', isPlaying);*/}
-  if (isPlaying) {
-    {/*console.log('isPlaying:', isPlaying);*/}
-    return (
-      <View style={style.container}>
-        <TouchableOpacity
-          style={style.button}
-          onPress={() => navigation.navigate('Player')}>
-          <Text> Regresar al reproductor </Text>
-        </TouchableOpacity>
+  const { isPlaying, playPause, currentSong } = useContext(MusicPlayerContext);
+
+  return (
+    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Player')}>
+      <Image
+        source={
+          currentSong && currentSong.coverURL
+            ? { uri: currentSong.coverURL }
+            : require('../assets/logo.png')
+        }
+        style={styles.coverImage}
+      />
+      <View style={styles.songDetails}>
+        <Text>{currentSong ? currentSong.title : 'Desconocido'}</Text>
+        <Text>{currentSong ? currentSong.artist : 'Desconocido'}</Text>
       </View>
-    );
-  }
-  return null;
+      <TouchableOpacity onPress={playPause} style={styles.playPauseButton}>
+        <Ionicons
+          name={isPlaying ? 'pause-outline' : 'play-outline'}
+          size={30}
+          color="white"
+        />
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
 };
 
-export default MiniPlayer;
-
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 50,
-    borderRadius: 25,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#96EAD2',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     position: 'absolute',
-    bottom: 0, // Coloca el componente en la parte inferior de la pantalla
+    bottom: 0,
     left: 0,
     width: '100%',
+    paddingHorizontal: 10,
   },
-  button: {
+  coverImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  songDetails: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
+    paddingHorizontal: 10,
+  },
+  playPauseButton: {
+    padding: 10, // Esto mejora la experiencia táctil
   },
 });
+
+export default MiniPlayer;

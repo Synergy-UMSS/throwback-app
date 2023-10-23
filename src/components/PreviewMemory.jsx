@@ -192,7 +192,7 @@ const optionsStyles = {
     marginTop: 10,
     marginLeft: 0,
     width : 130,
-    elevation: 0,
+    // elevation: 0,
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',

@@ -30,9 +30,6 @@ const emociones = {
 
 import { usePlayerStore } from '../store/playerStore';
 
-function sumAsciiCodes(str) {
-  return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
 
 const formatDate = date => {
   const d = new Date(date);
@@ -47,66 +44,49 @@ const MemoryDetail = ({ route, navigation}) => {
   const { memoriaId, index } = route.params;
   const { memorie, song } = route.params;
 
-  // if (memorie !== undefined) {
-  //   console.log(memorie.title);
-  // } else {
-  //   console.log("memo is undefined");
-  // }
-  // if (song !== undefined) {
-  //   console.log(song.title);
-  // } else {
-  //   console.log("Song is undefined");
-  // }
-
-
-  // const [memory, setMemory] = useState(null);
-  // const { setCurrentSong } = usePlayerStore();
-
-  // useEffect(() => {
-  //   const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
-  //     if (doc.exists) {
-  //       setMemory({ id: doc.id, ...doc.data() });
-  //     } else {
-  //       console.log('Documento no existe!');
-  //     }
-  //   });
-  //   return () => unsubscribe();
-  // }, [memoriaId]);
-
-  // if (!memory) return null;
-
-  // const songg = songs.find(s => s.title === memory.titulo_cancion);
-  // const songArtwork = songg ? songg.artwork : null;
-
+  const { setCurrentSong } = usePlayerStore();
   const playSong = async () => {
-    const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
-    if (!songToPlay) return;
-    await setCurrentSong(songToPlay);
-    navigation.navigate('Player');
+    if (!song || !song.title) {
+      console.warn("No hay datos de la canción en 'memorie'.");
+      return;
+    }
+    await setCurrentSong({
+      title: song.title,
+      artist: song.artist,
+      artwork: song.coverURL,
+      url: song.songURL
+    });
+    navigation.navigate('Player', {
+      songData: {
+        title: song.title,
+        artist: song.artist,
+        artwork: song.coverURL,
+        url: song.songURL
+      }
+    });
   };
+
+  // const playSong = async () => {
+  //   const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
+  //   if (!songToPlay) return;
+  //   await setCurrentSong(songToPlay);
+  //   navigation.navigate('Player');
+  // };
 
   return (
     <ScrollView style={styles.scrollView}>
-      <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(emotion)}]}>
+      <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(memorie.emotion)}]}>
         <Text style={styles.fechaText}>
           { typeof memorie !== 'undefined' ? memorie.memoryDate && formatDate(memorie.memoryDate.toDate()) : "FECHA" }
         </Text>
       </View>
-      <View style={[styles.container, { backgroundColor: getColorForEmotion(emotion)}]}>
-
-        
+      <View style={[styles.container, { backgroundColor: getColorForEmotion(memorie.emotion)}]}>       
         <View style={styles.emoContainer}>
-          {/* <EmocionWrapped nombre={emotion} /> */}
-          {/* { typeof memorie !== 'undefined' ? memorie.emotion  : "EMOCION" } */}
-          <Text style={styles.fechaText}>
-          {"*IMAGEN DE LA EMOCION* "}
-          { typeof memorie !== 'undefined' ? memorie.emotion  : "EMOCION" }
-          </Text>
+          <EmocionWrapped nombre={memorie.emotion} />
         </View>
 
         <Text style={styles.title}>
           { typeof memorie !== 'undefined' ? memorie.title  : "TITLE" }
-          {/* {memory.titulo_memoria} */}
         </Text>
 
         <Text style={styles.subtitle}>
@@ -115,7 +95,6 @@ const MemoryDetail = ({ route, navigation}) => {
 
         <Text style={styles.description}>
         { typeof memorie !== 'undefined' ? memorie.description  : "DESCRIPCION" }
-          {/* {memory.descripcion_memoria} */}
         </Text>
 
         <Text style={styles.tsong}>
@@ -127,7 +106,6 @@ const MemoryDetail = ({ route, navigation}) => {
           artist={song.artist}
           onPlay={playSong}
           imageUri={song.coverURL || placeholderImage}
-          // memoriaId={memoriaId}
         />
       </View>
     </ScrollView>
@@ -140,9 +118,9 @@ const styles = StyleSheet.create({
   },
   fechaContainer: {
     marginTop:100,
-    marginBottom:19,
+    marginBottom:10,
     marginRight:17,
-    paddingVertical: 3,
+    paddingVertical: 7,
     paddingHorizontal: 17,
     alignItems: 'center',
     borderRadius:18,
@@ -199,16 +177,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 7,
   },
-  // songButton: {
-  //   fontFamily:'Arial',
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   padding: 10,
-  //   borderColor: 'grey',
-  //   borderWidth: 1,
-  //   borderRadius: 10,
-  //   flex:1
-  // }
 });
 
 export default MemoryDetail;

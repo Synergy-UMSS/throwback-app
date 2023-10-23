@@ -44,6 +44,7 @@ const style = StyleSheet.create({
     bottom: 0, // Coloca el componente en la parte inferior de la pantalla
     left: 0,
     width: '100%',
+    marginBottom:49,
   },
   button: {
     flex: 1,

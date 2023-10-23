@@ -130,7 +130,7 @@ return (
 			</View>
 			<View style={style.mainContainer}>
 				<View style={style.container}>
-					<TouchableOpacity style={style.add} onPress={() => navigation.navigate('Search')}>
+					<TouchableOpacity style={style.add} onPress={() => navigation.navigate('SearchSelect')}>
 						<Octicons name='diff-added' size={40} color='black' />
 					</TouchableOpacity>
 					<View style={style.textContainer}>

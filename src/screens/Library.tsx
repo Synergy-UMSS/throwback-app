@@ -151,6 +151,7 @@ useEffect(() => {
               </TouchableOpacity>
             );
           })}
+            <Text>{'\n\n'}</Text>
         </ScrollView>
       )}
       <Modal visible={showModal} animationType="slide" transparent={true}>

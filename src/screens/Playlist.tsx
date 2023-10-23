@@ -139,6 +139,7 @@ return (
 				</View>
 				{displaySongsInPlayLists()}
 			</View>
+			<Text>{'\n\n'}</Text>
 		</ScrollView>
 	</SafeAreaView>
 );

@@ -28,9 +28,8 @@ const Library = () => {
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
-        setCurrentPlaylist({ id: playlistId }); 
+        setCurrentPlaylist({ id: playlistId, name: playlistName}); 
         navigation.navigate('Playlist', { playlistName, playlistId });
-        console.log(playlistId, playlistName);
         console.log(currentPlaylist);
       } else {
         console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);

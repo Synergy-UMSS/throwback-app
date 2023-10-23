@@ -18,7 +18,7 @@ const Playlist = ({ navigation }) => {
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
 
 	useEffect(() => {
-		const unsubscribe = firestore().collection('playlists').doc(playlistId).onSnapshot(
+		const unsubscribe = firestore().collection('playlists').doc(currentPlaylist.id).onSnapshot(
 			(doc) => {
 				const playlistData = doc.data();
 				const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
@@ -30,7 +30,7 @@ const Playlist = ({ navigation }) => {
 		);
 
 		return () => unsubscribe();
-	}, [playlistId]);
+	}, [currentPlaylist.id]);
 
 	let imgs;
 	let cond = localSongsAdded.length > 3;
@@ -124,7 +124,9 @@ return (
 				</View>
 			</View>
 			<View style={style.textTitle}>
-				<Text style={style.mtext}>{playlistName}</Text>
+				<Text style={style.mtext}>
+					{playlistName !== null && playlistName !== undefined ? playlistName :currentPlaylist.name}
+				</Text>
 			</View>
 			<View style={style.mainContainer}>
 				<View style={style.container}>

@@ -5,18 +5,23 @@ import PreviewMemory from './PreviewMemory';
 import Spacer from './Spacer'
 
 
-
-const EmotionWithMemory = ({ memoria, onPress, index, alignment , emotion}) => {
+const EmotionWithMemory = ({ memoria, song, onPress, index, alignment , emotion}) => {    
+    // console.log('songformemory + + + + + EMOTIONWHITHMEMORY');
+    // console.log(memoria.title);
+    // console.log(memoria.song);
+    // console.log(song);
+    
+    // console.log(memoria.emotion);
     return (
         <View style={styles.container}>
             {alignment === 'right' && <>
-            <Emocion nombre={emotion} />
+            <Emocion nombre={memoria.emotion} />
             <Spacer />
         </>}
-            <PreviewMemory memoria={memoria} onPress={onPress} index={index} emotion={emotion} style={styles.previewMemory} />
+            <PreviewMemory memoria={memoria} song={song} onPress={onPress} index={index} emotion={memoria.emotion} style={styles.previewMemory} />
             {alignment === 'left' && <>
             <Spacer />
-            <Emocion nombre={emotion} />
+            <Emocion nombre={memoria.emotion} />
              
         </>}
         </View>

@@ -30,9 +30,6 @@ const emociones = {
 
 import { usePlayerStore } from '../store/playerStore';
 
-function sumAsciiCodes(str) {
-  return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
 
 const formatDate = date => {
   const d = new Date(date);
@@ -45,47 +42,51 @@ const formatDate = date => {
 const MemoryDetail = ({ route, navigation}) => {
   const {emotion} = route.params;
   const { memoriaId, index } = route.params;
-  const [memory, setMemory] = useState(null);
-  const { setCurrentSong } = usePlayerStore();
+  const { memorie, song } = route.params;
 
-  useEffect(() => {
-    const unsubscribe = firestore().collection('memorias').doc(memoriaId).onSnapshot(doc => {
-      if (doc.exists) {
-        setMemory({ id: doc.id, ...doc.data() });
-      } else {
-        console.log('Documento no existe!');
+  const { setCurrentSong } = usePlayerStore();
+  const playSong = async () => {
+    if (!song || !song.title) {
+      console.warn("No hay datos de la canción en 'memorie'.");
+      return;
+    }
+    await setCurrentSong({
+      title: song.title,
+      artist: song.artist,
+      artwork: song.coverURL,
+      url: song.songURL
+    });
+    navigation.navigate('Player', {
+      songData: {
+        title: song.title,
+        artist: song.artist,
+        artwork: song.coverURL,
+        url: song.songURL
       }
     });
-    return () => unsubscribe();
-  }, [memoriaId]);
-
-  if (!memory) return null;
-
-  const songg = songs.find(s => s.title === memory.titulo_cancion);
-  const songArtwork = songg ? songg.artwork : null;
-
-  const playSong = async () => {
-    const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
-    if (!songToPlay) return;
-    await setCurrentSong(songToPlay);
-    navigation.navigate('Player');
   };
+
+  // const playSong = async () => {
+  //   const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
+  //   if (!songToPlay) return;
+  //   await setCurrentSong(songToPlay);
+  //   navigation.navigate('Player');
+  // };
 
   return (
     <ScrollView style={styles.scrollView}>
-      <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(emotion)}]}>
+      <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(memorie.emotion)}]}>
         <Text style={styles.fechaText}>
-          {memory.fecha_memoria && formatDate(memory.fecha_memoria.toDate())}
+          { typeof memorie !== 'undefined' ? memorie.memoryDate && formatDate(memorie.memoryDate.toDate()) : "FECHA" }
         </Text>
       </View>
-      <View style={[styles.container, { backgroundColor: getColorForEmotion(emotion)}]}>
-
+      <View style={[styles.container, { backgroundColor: getColorForEmotion(memorie.emotion)}]}>       
         <View style={styles.emoContainer}>
-          <EmocionWrapped nombre={emotion} />
+          <EmocionWrapped nombre={memorie.emotion} />
         </View>
 
         <Text style={styles.title}>
-          {memory.titulo_memoria}
+          { typeof memorie !== 'undefined' ? memorie.title  : "TITLE" }
         </Text>
 
         <Text style={styles.subtitle}>
@@ -93,7 +94,7 @@ const MemoryDetail = ({ route, navigation}) => {
         </Text>
 
         <Text style={styles.description}>
-          {memory.descripcion_memoria}
+        { typeof memorie !== 'undefined' ? memorie.description  : "DESCRIPCION" }
         </Text>
 
         <Text style={styles.tsong}>
@@ -101,17 +102,15 @@ const MemoryDetail = ({ route, navigation}) => {
         </Text>
 
         <ItemSong
-          song={memory.titulo_cancion}
-          artist={memory.artista_cancion}
+          song={song.title}
+          artist={song.artist}
           onPlay={playSong}
-          imageUri={songArtwork || placeholderImage}
-          memoriaId={memoriaId}
+          imageUri={song.coverURL || placeholderImage}
         />
       </View>
     </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -119,9 +118,9 @@ const styles = StyleSheet.create({
   },
   fechaContainer: {
     marginTop:100,
-    marginBottom:19,
+    marginBottom:10,
     marginRight:17,
-    paddingVertical: 3,
+    paddingVertical: 7,
     paddingHorizontal: 17,
     alignItems: 'center',
     borderRadius:18,
@@ -178,16 +177,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 7,
   },
-  // songButton: {
-  //   fontFamily:'Arial',
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   padding: 10,
-  //   borderColor: 'grey',
-  //   borderWidth: 1,
-  //   borderRadius: 10,
-  //   flex:1
-  // }
 });
 
 export default MemoryDetail;

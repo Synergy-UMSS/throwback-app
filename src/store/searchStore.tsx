@@ -41,12 +41,25 @@ export const useSearchStore = create<SearchStore>(set => ({
   currentSearch: '',
   showHistory: true, // Valor inicial: historial oculto
   showSuggestions: false, // Valor inicial: sugerencias ocultas
-  deleteRecentSearch: searchQuery => {
-    set(state => ({
-      recentSearches: state.recentSearches.filter(
-        query => query !== searchQuery,
-      ),
-    }));
+  deleteRecentSearch: async searchQuery => {
+    try {
+      // Eliminar el documento correspondiente en la base de datos
+      const querySnapshot = await getDocs(collection(db, 'history'));
+      querySnapshot.forEach(doc => {
+        const history = doc.data();
+        if (history.searchQuery === searchQuery) {
+          deleteDoc(doc.ref);
+        }
+      });
+  
+      set(state => ({
+        recentSearches: state.recentSearches.filter(
+          query => query !== searchQuery,
+        ),
+      }));
+    } catch (error) {
+      console.error('Error al eliminar la búsqueda:', error);
+    }
   },
   addRecentSearch: searchQuery => {
     //Bug: El historial de búsquedas sobre pasa el límite de 30 canciones.
@@ -112,17 +125,21 @@ export const useSearchStore = create<SearchStore>(set => ({
     }));
   },
   updateRecentSearches: async () => {
-    let res: string[] = [];
-    const historyQuery = collection(db, 'history');
     try {
+      const res = [];
+      const historyQuery = query(collection(db, 'history'), orderBy('searchDate', 'asc')); // Ordenar por 'searchDate' en orden ascendente (más antiguas primero)
+  
       const historyQuerySnapshot = await getDocs(historyQuery);
+  
       historyQuerySnapshot.forEach(doc => {
         const history = doc.data();
         res.push(history.searchQuery);
       });
+  
       console.log('Historial de búsquedas:', res);
-      // quiero que se actualice el estado de recentSearches
-      set (state => ({
+  
+      // Actualizar el estado de 'recentSearches' con las búsquedas ordenadas
+      set(state => ({
         recentSearches: res,
       }));
       return res;

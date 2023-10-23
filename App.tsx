@@ -22,6 +22,8 @@ import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
 import { MenuProvider } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
+import SearchSelect from './src/screens/SearchSelect';
+
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -213,6 +215,11 @@ const App = () => {
           <Stack.Screen
             name="Search"
             component={Search}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="SearchSelect"
+            component={SearchSelect}
             options={{headerShown: false}}
           />
           <Stack.Screen

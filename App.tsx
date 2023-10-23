@@ -22,6 +22,7 @@ import {RootStackParamList} from './src/utils/types';
 import MemoryDetail from './src/screens/MemoryDetail';
 const Stack = createStackNavigator<RootStackParamList>();
 import { MenuProvider } from 'react-native-popup-menu';
+import SearchSelect from './src/screens/SearchSelect';
 
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -186,6 +187,11 @@ const App = () => {
           <Stack.Screen
             name="Search"
             component={Search}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="SearchSelect"
+            component={SearchSelect}
             options={{headerShown: false}}
           />
           <Stack.Screen

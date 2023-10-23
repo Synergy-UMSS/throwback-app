@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'r
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
+import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
 
 const SongSuggestion = ({ songData, screenSelected }) => {
@@ -10,6 +11,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
+  const {currentPlaylist} = usePlaylistStore();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
@@ -49,22 +51,23 @@ const SongSuggestion = ({ songData, screenSelected }) => {
     checkSongMemory(currentSong);
   };
 
-  const backToPlaylist = async (song) => {
-    const docRef = firestore().collection('playlists').doc('playlist_id');
+  const addSongPlaylist = async (song) => {
+    const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
     docRef.get().then((doc) => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
           data.songs.push(song);
-          docRef.update({
+    docRef.update({
             songs: data.songs
-          })
-          .then(() => {
-            console.log('Dato agregado con éxito');
-          })
-          .catch((error) => {
-            console.error('Error al actualizar el documento:', error);
-          });
+    })
+      .then(() => {
+        console.log('Dato agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al actualizar el documento:', error);
+      });
+            navigation.navigate('Playlist', {currentSong});
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -74,11 +77,24 @@ const SongSuggestion = ({ songData, screenSelected }) => {
     });
   }
 
+  const backToPlaylist = () => {
+    addSongPlaylist(currentSong);
+  }
+
+
   return (
     <TouchableOpacity onPress={handlePlayPress}>
       <View style={styles.container}>
         <View style={styles.songContainer}>
-          <Image source={artwork} style={styles.image} />
+          {artwork ? (
+            typeof artwork === 'number' ? (
+              <Image source={artwork} style={styles.image} />
+            ) : (
+              <Image source={{ uri: artwork }} style={styles.image} />
+            )
+          ) : (
+            <Image source={require('../assets/logo.png')} style={styles.image} />
+          )}
           <View style={styles.textContainer}>
             <Text style={styles.songName}>{title}</Text>
             <Text style={styles.artistName}>{artist}</Text>
@@ -92,22 +108,30 @@ const SongSuggestion = ({ songData, screenSelected }) => {
         <Modal visible={showOptions} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-            <View style={styles.closeButtonContainer}>
-              <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
-                <MaterialCommunityIcons name="close" size={30} color="gray" />
-              </TouchableOpacity>
-            </View>
-            <Image source={artwork} style={styles.imageSelected} />
-            <Text style={styles.songName}>{title}</Text>
-            <Text style={styles.artistName}>{artist}</Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
-                <Text style={styles.buttonText}>Crear Memoria Musical</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
-                <Text style={styles.buttonText}>Guardar en una playlist</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.closeButtonContainer}>
+                <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                  <MaterialCommunityIcons name="close" size={30} color="gray" />
+                </TouchableOpacity>
+              </View>
+              {artwork ? (
+                typeof artwork === 'number' ? (
+                  <Image source={artwork} style={styles.imageSelected} />
+                ) : (
+                  <Image source={{ uri: artwork }} style={styles.imageSelected} />
+                )
+              ) : (
+                <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
+              )}
+              <Text style={styles.songName}>{title}</Text>
+              <Text style={styles.artistName}>{artist}</Text>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
+                  <Text style={styles.buttonText}>Crear Memoria Musical</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
+                  <Text style={styles.buttonText}>Guardar en una playlist</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>

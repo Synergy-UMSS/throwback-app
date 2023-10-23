@@ -22,19 +22,24 @@ const CrearMemoria = ({ navigation }) => {
   const songg = songs.find(s => s.title === currentSong.title);
   const songArtwork = songg ? songg.artwork : null;
 
+  const [selectedEmotion, setSelectedEmotion] = useState(null);
+
+  const handleEmotionSelected = (emotion) => {
+    setSelectedEmotion(emotion);
+  };
 
   const onSubmit = async (data) => {
     const memoria = {
-      titulo_memoria: data.tituloMemoria,
-      descripcion_memoria: data.descripcionMemoria,
-      fecha_creacion: firestore.Timestamp.now(),
-      fecha_memoria: firestore.Timestamp.fromDate(selectedDate),
-      titulo_cancion: currentSong.title,
-      artista_cancion: currentSong.artist,
+      title: data.tituloMemoria,
+      description: data.descripcionMemoria,
+      emotion: selectedEmotion,
+      createDate: firestore.Timestamp.now(),
+      memoryDate: firestore.Timestamp.fromDate(selectedDate),
+      song: currentSong.id
     };
 
     try {
-      await firestore().collection('memorias').add(memoria);
+      await firestore().collection('memories').add(memoria);
       console.log('Memoria guardada correctamente.');
       showSuccessAlert();
     } catch (error) {
@@ -79,7 +84,7 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={25}
+            maxLength={50}
           />
         )}
         name="tituloMemoria"
@@ -103,15 +108,12 @@ const CrearMemoria = ({ navigation }) => {
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={150}
+            maxLength={500}
           />
         )}
         name="descripcionMemoria"
         defaultValue=""
       />
-      //mostrar el campo de fecha y emocion en una sola linea    
-      <View style={styles.rowContainer}>
-        <View style={styles.rowItem}>
           <Text style={styles.label}>Fecha:</Text>
           <TextInput
             style={styles.input}
@@ -133,19 +135,15 @@ const CrearMemoria = ({ navigation }) => {
           maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
         />
       )}
-        </View>
-        <View style={styles.rowItem}>
-          <Text style={styles.label}>Emoción:</Text>
-          <EmotionPicker />
-        </View>
-      </View>
+      <Text style={styles.label}>Emoción:</Text>
+      <EmotionPicker onEmotionChange={handleEmotionSelected}/>
 
       <Text style={styles.label}>Canción vinculada:</Text>
       <View style={styles.marginBottom}>
         <ItemSong
           song={currentSong.title}
           artist={currentSong.artist}
-          imageUri={songArtwork || placeholderImage}
+          imageUri={currentSong.artwork || placeholderImage}
           onPlay={playSong}
         />
       </View>

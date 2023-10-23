@@ -1,39 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
 import firestore from '@react-native-firebase/firestore';
-import { useRoute } from '@react-navigation/native';
-import { usePlaylistStore } from '../store/playlistStore';
+import {useRoute} from '@react-navigation/native';
+import {usePlaylistStore} from '../store/playlistStore';
 
-const Playlist = ({ navigation }) => {
-	const ruta = useRoute();
-	const { playlistName, playlistId } = ruta.params;
-	const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
-	console.log('el view dice', currentPlaylist.id);
-	const [localSongsAdded, setLocalSongsAdded] = useState([]);
+const Playlist = ({navigation}) => {
+  const ruta = useRoute();
+  const {playlistName, playlistId} = ruta.params;
+  const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+  console.log('el view dice', currentPlaylist.id);
+  const [localSongsAdded, setLocalSongsAdded] = useState([]);
 
-	useEffect(() => {
-		const unsubscribe = firestore().collection('playlists').doc(currentPlaylist.id).onSnapshot(
-			(doc) => {
-				const playlistData = doc.data();
-				const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
-				setLocalSongsAdded(songsData);
-			},
-			(error) => {
-				console.error('Error al obtener el documento:', error);
-			}
-		);
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('playlists')
+      .doc(currentPlaylist.id)
+      .onSnapshot(
+        doc => {
+          const playlistData = doc.data();
+          const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
+          setLocalSongsAdded(songsData);
+        },
+        error => {
+          console.error('Error al obtener el documento:', error);
+        },
+      );
 
-		return () => unsubscribe();
-	}, [currentPlaylist.id]);
+    return () => unsubscribe();
+  }, [currentPlaylist.id]);
 
-	let imgs;
-	let cond = localSongsAdded.length > 3;
+  let imgs;
+  let cond = localSongsAdded.length > 3;
 
 	const displaySongsInPlayLists = () => { 
 		return (
@@ -139,7 +142,6 @@ return (
 				</View>
 				{displaySongsInPlayLists()}
 			</View>
-			<Text>{'\n\n'}</Text>
 		</ScrollView>
 	</SafeAreaView>
 );
@@ -148,73 +150,73 @@ return (
 export default Playlist;
 
 const style = StyleSheet.create({
-	MainMainContainer: {
-		flex: 1,
-		backgroundColor: 'pink',
-	},
-	portada: {
-		/*flex: 1,*/
-		backgroundColor: 'pink',
-		alignContent: 'center',
-		alignItems: 'center',
-		paddingTop: 40,
-	},
-	containerimgs: {
-		display: 'flex',
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		width: 200,
-		height: 240,
-		backgroundColor: 'white',
-		alignContent: 'center',
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderRadius: 15,
-	},
-	textTitle:{
-		alignItems: 'center',
-		justifyContent: 'center',
-		padding: 10,
-	},
-	mtext:{
-		color: 'black', 
-		fontSize: 20,
-		fontWeight: '400',
-		textTransform: 'uppercase',
-	},
-	mainContainer: {
-		backgroundColor: 'pink',
-		marginTop: 30,
-	},
-	container: {
-		display: 'flex',
-		flexDirection: 'row',
-		alignContent: 'center',
-		alignItems: 'center',
-		/*justifyContent: 'center',*/
-		marginTop: 20,
-		margin: 5,
-		/*height: 50,*/
-		borderWidth: 1,
-		borderColor: 'black',
-		backgroundColor: 'white',
-		borderRadius: 20,
-	},
-	img: {
-		margin: 10,
-		height: 40,
-		width: 40,
-	},
-	texts: {
-		color: 'black',
-	},
-	flechita: {
-		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
-		paddingLeft: 15,
-		paddingTop: 15,
-	},
-	add: {
-		margin: 10,
-	}
+  MainMainContainer: {
+    flex: 1,
+    backgroundColor: 'pink',
+  },
+  portada: {
+    /*flex: 1,*/
+    backgroundColor: 'pink',
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingTop: 40,
+  },
+  containerimgs: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: 200,
+    height: 240,
+    backgroundColor: 'white',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+  },
+  textTitle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  mtext: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: '400',
+    textTransform: 'uppercase',
+  },
+  mainContainer: {
+    backgroundColor: 'pink',
+    marginTop: 30,
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    /*justifyContent: 'center',*/
+    marginTop: 20,
+    margin: 5,
+    /*height: 50,*/
+    borderWidth: 1,
+    borderColor: 'black',
+    backgroundColor: 'white',
+    borderRadius: 20,
+  },
+  img: {
+    margin: 10,
+    height: 40,
+    width: 40,
+  },
+  texts: {
+    color: 'black',
+  },
+  flechita: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingLeft: 15,
+    paddingTop: 15,
+  },
+  add: {
+    margin: 10,
+  },
 });

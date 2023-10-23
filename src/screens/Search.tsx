@@ -7,8 +7,39 @@ import {useSearchStore} from '../store/searchStore';
 import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
 import { ScrollView } from 'react-native';
+import firestore, { firebase } from '@react-native-firebase/firestore';
+
+let tracks = [];
 
 const Search = ({navigation}) => {
+  const db = firebase.firestore();
+	const songsRef = db.collection('songs');
+  useEffect(() => {
+		const fetchSongs = async () => {
+			try {
+				const querySnapshot = await songsRef.get();
+				const songs1 = [];
+				querySnapshot.forEach((doc) => {
+					const song = doc.data();
+					songs1.push(song);
+				});
+				songs1.forEach((song, index) => {
+					const track = {
+						id: song.id.toString(),
+						url: song.songURL,
+						title: song.title,
+						artist: song.artist,
+						artwork: song.coverURL,
+					};
+					tracks.push(track);
+				});
+			} catch (e) {
+				console.error('Error al obtener las canciones:', e);
+			}
+		};
+		fetchSongs();
+	}, []);
+
   const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
     useSearchStore();
 
@@ -48,6 +79,12 @@ const Search = ({navigation}) => {
         suggests.push(songs[i]);
       }
     }
+    for (let j = 0; j < tracks.length; j++){
+      if (matching(mimi, tracks[j])) {
+        suggests.push(tracks[j])
+      }
+    }
+
     return (
       <View>
         {suggests.map((song, index) => (

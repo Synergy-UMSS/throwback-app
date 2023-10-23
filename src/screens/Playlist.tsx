@@ -8,19 +8,21 @@ import SongSuggestion from '../components/SongSuggestion';
 import songs from '../../data/Prueba/Data';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
+import { usePlaylistStore } from '../store/playlistStore';
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
-	const {playlistName} = ruta.params;
-	console.log(playlistName);
-	const [songsAdded, setSongsAdded] = useState([]);
+	const { playlistName, playlistId } = ruta.params;
+	const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+	console.log('el view dice', currentPlaylist.id);
+	const [localSongsAdded, setLocalSongsAdded] = useState([]);
+
 	useEffect(() => {
-		const unsubscribe = firestore().collection('playlists').doc(playlistName).onSnapshot(
+		const unsubscribe = firestore().collection('playlists').doc(currentPlaylist.id).onSnapshot(
 			(doc) => {
 				const playlistData = doc.data();
-				console.log(playlistData);
 				const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
-				setSongsAdded(songsData);
+				setLocalSongsAdded(songsData);
 			},
 			(error) => {
 				console.error('Error al obtener el documento:', error);
@@ -28,14 +30,15 @@ const Playlist = ({ navigation }) => {
 		);
 
 		return () => unsubscribe();
-	}, []);
+	}, [currentPlaylist.id]);
+
 	let imgs;
-	/*let songsAdded = songs;*/
-	let cond = songsAdded.length > 3;
-	const displaySongsInPlayLists = () => {
+	let cond = localSongsAdded.length > 3;
+
+	const displaySongsInPlayLists = () => { 
 		return (
 			<View>
-				{songsAdded.map((song, index) => (
+				{localSongsAdded.map((song, index) => (
 					<SongSuggestion
 						key={index}
 						songData={song}
@@ -55,51 +58,90 @@ const Playlist = ({ navigation }) => {
 	if (cond) {
 		imgs = (
 			<>
-				<Image
-					source={songsAdded[0].artwork}
-					style={imagePlaylist} />
-				<Image
-					source={songsAdded[1].artwork}
-					style={imagePlaylist} />
-				<Image
-					source={songsAdded[2].artwork}
-					style={imagePlaylist} />
-				<Image
-					source={songsAdded[3].artwork}
-					style={imagePlaylist} />
+				{localSongsAdded[0].artwork ? (
+					typeof localSongsAdded[0].artwork === 'number' ? (
+						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
+				{localSongsAdded[1].artwork ? (
+					typeof localSongsAdded[1].artwork === 'number' ? (
+						<Image source={localSongsAdded[1].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: localSongsAdded[1].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
+				{localSongsAdded[2].artwork ? (
+					typeof localSongsAdded[2].artwork === 'number' ? (
+						<Image source={localSongsAdded[2].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: localSongsAdded[2].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
+				{localSongsAdded[3].artwork ? (
+					typeof localSongsAdded[3].artwork === 'number' ? (
+						<Image source={localSongsAdded[3].artwork} style={imagePlaylist} />
+					) : (
+						<Image source={{ uri: localSongsAdded[3].artwork }} style={imagePlaylist} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+				)}
 			</>
 		);
 
 	} else {
-		imgs = <Image
-			source={require('../../assets-prueba/images/Lust_for_Life.png')}
-			style={imagePlaylist} />;
+		if (localSongsAdded.length > 0) {
+			imgs =  localSongsAdded[0].artwork ? (
+				typeof localSongsAdded[0].artwork === 'number' ? (
+					<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
+				) : (
+					<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
+				)
+			) : (
+				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
+			)
+		} else {
+	imgs = <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+}
 	}
-	return (
-		<SafeAreaView style={style.MainMainContainer}>
-			<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
-				<Ionicons name="arrow-back" size={30} color="white" />
-			</TouchableOpacity>
-			<ScrollView>
-				<View style={style.portada}>
-					<View style={style.containerimgs}>
-						{imgs}
+return (
+	<SafeAreaView style={style.MainMainContainer}>
+		<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
+			<Ionicons name="arrow-back" size={30} color="white" />
+		</TouchableOpacity>
+		<ScrollView>
+			<View style={style.portada}>
+				<View style={style.containerimgs}>
+					{imgs}
+				</View>
+			</View>
+			<View style={style.textTitle}>
+				<Text style={style.mtext}>
+					{playlistName !== null && playlistName !== undefined ? playlistName :currentPlaylist.name}
+				</Text>
+			</View>
+			<View style={style.mainContainer}>
+				<View style={style.container}>
+					<TouchableOpacity style={style.add} onPress={() => navigation.navigate('Search')}>
+						<Octicons name='diff-added' size={40} color='black' />
+					</TouchableOpacity>
+					<View style={style.textContainer}>
+						<Text style={style.texts}>Agregar una canción</Text>
 					</View>
 				</View>
-				<View style={style.mainContainer}>
-					<View style={style.container}>
-						<TouchableOpacity style={style.add} onPress={() => navigation.navigate('Search')}>
-							<Octicons name='diff-added' size={40} color='black' />
-						</TouchableOpacity>
-						<View style={style.textContainer}>
-							<Text style={style.texts}>Agregar una canción</Text>
-						</View>
-					</View>
-					{displaySongsInPlayLists()}
-				</View>
-			</ScrollView>
-		</SafeAreaView>
-	);
+				{displaySongsInPlayLists()}
+			</View>
+		</ScrollView>
+	</SafeAreaView>
+);
 };
 
 export default Playlist;
@@ -127,6 +169,17 @@ const style = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: 15,
+	},
+	textTitle:{
+		alignItems: 'center',
+		justifyContent: 'center',
+		padding: 10,
+	},
+	mtext:{
+		color: 'black', 
+		fontSize: 20,
+		fontWeight: '400',
+		textTransform: 'uppercase',
 	},
 	mainContainer: {
 		backgroundColor: 'pink',

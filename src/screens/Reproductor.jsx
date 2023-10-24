@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
-const Reproductor = ({ route, navigation }) => {
-  const { memoriaId } = route.params;
+const Reproductor = ({route, navigation}) => {
+  const {memoriaId} = route.params;
   const [memoria, setMemoria] = useState(null);
 
   useEffect(() => {
     const getMemoriaFromFirestore = async () => {
       try {
-        const doc = await firestore().collection('memorias').doc(memoriaId).get();
+        const doc = await firestore()
+          .collection('memorias')
+          .doc(memoriaId)
+          .get();
 
         if (doc.exists) {
-          setMemoria({ id: doc.id, ...doc.data() });
+          setMemoria({id: doc.id, ...doc.data()});
         } else {
           console.log('Documento no existe!');
         }
       } catch (error) {
-        console.error("Error al obtener el documento:", error);
+        console.error('Error al obtener el documento:', error);
       }
     };
 

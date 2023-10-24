@@ -116,7 +116,7 @@ const MemoryList = ({navigation}) => {
             />
           );
         }}
-        contentContainerStyle={{ paddingBottom: 22 }}
+        contentContainerStyle={{paddingBottom: 22}}
       />
       <View style={styles.miniPlayerContainer}>
         <MiniPlayer navigation={navigation} style={styles.miniPlayer} />

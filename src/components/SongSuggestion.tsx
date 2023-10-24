@@ -1,45 +1,60 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  Alert,
+} from 'react-native';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
-import { usePlayerStore } from '../store/playerStore';
-import { usePlaylistStore } from '../store/playlistStore';
+import {useNavigation} from '@react-navigation/native';
+import {usePlayerStore} from '../store/playerStore';
+import {usePlaylistStore} from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const SongSuggestion = ({ songData, screenSelected }) => {
-  const { title, artist, artwork, url } = songData;
+const SongSuggestion = ({songData, screenSelected}) => {
+  const {title, artist, artwork, url} = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
-  const { setCurrentSong, currentSong } = usePlayerStore();
+  const {setCurrentSong, currentSong} = usePlayerStore();
   const {currentPlaylist} = usePlaylistStore();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
     console.log('canción actual  ' + currentSong.title);
-    console.log("gente re paila");
+    console.log('gente re paila');
     setShowOptions(!showOptions);
   };
 
   const handlePlayPress = () => {
     setCurrentSong(songData);
-    navigation.navigate('Player', { songData });
+    navigation.navigate('Player', {songData});
   };
 
-  const checkSongMemory = async (song) => {
+  const checkSongMemory = async song => {
     const memoriesRef = firestore().collection('memorias');
-    const querySnapshot = await memoriesRef.where('titulo_cancion', '==', song.title).get();
+    const querySnapshot = await memoriesRef
+      .where('titulo_cancion', '==', song.title)
+      .get();
 
     if (!querySnapshot.empty) {
       Alert.alert(
         '¿Volver a crear una memoria con esta canción?',
         'Esta canción ya está asociada.',
         [
-          { text: 'Aceptar', onPress: redirectToCreateMemory },
-          { text: 'Cancelar', onPress: handleOptionPress },
+          {text: 'Aceptar', onPress: redirectToCreateMemory},
+          {text: 'Cancelar', onPress: handleOptionPress},
         ],
-        { cancelable: false }
+        {cancelable: false},
       );
     } else {
       redirectToCreateMemory();
@@ -47,30 +62,31 @@ const SongSuggestion = ({ songData, screenSelected }) => {
   };
 
   const redirectToCreateMemory = () => {
-    navigation.navigate('CreateMemory', { currentSong });
+    navigation.navigate('CreateMemory', {currentSong});
   };
 
   const createMemory = () => {
     checkSongMemory(currentSong);
   };
 
-  const addSongPlaylist = async (song) => {
+  const addSongPlaylist = async song => {
     const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
-    docRef.get().then((doc) => {
+    docRef.get().then(doc => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
           data.songs.push(song);
-    docRef.update({
-            songs: data.songs
-    })
-      .then(() => {
-        console.log('Dato agregado con éxito');
-      })
-      .catch((error) => {
-        console.error('Error al actualizar el documento:', error);
-      });
-            navigation.navigate('Playlist', {currentSong});
+          docRef
+            .update({
+              songs: data.songs,
+            })
+            .then(() => {
+              console.log('Dato agregado con éxito');
+            })
+            .catch(error => {
+              console.error('Error al actualizar el documento:', error);
+            });
+          navigation.navigate('Playlist', {currentSong});
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -78,12 +94,40 @@ const SongSuggestion = ({ songData, screenSelected }) => {
         console.error('No se encontró el documento');
       }
     });
-  }
+  };
+
+  const deleteCurrentSong = async () => {
+    setCurrentSong(songData);
+    console.log("quiero eliminar " + currentSong.title);
+    const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
+    docRef.get().then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (Array.isArray(data.songs)) {
+          data.songs = data.songs.filter(song => song.title !== currentSong.title);
+          docRef
+            .update({
+              songs: data.songs,
+            })
+            .then(() => {
+              console.log('Dato eliminado con éxito');
+            })
+            .catch(error => {
+              console.error('Error al actualizar el documento:', error);
+            });
+          navigation.navigate('Playlist', {currentSong});
+        } else {
+          console.error('El campo songs no es un arreglo o no existe');
+        }
+      } else {
+        console.error('No se encontró el documento');
+      }
+    })
+  };
 
   const backToPlaylist = () => {
     addSongPlaylist(currentSong);
-  }
-
+  };
 
   return (
     <TouchableOpacity onPress={handlePlayPress}>
@@ -93,10 +137,13 @@ const SongSuggestion = ({ songData, screenSelected }) => {
             typeof artwork === 'number' ? (
               <Image source={artwork} style={styles.image} />
             ) : (
-              <Image source={{ uri: artwork }} style={styles.image} />
+              <Image source={{uri: artwork}} style={styles.image} />
             )
           ) : (
-            <Image source={require('../assets/logo.png')} style={styles.image} />
+            <Image
+              source={require('../assets/logo.png')}
+              style={styles.image}
+            />
           )}
           <View style={styles.textContainer}>
             <Text style={styles.songName}>{title}</Text>
@@ -104,34 +151,42 @@ const SongSuggestion = ({ songData, screenSelected }) => {
           </View>
         </View>
         {screenSelected === 'search' && (
-        <TouchableOpacity onPress={handleOptionPress}>
-          <MaterialCommunityIcons name="dots-vertical" size={30} color="gray" />
-        </TouchableOpacity>)}
+          <TouchableOpacity onPress={handleOptionPress}>
+            <MaterialCommunityIcons
+              name="dots-vertical"
+              size={30}
+              color="gray"
+            />
+          </TouchableOpacity>
+        )}
         {screenSelected === 'playlist' && (
           <Menu style={styles.menuContainer}>
-          <MenuTrigger>
-            <Icon
+            <MenuTrigger>
+              <Icon
                 name="more-vert"
                 size={24}
                 color="black"
                 style={styles.menuIcon}
-            />
-          </MenuTrigger>
-          <MenuOptions customStyles={optionsStyles}>
-            <MenuOption>
-              <Text style={styles.optionText}>Eliminar</Text>
-            </MenuOption>
-          </MenuOptions>
-        </Menu>  
+              />
+            </MenuTrigger>
+            <MenuOptions customStyles={optionsStyles}>
+              <MenuOption
+                onSelect={deleteCurrentSong}
+              >
+                <Text style={styles.optionText}>Eliminar</Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
         )}
-        
       </View>
       {screenSelected === 'search' && (
         <Modal visible={showOptions} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <View style={styles.closeButtonContainer}>
-                <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                <TouchableOpacity
+                  onPress={handleOptionPress}
+                  style={styles.closeButton}>
                   <MaterialCommunityIcons name="close" size={30} color="gray" />
                 </TouchableOpacity>
               </View>
@@ -139,18 +194,25 @@ const SongSuggestion = ({ songData, screenSelected }) => {
                 typeof artwork === 'number' ? (
                   <Image source={artwork} style={styles.imageSelected} />
                 ) : (
-                  <Image source={{ uri: artwork }} style={styles.imageSelected} />
+                  <Image source={{uri: artwork}} style={styles.imageSelected} />
                 )
               ) : (
-                <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
+                <Image
+                  source={require('../assets/logo.png')}
+                  style={styles.imageSelected}
+                />
               )}
               <Text style={styles.songName}>{title}</Text>
               <Text style={styles.artistName}>{artist}</Text>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={createMemory}>
+                <TouchableOpacity
+                  style={[styles.button, styles.cyanButton]}
+                  onPress={createMemory}>
                   <Text style={styles.buttonText}>Crear Memoria Musical</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.salmonButton]} onPress={backToPlaylist}>
+                <TouchableOpacity
+                  style={[styles.button, styles.salmonButton]}
+                  onPress={backToPlaylist}>
                   <Text style={styles.buttonText}>Guardar en una playlist</Text>
                 </TouchableOpacity>
               </View>
@@ -249,7 +311,6 @@ const styles = StyleSheet.create({
     top: -15,
     right: -5,
     alignItems: 'center',
-
   },
   optionText: {
     color: 'black',
@@ -263,12 +324,12 @@ const optionsStyles = {
   optionsContainer: {
     marginTop: 10,
     marginLeft: 0,
-    width : 130,
+    width: 130,
     // elevation: 0,
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',
-    backgroundColor:'#EBF2F9',
+    backgroundColor: '#EBF2F9',
     justifyContent: 'center',
   },
   optionWrapper: {

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SongSuggestion = ({ songData, screenSelected }) => {
   const { title, artist, artwork, url } = songData;
@@ -101,9 +103,28 @@ const SongSuggestion = ({ songData, screenSelected }) => {
             <Text style={styles.artistName}>{artist}</Text>
           </View>
         </View>
+        {screenSelected === 'search' && (
         <TouchableOpacity onPress={handleOptionPress}>
           <MaterialCommunityIcons name="dots-vertical" size={30} color="gray" />
-        </TouchableOpacity>
+        </TouchableOpacity>)}
+        {screenSelected === 'playlist' && (
+          <Menu style={styles.menuContainer}>
+          <MenuTrigger>
+            <Icon
+                name="more-vert"
+                size={24}
+                color="black"
+                style={styles.menuIcon}
+            />
+          </MenuTrigger>
+          <MenuOptions customStyles={optionsStyles}>
+            <MenuOption>
+              <Text style={styles.optionText}>Eliminar</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>  
+        )}
+        
       </View>
       {screenSelected === 'search' && (
         <Modal visible={showOptions} animationType="slide" transparent={true}>
@@ -137,9 +158,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
           </View>
         </Modal>
       )}
-      {screenSelected === 'playlist' && (
-        <View></View>
-      )}
+      {screenSelected === 'playlist'}
     </TouchableOpacity>
   );
 };
@@ -225,6 +244,37 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 5,
   },
+  menuIcon: {
+    position: 'absolute',
+    top: -15,
+    right: -5,
+    alignItems: 'center',
+
+  },
+  optionText: {
+    color: 'black',
+    fontFamily: 'Arial',
+    padding: 5,
+    fontSize: 16,
+  },
 });
+
+const optionsStyles = {
+  optionsContainer: {
+    marginTop: 10,
+    marginLeft: 0,
+    width : 130,
+    // elevation: 0,
+    borderWidth: 0,
+    borderRadius: 15,
+    borderColor: 'black',
+    backgroundColor:'#EBF2F9',
+    justifyContent: 'center',
+  },
+  optionWrapper: {
+    margin: 5,
+    alignItems: 'center',
+  },
+};
 
 export default SongSuggestion;

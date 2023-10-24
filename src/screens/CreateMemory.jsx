@@ -32,7 +32,7 @@ const emociones = {
   emo14: "#C7A9D5",  
 };
 // aclarar un color hexadecimal
-function aclararColor(hex, porcentaje=0.2) {
+function aclararColor(hex, porcentaje=0.5) {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
   let b = parseInt(hex.slice(5, 7), 16);
@@ -49,7 +49,8 @@ const CrearMemoria = ({ navigation }) => {
   const songg = songs.find(s => s.title === currentSong.title);
   const songArtwork = songg ? songg.artwork : null;
 
-  const [selectedEmotion, setSelectedEmotion] = useState(null);
+  const [selectedEmotion, setSelectedEmotion] = useState("emo1");
+  const [selectedEmotionName, setSelectedEmotionName] = useState("emo1");
 
   const handleEmotionSelected = (emotion) => {
     setSelectedEmotion(emotion);
@@ -164,7 +165,6 @@ const CrearMemoria = ({ navigation }) => {
       )}
       <RequiredField style={styles.label}>Emoción:</RequiredField>
       <EmotionPicker onEmotionChange={handleEmotionSelected}/>
-
       <Text style={styles.label}>Canción vinculada:</Text>
       <View style={styles.marginBottom}>
         <ItemSong
@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#e4e6dc',
   },
   pageTitle: {
     fontSize: 24,
@@ -232,14 +231,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignSelf: 'center',
   },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rowItem: {
-    flex: 1,
-    marginHorizontal: 8,
-  },  
 });
 
 export default CrearMemoria;

@@ -83,9 +83,6 @@ const Library = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSearch}>
-            <Ionicons name="search" size={28} color="black" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handlePressMore}>
             <Ionicons name="add" size={28} color="black" />
           </TouchableOpacity>

@@ -16,6 +16,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
   const handleOptionPress = () => {
     setCurrentSong(songData);
     console.log('canción actual  ' + currentSong.title);
+    console.log("gente re paila");
     setShowOptions(!showOptions);
   };
 

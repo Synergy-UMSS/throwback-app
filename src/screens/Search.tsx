@@ -53,17 +53,6 @@ const Search = ({navigation}) => {
     clearRecentSearches();
   };
 
-  const displaySearches = () => {
-    if (!showHistory) return null;
-    return (
-      <View>
-        {recentSearches.map((search, index) => (
-          <RecentSearchItem key={index} searchQuery={search} />
-        ))}
-      </View>
-    );
-  };
-
   const handlePress = paila => {
     console.log('handlePress ' + paila);
   };
@@ -118,8 +107,7 @@ const Search = ({navigation}) => {
     if (showHistory) {
       updateRecentSearches();
     }
-  }, [showHistory]);
-
+  }, [showHistory, updateRecentSearches]);
   return (
     <View
       style={{
@@ -165,10 +153,7 @@ const Search = ({navigation}) => {
         {showHistory && (
           <View>
             {recentSearches.map((search, index) => (
-              <RecentSearchItem
-                key={index}
-                searchQuery={search}
-              />
+              <RecentSearchItem key={index} searchQuery={search} />
             ))}
           </View>
         )}

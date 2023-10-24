@@ -38,113 +38,133 @@ const Playlist = ({navigation}) => {
   let imgs;
   let cond = localSongsAdded.length > 3;
 
-	const displaySongsInPlayLists = () => { 
-		return (
-			<View>
-				{localSongsAdded.map((song, index) => (
-					<SongSuggestion
-						key={index}
-						songData={song}
-						screenSelected='playlist'
-					/>
-				))}
-			</View>
-		)
-	};
-	const imagePlaylist = {
-		display: 'flex',
-		backgroundColor: 'white',
-		margin: 2,
-		width: cond ? 90 : 190,
-		height: cond ? 110 : 230,
-	};
-	if (cond) {
-		imgs = (
-			<>
-				{localSongsAdded[0].artwork ? (
-					typeof localSongsAdded[0].artwork === 'number' ? (
-						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[1].artwork ? (
-					typeof localSongsAdded[1].artwork === 'number' ? (
-						<Image source={localSongsAdded[1].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[1].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[2].artwork ? (
-					typeof localSongsAdded[2].artwork === 'number' ? (
-						<Image source={localSongsAdded[2].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[2].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[3].artwork ? (
-					typeof localSongsAdded[3].artwork === 'number' ? (
-						<Image source={localSongsAdded[3].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[3].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-			</>
-		);
-
-	} else {
-		if (localSongsAdded.length > 0) {
-			imgs =  localSongsAdded[0].artwork ? (
-				typeof localSongsAdded[0].artwork === 'number' ? (
-					<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-				) : (
-					<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-				)
-			) : (
-				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-			)
-		} else {
-	imgs = <Image source={require('../assets/logo.png')} style={imagePlaylist} />
-}
-	}
-return (
-	<SafeAreaView style={style.MainMainContainer}>
-		<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
-			<Ionicons name="arrow-back" size={30} color="white" />
-		</TouchableOpacity>
-		<ScrollView>
-			<View style={style.portada}>
-				<View style={style.containerimgs}>
-					{imgs}
-				</View>
-			</View>
-			<View style={style.textTitle}>
-				<Text style={style.mtext}>
-					{playlistName !== null && playlistName !== undefined ? playlistName :currentPlaylist.name}
-				</Text>
-			</View>
-			<View style={style.mainContainer}>
-				<View style={style.container}>
-					<TouchableOpacity style={style.add} onPress={() => navigation.navigate('SearchSelect')}>
-						<Octicons name='diff-added' size={40} color='black' />
-					</TouchableOpacity>
-					<View style={style.textContainer}>
-						<Text style={style.texts}>Agregar una canción</Text>
-					</View>
-				</View>
-				{displaySongsInPlayLists()}
-			</View>
-		</ScrollView>
-	</SafeAreaView>
-);
+  const displaySongsInPlayLists = () => {
+    return (
+      <View>
+        {localSongsAdded.map((song, index) => (
+          <SongSuggestion
+            key={index}
+            songData={song}
+            screenSelected="playlist"
+          />
+        ))}
+      </View>
+    );
+  };
+  const imagePlaylist = {
+    display: 'flex',
+    backgroundColor: 'white',
+    margin: 2,
+    width: cond ? 90 : 190,
+    height: cond ? 110 : 230,
+  };
+  if (cond) {
+    imgs = (
+      <>
+        {localSongsAdded[0].artwork ? (
+          typeof localSongsAdded[0].artwork === 'number' ? (
+            <Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
+          ) : (
+            <Image
+              source={{uri: localSongsAdded[0].artwork}}
+              style={imagePlaylist}
+            />
+          )
+        ) : (
+          <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+        )}
+        {localSongsAdded[1].artwork ? (
+          typeof localSongsAdded[1].artwork === 'number' ? (
+            <Image source={localSongsAdded[1].artwork} style={imagePlaylist} />
+          ) : (
+            <Image
+              source={{uri: localSongsAdded[1].artwork}}
+              style={imagePlaylist}
+            />
+          )
+        ) : (
+          <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+        )}
+        {localSongsAdded[2].artwork ? (
+          typeof localSongsAdded[2].artwork === 'number' ? (
+            <Image source={localSongsAdded[2].artwork} style={imagePlaylist} />
+          ) : (
+            <Image
+              source={{uri: localSongsAdded[2].artwork}}
+              style={imagePlaylist}
+            />
+          )
+        ) : (
+          <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+        )}
+        {localSongsAdded[3].artwork ? (
+          typeof localSongsAdded[3].artwork === 'number' ? (
+            <Image source={localSongsAdded[3].artwork} style={imagePlaylist} />
+          ) : (
+            <Image
+              source={{uri: localSongsAdded[3].artwork}}
+              style={imagePlaylist}
+            />
+          )
+        ) : (
+          <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+        )}
+      </>
+    );
+  } else {
+    if (localSongsAdded.length > 0) {
+      imgs = localSongsAdded[0].artwork ? (
+        typeof localSongsAdded[0].artwork === 'number' ? (
+          <Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
+        ) : (
+          <Image
+            source={{uri: localSongsAdded[0].artwork}}
+            style={imagePlaylist}
+          />
+        )
+      ) : (
+        <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+      );
+    } else {
+      imgs = (
+        <Image source={require('../assets/logo.png')} style={imagePlaylist} />
+      );
+    }
+  }
+  return (
+    <SafeAreaView style={style.MainMainContainer}>
+      <TouchableOpacity
+        style={style.flechita}
+        onPress={() => navigation.navigate('Library')}>
+        <Ionicons name="arrow-back" size={30} color="white" />
+      </TouchableOpacity>
+      <ScrollView>
+        <View style={style.portada}>
+          <View style={style.containerimgs}>{imgs}</View>
+        </View>
+        <View style={style.textTitle}>
+          <Text style={style.mtext}>
+            {playlistName !== null && playlistName !== undefined
+              ? playlistName
+              : currentPlaylist.name}
+          </Text>
+        </View>
+        <View style={style.mainContainer}>
+          <View style={style.container}>
+            <TouchableOpacity
+              style={style.add}
+              onPress={() => navigation.navigate('SearchSelect')}>
+              <Octicons name="diff-added" size={40} color="black" />
+            </TouchableOpacity>
+            <View style={style.textContainer}>
+              <Text style={style.texts}>Agregar una canción</Text>
+            </View>
+          </View>
+          {displaySongsInPlayLists()}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
 export default Playlist;

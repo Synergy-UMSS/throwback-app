@@ -97,17 +97,18 @@ const SongSuggestion = ({songData, screenSelected}) => {
   };
 
   const deleteCurrentSong = async () => {
-    setCurrentSong(songData);
-    console.log("quiero eliminar " + currentSong.title);
+    console.log('quiero eliminar ' + songData.title);
     const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
     docRef.get().then(doc => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
-          data.songs = data.songs.filter(song => song.title !== currentSong.title);
+          const updatedSongs = data.songs.filter(
+            song => song.title !== songData.title,
+          );
           docRef
             .update({
-              songs: data.songs,
+              songs: updatedSongs,
             })
             .then(() => {
               console.log('Dato eliminado con éxito');
@@ -115,14 +116,14 @@ const SongSuggestion = ({songData, screenSelected}) => {
             .catch(error => {
               console.error('Error al actualizar el documento:', error);
             });
-          navigation.navigate('Playlist', {currentSong});
+          navigation.navigate('Playlist', {currentSong: songData});
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
       } else {
         console.error('No se encontró el documento');
       }
-    })
+    });
   };
 
   const backToPlaylist = () => {
@@ -170,9 +171,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
               />
             </MenuTrigger>
             <MenuOptions customStyles={optionsStyles}>
-              <MenuOption
-                onSelect={deleteCurrentSong}
-              >
+              <MenuOption onSelect={deleteCurrentSong}>
                 <Text style={styles.optionText}>Eliminar</Text>
               </MenuOption>
             </MenuOptions>

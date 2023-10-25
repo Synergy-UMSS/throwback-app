@@ -15,6 +15,7 @@ const SongSuggestion = ({ songData, screenSelected }) => {
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
+    console.log('SOOOOOOOOOOOOOOo     ',songData)
     console.log('canción actual  ' + currentSong.title);
     setShowOptions(!showOptions);
   };

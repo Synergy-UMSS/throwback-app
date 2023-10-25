@@ -49,13 +49,19 @@ const Player = ({ navigation, route }) => {
 
 				await TrackPlayer.setupPlayer();
 				await TrackPlayer.add([currentSong]);
-				await TrackPlayer.add(tracks);
+				tracks.sort((a,b) => a.id-b.id);
+				const tracksTop = tracks.map(song => ({
+					...song,
+					id: Number(song.id)
+				}));
+				await TrackPlayer.add(tracksTop);
 				/*await TrackPlayer.add(songs);*/
 				let indexArb = Math.floor(Math.random() * (tracks.length - 1));
 			  await TrackPlayer.add([tracks[indexArb]]);
 				if (isConnected) {
 					await TrackPlayer.play();
 				}
+				changeValuesTrack();
 			
 		} catch (e) {
 			console.log('Error en setupPlayer:', e)
@@ -119,7 +125,8 @@ const Player = ({ navigation, route }) => {
 
 	{/*useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
 		if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-			const track = await TrackPlayer.getTrack(event.nextTrack);
+			const idNumerico = parseInt(currentSong.id);
+			const track = await TrackPlayer.getTrack(parseInt(idNumerico));
 			const { title, artwork, artist } = track;
 			console.log('intervengoooo');
 			setTrackTitle(title);
@@ -138,6 +145,7 @@ const Player = ({ navigation, route }) => {
 			const trackIndex = await TrackPlayer.getCurrentTrack();
 			{/*const track = await TrackPlayer.getTrack(currentSong.id);*/}
 			const idNumerico = parseInt(currentSong.id);
+			console.log(idNumerico);
 			const track = await TrackPlayer.getTrack(idNumerico);
 
 			console.log('banderitaaaa', track);
@@ -200,8 +208,8 @@ const Player = ({ navigation, route }) => {
             .then(() => setPlayerInitialized(true))
             .catch(error => console.error('Error al inicializar el reproductor:', error));
     }
-    console.log(playerInitialized);
-	console.log('currentSong', currentSong);*/
+    console.log(playerInitialized);*/
+	console.log('currentSong', currentSong);
 }, [currentSong, playlistFlow]);
 
 	useEffect(() => {

@@ -82,7 +82,6 @@ const Library = () => {
         querySnapshot.forEach(doc => {
           const {name, createDate} = doc.data();
           playlistsData.push(name);
-          // Puedes ajustar esta lógica según tu implementación específica para obtener el color
           const color =
             initialColors[Math.floor(Math.random() * initialColors.length)];
           colorsData[name] = color;
@@ -129,9 +128,9 @@ const Library = () => {
         });
     }
   };
-  const handleSearch = () => {
+  //const handleSearch = () => {
     // Posible lógica para el Search
-  };
+ // };
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -158,10 +157,7 @@ const Library = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSearch}>
-            <Ionicons name="search" size={28} color="black" />
-          </TouchableOpacity>
+        <View style={styles.buttonContainer}>   
           <TouchableOpacity style={styles.button} onPress={handlePressMore}>
             <Ionicons name="add" size={28} color="black" />
           </TouchableOpacity>

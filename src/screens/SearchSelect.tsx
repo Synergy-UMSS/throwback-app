@@ -6,14 +6,14 @@ import RecentSearchItem from '../components/RecentSearch';
 import {useSearchStore} from '../store/searchStore';
 import SongSuggestionSelect from '../components/SongSuggestionSelect';
 import songs from '../../data/Prueba/Data';
-import {ScrollView} from 'react-native';
-import {firebase} from '@react-native-firebase/firestore';
+import { ScrollView } from 'react-native';
+import { firebase } from '@react-native-firebase/firestore';
 
 let tracks = [];
 
 const SearchSelect = ({navigation}) => {
   const db = firebase.firestore();
-  const songsRef = db.collection('songs');
+	const songsRef = db.collection('songs');
   useEffect(() => {
 		const fetchSongs = async () => {
 			try {
@@ -71,7 +71,7 @@ const SearchSelect = ({navigation}) => {
 
   let suggests = [];
   const displaySongSuggestionsSelect = () => {
-    if (showHistory || currentSearch.length === 0) return null;
+    if (showHistory || currentSearch.length===0) return null;
     suggests = [];
     let mimi = currentSearch;
     /*for (let i = 0; i < songs.length; i++) {
@@ -81,7 +81,7 @@ const SearchSelect = ({navigation}) => {
     }*/
     for (let j = 0; j < tracks.length; j++){
       if (matching(mimi, tracks[j])) {
-        suggests.push(tracks[j]);
+        suggests.push(tracks[j])
       }
     }
 
@@ -92,15 +92,12 @@ const SearchSelect = ({navigation}) => {
             key={index}
             songData={song}
             onOptionPress={handlePress}
-            screenSelected="search2"
+            screenSelected='search2'
           />
         ))}
-        {suggests.length === 0 && (
-          <Text style={{textAlign: 'center', color: '#777'}}>
-            No se ha encontrado ningún resultado
-          </Text>
-        )}
+        {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}
       </View>
+      
     );
   };
 
@@ -119,7 +116,7 @@ const SearchSelect = ({navigation}) => {
           right: 0,
         }}
       />
-      <ScrollView style={{paddingTop: 0}}>
+      <ScrollView style={{ paddingTop:0 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -127,21 +124,20 @@ const SearchSelect = ({navigation}) => {
             alignItems: 'center',
             padding: 10,
             height: 50,
-          }}>
+          }}
+         >
           {showHistory && (
-            <Text
-              style={{fontSize: 16 /*, fontWeight: 'nunito'*/, color: 'black'}}>
+            <Text style={{ fontSize: 16/*, fontWeight: 'nunito'*/, color: 'black' }}>
               Búsquedas Recientes
             </Text>
           )}
           <TouchableOpacity
             onPress={() => {
               clearSearches();
-            }}>
+            }}
+          >
             {showHistory && (
-              <Text style={{fontSize: 12, color: 'gray'}}>
-                Borrar Historial
-              </Text>
+              <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -153,5 +149,6 @@ const SearchSelect = ({navigation}) => {
     </View>
   );
 };
+
 
 export default SearchSelect;

@@ -132,19 +132,18 @@ playTrack();
 }, [isConnected]);
 
 
-{/*useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-const idNumerico = parseInt(currentSong.id);
-const track = await TrackPlayer.getTrack(parseInt(idNumerico));
-const { title, artwork, artist } = track;
-console.log('intervengoooo');
-setTrackTitle(title);
-setTrackArtist(artist);
-setTrackArtwork(artwork);
-await setCurrentSong(track);
-}
-});*/}
-
+useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+    if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
+        const track = await TrackPlayer.getTrack(event.nextTrack);
+        if (track) {
+            const { title, artwork, artist } = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            await setCurrentSong(track);
+        }
+    }
+});
 
 const changeValuesTrack = async () => {
 try {

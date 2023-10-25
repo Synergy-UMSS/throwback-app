@@ -19,19 +19,18 @@ import emo14 from '../assets/emotion/14.png';
 
 const emotions = {
   emo1: { image: emo1, name: 'Feliz' },
-  emo2: { image: emo2, name: 'Triste' },
-  emo3: { image: emo3, name: 'Enojado' },
-  emo4: { image: emo4, name: 'Sorprendido' },
-  emo5: { image: emo5, name: 'Disgustado' },
-  emo6: { image: emo6, name: 'Asustado' },
-  emo7: { image: emo7, name: 'Neutral' },
+  emo2: { image: emo2, name: 'Enojado' },
+  emo3: { image: emo3, name: 'Frustrado' },
+  emo4: { image: emo4, name: 'Cariñoso' },
+  emo5: { image: emo5, name: 'No emotivo' },
+  emo6: { image: emo6, name: 'Indeciso' },
+  emo7: { image: emo7, name: 'Agradecido' },
   emo8: { image: emo8, name: 'Enamorado' },
-  emo9: { image: emo9, name: 'Avergonzado' },
-  emo10: { image: emo10, name: 'Satisfecho' },
-  emo11: { image: emo11, name: 'Emocionado' },
-  emo12: { image: emo12, name: 'Somnoliento' },
-  emo13: { image: emo13, name: 'Hambriento' },
-  emo14: { image: emo14, name: 'Sediento' },
+  emo9: { image: emo9, name: 'Juguetón' },
+  emo10: { image: emo10, name: 'Relajado' },
+  emo11: { image: emo11, name: 'Confundido' },
+  emo12: { image: emo12, name: 'Alegre' },
+  emo13: { image: emo13, name: 'Triste' },
 };
 
 const EmotionPicker = ({ emotion, onEmotionChange }) => {

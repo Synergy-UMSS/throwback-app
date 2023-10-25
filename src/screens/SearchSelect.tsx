@@ -5,15 +5,16 @@ import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
 import {useSearchStore} from '../store/searchStore';
 import SongSuggestionSelect from '../components/SongSuggestionSelect';
-import songs from '../../data/Prueba/Data';
 import { ScrollView } from 'react-native';
 import { firebase } from '@react-native-firebase/firestore';
+import {getSongsGlobal} from '../helpcomponents/songsGlobal';
 
 let tracks = [];
 
 const SearchSelect = ({navigation}) => {
   const db = firebase.firestore();
-	const songsRef = db.collection('songs');
+  const songsRef = db.collection('songs');
+  const {isLoading, setIsLoading } = getSongsGlobal();
   useEffect(() => {
 		const fetchSongs = async () => {
 			try {
@@ -37,10 +38,13 @@ const SearchSelect = ({navigation}) => {
 				console.error('Error al obtener las canciones:', e);
 			}
 		};
-		fetchSongs();
+    if(!isLoading){
+      fetchSongs();
+      setIsLoading(true);
+    }else{}
 	}, []);
 
-  const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
+  const {clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches,} =
     useSearchStore();
 
   const clearSearches = () => {
@@ -74,11 +78,6 @@ const SearchSelect = ({navigation}) => {
     if (showHistory || currentSearch.length===0) return null;
     suggests = [];
     let mimi = currentSearch;
-    /*for (let i = 0; i < songs.length; i++) {
-      if (matching(mimi, songs[i])) {
-        suggests.push(songs[i]);a
-      }
-    }*/
     for (let j = 0; j < tracks.length; j++){
       if (matching(mimi, tracks[j])) {
         suggests.push(tracks[j])
@@ -101,6 +100,11 @@ const SearchSelect = ({navigation}) => {
     );
   };
 
+  useEffect(() => {
+    if (showHistory) {
+      updateRecentSearches();
+    }
+  }, [showHistory, updateRecentSearches]);
   return (
     <View
       style={{
@@ -116,7 +120,7 @@ const SearchSelect = ({navigation}) => {
           right: 0,
         }}
       />
-      <ScrollView style={{ paddingTop:0 }}>
+      <ScrollView style={{paddingTop: 0}}>
         <View
           style={{
             flexDirection: 'row',
@@ -124,8 +128,7 @@ const SearchSelect = ({navigation}) => {
             alignItems: 'center',
             padding: 10,
             height: 50,
-          }}
-         >
+          }}>
           {showHistory && (
             <Text style={{ fontSize: 16/*, fontWeight: 'nunito'*/, color: 'black' }}>
               Búsquedas Recientes
@@ -134,15 +137,22 @@ const SearchSelect = ({navigation}) => {
           <TouchableOpacity
             onPress={() => {
               clearSearches();
-            }}
-          >
+            }}>
             {showHistory && (
-              <Text style={{ fontSize: 12, color: 'gray' }}>Borrar Historial</Text>
+              <Text style={{fontSize: 12, color: 'gray'}}>
+                Borrar Historial
+              </Text>
             )}
           </TouchableOpacity>
         </View>
         {displaySongSuggestionsSelect()}
-        {displaySearches()}
+        {showHistory && (
+          <View>
+            {recentSearches.map((search, index) => (
+              <RecentSearchItem key={index} searchQuery={search} />
+            ))}
+          </View>
+        )}
         <Text>{'\n\n'}</Text>
       </ScrollView>
       <MiniPlayer navigation={navigation} />

@@ -55,10 +55,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(0,0,0,0.7)',
+        backgroundColor: 'rgba(149,228,206,0.7)',
         paddingHorizontal: 15,
         paddingVertical: 10,
-        borderRadius: 15,
+        borderRadius: 30,
         position: 'absolute',
         left: 10,
         right: 10,
@@ -78,19 +78,19 @@ const styles = StyleSheet.create({
     textContainer: {
         marginLeft: 10,
         flexShrink: 1,
-        maxWidth: '80%',  // Establece un ancho máximo para el contenedor del texto
+        maxWidth: '80%',  
     },
     songTitle: {
-        color: 'white',
+        color: 'black',
         fontWeight: 'bold',
         fontSize: 14,
     },
     songArtist: {
-        color: 'white',
+        color: 'black',
         fontSize: 12,
     },
     playPauseButton: {
-        width: 40, // Establece un ancho fijo para el botón
+        width: 40, 
         alignItems: 'center',
     },
 });

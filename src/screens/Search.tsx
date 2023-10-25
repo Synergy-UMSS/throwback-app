@@ -26,7 +26,7 @@ const Search = ({navigation}) => {
         });
         songs1.forEach((song, index) => {
           const track = {
-            id: song.id.toString(),
+            id: parseInt(song.id),
             url: song.songURL,
             title: song.title,
             artist: song.artist,
@@ -53,6 +53,17 @@ const Search = ({navigation}) => {
     clearRecentSearches();
   };
 
+  const displaySearches = () => {
+    if (!showHistory) return null;
+    return (
+      <View>
+        {recentSearches.map((search, index) => (
+          <RecentSearchItem key={index} searchQuery={search} />
+        ))}
+      </View>
+    );
+  };
+
   const handlePress = paila => {
     console.log('handlePress ' + paila);
   };
@@ -73,11 +84,11 @@ const Search = ({navigation}) => {
     if (showHistory || currentSearch.length === 0) return null;
     suggests = [];
     let mimi = currentSearch;
-    for (let i = 0; i < songs.length; i++) {
+    /*for (let i = 0; i < songs.length; i++) {
       if (matching(mimi, songs[i])) {
         suggests.push(songs[i]);
       }
-    }
+    }*/
     for (let j = 0; j < tracks.length; j++) {
       if (matching(mimi, tracks[j])) {
         suggests.push(tracks[j]);
@@ -107,7 +118,8 @@ const Search = ({navigation}) => {
     if (showHistory) {
       updateRecentSearches();
     }
-  }, [showHistory, updateRecentSearches]);
+  }, [showHistory]);
+
   return (
     <View
       style={{
@@ -153,7 +165,10 @@ const Search = ({navigation}) => {
         {showHistory && (
           <View>
             {recentSearches.map((search, index) => (
-              <RecentSearchItem key={index} searchQuery={search} />
+              <RecentSearchItem
+                key={index}
+                searchQuery={search}
+              />
             ))}
           </View>
         )}

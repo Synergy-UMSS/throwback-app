@@ -2,7 +2,7 @@ import {create} from 'zustand';
 
 interface PlayerStore {
   currentSong: {
-    id: any;
+    id: number;
     title: any;
     artist: any;
     artwork: any;

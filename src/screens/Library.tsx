@@ -7,6 +7,7 @@ import {
   TextInput,
   Modal,
   ScrollView,
+  Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
@@ -43,6 +44,13 @@ const Library = () => {
     '#C7A9D5',
     '#FFC1D8',
   ];
+  const images = [
+    require('../../assets-prueba/images-cover/1.png'),
+    require('../../assets-prueba/images-cover/2.png'),
+    require('../../assets-prueba/images-cover/3.png'),
+    require('../../assets-prueba/images-cover/4.png'),
+  ];
+
   const navigation = useNavigation();
   const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
 
@@ -82,7 +90,6 @@ const Library = () => {
         querySnapshot.forEach(doc => {
           const {name, createDate} = doc.data();
           playlistsData.push(name);
-          // Puedes ajustar esta lógica según tu implementación específica para obtener el color
           const color =
             initialColors[Math.floor(Math.random() * initialColors.length)];
           colorsData[name] = color;
@@ -105,28 +112,29 @@ const Library = () => {
       setError('Este campo es obligatorio.');
     } else {
       setError('');
-      const colorIndex = playlists.length % colorSequence.length;
+      const colorIndex = playlists.length % initialColors.length;
       const color = colorSequence[colorIndex];
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
+        songs: [],
       };
 
       firestore()
-        .collection('playlists')
-        .add(playlistData)
-        .then(docRef => {
-          console.log('Se ha creado la playlist:', name);
-          const updatedPlaylists = [name, ...playlists];
-          setPlaylists(updatedPlaylists);
-          setPlaylistColors({...playlistColors, [name]: color});
-          setPlaylistName('');
-          setShowModal(false);
-        })
-        .catch(error => {
-          console.error('Error al crear la playlist:', error);
-        });
+      .collection('playlists')
+      .add(playlistData)
+      .then(docRef => {
+        console.log('Se ha creado la playlist:', name);
+        const updatedPlaylists = [name, ...playlists];
+        setPlaylists(updatedPlaylists);
+        setPlaylistColors({...playlistColors, [name]: color});
+        setPlaylistName('');
+        setShowModal(false);
+      })
+      .catch(error => {
+        console.error('Error al crear la playlist:', error);
+      });
     }
   };
   const handleSearch = () => {
@@ -159,9 +167,6 @@ const Library = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSearch}>
-            <Ionicons name="search" size={28} color="black" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handlePressMore}>
             <Ionicons name="add" size={28} color="black" />
           </TouchableOpacity>
@@ -175,26 +180,41 @@ const Library = () => {
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {playlists.map((playlist, index) => {
-            const color =
-              playlistColors[playlist] ||
-              initialColors[index % initialColors.length];
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handlePlayListView(playlist)}
-                style={[styles.playlistContainer]}>
-                <View
-                  style={[
-                    styles.playlistBackground,
-                    {backgroundColor: `${color}B3`},
-                  ]}
-                />
-                <View style={styles.playlistBox}>
-                  <Text style={styles.playlistName}>{playlist}</Text>
-                  <Text style={styles.playlistLabel}>Playlist</Text>
-                </View>
-              </TouchableOpacity>
+        {playlists.map((playlist, index) => {
+  const color =
+    playlistColors[playlist] ||
+    initialColors[index % initialColors.length];
+  const imageIndex = index % images.length;
+  return (
+    <TouchableOpacity
+      key={index}
+      onPress={() => handlePlayListView(playlist)}
+      style={[styles.playlistContainer]}>
+      <View
+        style={[
+          styles.playlistBackground,
+          { backgroundColor: `${color}B3` },
+        ]}
+      />
+      <View style={styles.playlistBox}>
+        <View style={styles.playlistContent}>
+          <Image
+            source={images[imageIndex]}
+            style={styles.playlistImage}
+          />
+          <View style={[styles.playlistText, { width: 200 }]}>
+            <Text
+              style={styles.playlistName}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {playlist}
+            </Text>
+            <Text style={styles.playlistLabel}>Playlist</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
             );
           })}
             <Text>{'\n\n'}</Text>
@@ -334,13 +354,13 @@ const styles = StyleSheet.create({
   },
   playlistName: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'left',
     marginBottom: 5,
   },
   playlistLabel: {
     color: 'gray',
-    fontSize: 14,
+    fontSize: 13,
     textAlign: 'left',
   },
   playlistContainer: {
@@ -356,7 +376,7 @@ const styles = StyleSheet.create({
     bottom: -5,
     zIndex: -1,
     borderRadius: 15,
-    opacity: 0.8,
+    opacity: 0.7,
   },
   errorText: {
     color: 'red',
@@ -374,6 +394,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.55,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  playlistContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  playlistText: {
+    marginLeft: 10,
+    width: 200, 
+  },
+  playlistImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    marginLeft: -10,
   },
 });
 export default Library;

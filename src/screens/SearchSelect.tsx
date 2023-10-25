@@ -25,7 +25,7 @@ const SearchSelect = ({navigation}) => {
 				});
 				songs1.forEach((song, index) => {
 					const track = {
-						id: song.id.toString(),
+						id:  parseInt(song.id),
 						url: song.songURL,
 						title: song.title,
 						artist: song.artist,

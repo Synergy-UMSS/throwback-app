@@ -12,7 +12,8 @@ import { useSearchStore } from '../store/searchStore';
 import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
-import firestore, { firebase } from '@react-native-firebase/firestore';
+import { firebase } from '@react-native-firebase/firestore';
+import Playlist from './Playlist';
 
 let color: string[] = [
 	'#C7A9D560',
@@ -25,40 +26,14 @@ let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | nu
 
 const tracks = [];
 
-const Player = ({ navigation }) => {
+const Player = ({ navigation, route }) => {
+	const { songData, playlistFlow } = route.params;
 	const db = firebase.firestore();
 	const songsRef = db.collection('songs');
-
+	const [playerInitialized, setPlayerInitialized] = useState(false);
 	const { clearRecentSearches, recentSearches, showHistory, currentSearch } =
 		useSearchStore();
 	const { setCurrentSong, currentSong } = usePlayerStore();
-	const setPlayer = async () => {
-		try {
-			await TrackPlayer.setupPlayer();
-			await TrackPlayer.add([currentSong]);
-			await TrackPlayer.add(tracks);
-			let indexArb = Math.floor(Math.random() * (tracks.length - 1));
-			await TrackPlayer.add([tracks[indexArb]]);
-			if (isConnected) {
-				await TrackPlayer.play();
-			}
-		} catch (e) {
-			console.log('aca hay error', e)
-		}
-	};
-
-	const playTrack = async (playState: State) => {
-		const track = await TrackPlayer.getCurrentTrack();
-		if (track !== null) {
-			if (playState == State.Ready || playState == State.Paused && isConnected) {
-				await TrackPlayer.play();
-				setIsPaused(false);
-			} else {
-				await TrackPlayer.pause();
-				setIsPaused(true);
-			}
-		}
-	};
 	const playState: State = usePlaybackState();
 	const sliderWork = useProgress();
 	const [trackTitle, setTrackTitle] = useState();
@@ -68,66 +43,113 @@ const Player = ({ navigation }) => {
 	const { isConnected } = useConnectionGlobal();
 	const { isPaused, setIsPaused } = useControlPlayer();
 
-	useEffect(() => {
-		const fetchSongs = async () => {
-			try {
-				const querySnapshot = await songsRef.get();
-				const songs1 = [];
-				querySnapshot.forEach((doc) => {
-					const song = doc.data();
-					songs1.push(song);
-				});
-				songs1.forEach((song, index) => {
-					const track = {
-						id: song.id.toString(),
-						url: song.songURL,
-						title: song.title,
-						artist: song.artist,
-						artwork: song.coverURL,
-					};
-					tracks.push(track);
-				});
-				setPlayer();
-			} catch (e) {
-				console.error('Error al obtener las canciones:', e);
-			}
-		};
 
-		fetchSongs();
+	const setPlayer = async () => {
+		try {
+
+				await TrackPlayer.setupPlayer();
+				await TrackPlayer.add([currentSong]);
+				await TrackPlayer.add(tracks);
+				/*await TrackPlayer.add(songs);*/
+				let indexArb = Math.floor(Math.random() * (tracks.length - 1));
+			  await TrackPlayer.add([tracks[indexArb]]);
+				if (isConnected) {
+					await TrackPlayer.play();
+				}
+			
+		} catch (e) {
+			console.log('Error en setupPlayer:', e)
+		}
+	};
+
+	const playTrack = async (playState: State) => {
+		try {
+			const track = await TrackPlayer.getCurrentTrack();
+			if (track !== null) {
+				if (playState == State.Ready || playState == State.Paused && isConnected) {
+					await TrackPlayer.play();
+					setIsPaused(false);
+				} else {
+					await TrackPlayer.pause();
+					setIsPaused(true);
+				}
+			}
+		} catch (e) {
+			console.log('Error en playTrack:', e);
+		}
+	};
+
+	const fetchSongs = async () => {
+		try {
+			const querySnapshot = await songsRef.get();
+			const songs1 = [];
+			querySnapshot.forEach((doc) => {
+				const song = doc.data();
+				songs1.push(song);
+			});
+			songs1.forEach((song, index) => {
+				const track = {
+					id: parseInt(song.id),
+					url: song.songURL,
+					title: song.title,
+					artist: song.artist,
+					artwork: song.coverURL,
+				};
+				tracks.push(track);
+			});
+			setPlayer();
+		} catch (e) {
+			console.error('Error al obtener las canciones:', e);
+		}
+	};
+
+	useEffect(() => {
+		const fetchDataAndInitializePlayer = async () => {
+			await fetchSongs();
+			await setPlayer(); 
+			console.log('Player initialized:', playerInitialized);
+			setPlayerInitialized(true);
+		};
+		fetchDataAndInitializePlayer();
 	}, []);
 
 	useEffect(() => {
 		playTrack();
 	}, [isConnected]);
 
-	useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+	{/*useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
 		if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
 			const track = await TrackPlayer.getTrack(event.nextTrack);
 			const { title, artwork, artist } = track;
+			console.log('intervengoooo');
 			setTrackTitle(title);
 			setTrackArtist(artist);
 			setTrackArtwork(artwork);
 			await setCurrentSong(track);
 		}
-	});
+	});*/}
 
 	const changeValuesTrack = async () => {
 		try {
-			const isPlayerInitialized = await TrackPlayer.isInitialized();
-			if (!isPlayerInitialized) {
-				await TrackPlayer.setupPlayer();
-			}
+			{/*const isPlayerInitialized = await TrackPlayer.isInitialized();*/}
+			{/*if (!playerInitialized) {
+				await setPlayer();
+			}*/}
 			const trackIndex = await TrackPlayer.getCurrentTrack();
-			const track = await TrackPlayer.getTrack(currentSong.id);
+			{/*const track = await TrackPlayer.getTrack(currentSong.id);*/}
+			const idNumerico = parseInt(currentSong.id);
+			const track = await TrackPlayer.getTrack(idNumerico);
+
+			console.log('banderitaaaa', track);
 			if (track !== null) {
 				const { title, artwork, artist } = track;
 				setTrackTitle(title);
 				setTrackArtist(artist);
 				setTrackArtwork(artwork);
-				console.log('artwoooork:', artwork.uri);
 				if (isConnected) {
 					if (currentSong != lastSong) {
 						await TrackPlayer.skip(currentSong.id);
+						console.log('llego');
 					};
 					if (!isPaused) {
 						await TrackPlayer.play();
@@ -140,14 +162,47 @@ const Player = ({ navigation }) => {
 				}
 			}
 		} catch (e) {
-			console.log('Hubo un error b:', e);
+			console.log('Error en changeValuesTrack:', e);
 		}
 	};
 
 	useEffect(() => {
-		changeValuesTrack();
-		console.log('currentSong', currentSong);
-	}, [currentSong]);
+    /*const removeLastSong = async () => {
+        try {
+            await TrackPlayer.remove(lastSong);
+            console.log('Canción eliminada correctamente');
+        } catch (error) {
+            console.error('Error al eliminar la canción:', error);
+        }
+    };
+
+    const handleCurrentSongChange = async () => {
+        try {
+            if (currentSong && !playlistFlow) {
+                console.log('deberia estar aca');
+                await changeValuesTrack();
+
+                console.log(lastSong);
+                lastSong = currentSong;
+            } else {
+                await changeValuesTrack();
+            }
+        } catch (e) {
+            console.log('Error en handleCurrentSongChange:', e);
+        }
+    };
+
+	if (playerInitialized) {*/
+	changeValuesTrack();
+    /*}} else {
+        console.log('vine aca');
+        setPlayer()
+            .then(() => setPlayerInitialized(true))
+            .catch(error => console.error('Error al inicializar el reproductor:', error));
+    }
+    console.log(playerInitialized);
+	console.log('currentSong', currentSong);*/
+}, [currentSong, playlistFlow]);
 
 	useEffect(() => {
 		setIsPlaying(true);
@@ -164,7 +219,7 @@ const Player = ({ navigation }) => {
 			</TouchableOpacity>
 
 			<View style={style.container}>
-				<View style={[style.imageWrapper, style.elevation]}>
+				{/*<View style={[style.imageWrapper, style.elevation]}>
 					{trackArtwork ? (
 						trackArtwork.uri ? (
 							<Image
@@ -173,16 +228,28 @@ const Player = ({ navigation }) => {
 							/>
 						) : (
 							<Image
-								source={{uri: trackArtwork}}
+								source={{ uri: trackArtwork }}
 								style={style.musicImage}
 							/>
 						)
 					) : (
-					<Image
-						source={require('../assets/logo.png')}
-						style={style.musicImage}
-					/>
+						<Image
+							source={require('../assets/logo.png')}
+							style={style.musicImage}
+						/>
 					)}
+					</View>*/}
+
+				<View style={[style.imageWrapper, style.elevation]}>
+				{trackArtwork ? (
+					typeof trackArtwork === 'number' ? (
+						<Image source={trackArtwork} style={style.musicImage} />
+					) : (
+						<Image source={{ uri: trackArtwork }} style={style.musicImage} />
+					)
+				) : (
+					<Image source={require('../assets/logo.png')} style={style.musicImage} />
+				)}
 				</View>
 				<View>
 					<Text style={style.songTitle}>{trackTitle}</Text>

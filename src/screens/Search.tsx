@@ -26,7 +26,7 @@ const Search = ({navigation}) => {
         });
         songs1.forEach((song, index) => {
           const track = {
-            id: song.id.toString(),
+            id: parseInt(song.id),
             url: song.songURL,
             title: song.title,
             artist: song.artist,
@@ -84,11 +84,11 @@ const Search = ({navigation}) => {
     if (showHistory || currentSearch.length === 0) return null;
     suggests = [];
     let mimi = currentSearch;
-    for (let i = 0; i < songs.length; i++) {
+    /*for (let i = 0; i < songs.length; i++) {
       if (matching(mimi, songs[i])) {
         suggests.push(songs[i]);
       }
-    }
+    }*/
     for (let j = 0; j < tracks.length; j++) {
       if (matching(mimi, tracks[j])) {
         suggests.push(tracks[j]);

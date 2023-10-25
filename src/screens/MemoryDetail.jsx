@@ -51,21 +51,24 @@ const MemoryDetail = ({ route, navigation}) => {
       return;
     }
     await setCurrentSong({
+      id: song.id,
       title: song.title,
       artist: song.artist,
       artwork: song.coverURL,
       url: song.songURL
     });
     navigation.navigate('Player', {
-      songData: {
+      songData:{
+        id: song.id,
         title: song.title,
         artist: song.artist,
         artwork: song.coverURL,
         url: song.songURL
-      }
-    });
+      }, playlistFlow: false});
   };
 
+
+  //navigation.navigate('Player', {songData, playlistFlow: false});
   // const playSong = async () => {
   //   const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
   //   if (!songToPlay) return;

@@ -5,16 +5,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
-const MiniPlayer = () => {
+const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
     const isPlaying = musicPlayer.isPlaying;
     const playPause = musicPlayer.playPause;
 
+    const handlePressPlayer = () => {
+        navigation.navigate('Player', { songData: currentSong });
+    };
+
+    if (!currentSong) {
+        return null;
+    }
+
     return (
         <View style={styles.miniPlayerContainer}>
-            <View style={styles.contentRow}>
-                    {currentSong.coverURL ? (
+            <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>
+                {currentSong.coverURL ? (
                     <Image source={{ uri: currentSong.coverURL }} style={styles.coverImage} />
                 ) : (
                     <Image source={require('../assets/logo.png')} style={styles.coverImage} />
@@ -23,7 +31,7 @@ const MiniPlayer = () => {
                     <Text style={styles.songTitle} numberOfLines={1}>{currentSong.title}</Text>
                     <Text style={styles.songArtist} numberOfLines={1}>{currentSong.artist}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
                 <Ionicons name={isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
             </TouchableOpacity>
@@ -35,7 +43,7 @@ const styles = StyleSheet.create({
     miniPlayerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between', 
+        justifyContent: 'space-between',
         backgroundColor: 'rgba(0,0,0,0.7)',
         paddingHorizontal: 15,
         paddingVertical: 10,
@@ -48,6 +56,8 @@ const styles = StyleSheet.create({
     contentRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        flex: 1,
+        marginRight: 10,
     },
     coverImage: {
         width: 50,
@@ -56,7 +66,7 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         marginLeft: 10,
-        flexShrink: 1, 
+        flexShrink: 1,
     },
     songTitle: {
         color: 'white',
@@ -65,10 +75,9 @@ const styles = StyleSheet.create({
     },
     songArtist: {
         color: 'white',
-        fontSize: 14,
+        fontSize: 12,
     },
-    playPauseButton: {
-        },
+    playPauseButton: {},
 });
 
 export default MiniPlayer;

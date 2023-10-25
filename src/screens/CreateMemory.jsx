@@ -18,8 +18,6 @@ const CrearMemoria = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const {setCurrentSong, currentSong} = usePlayerStore();
-  const songg = songs.find(s => s.title === currentSong.title);
-  const songArtwork = songg ? songg.artwork : null;
 
 
   const onSubmit = async (data) => {
@@ -42,10 +40,7 @@ const CrearMemoria = ({ navigation }) => {
   };
 
   const playSong = async () => {
-    const songToPlay = songs.find(s => s.title === currentSong.title);
-    if (!songToPlay) return;
-    await setCurrentSong(songToPlay);
-    navigation.navigate('Player'); 
+    navigation.navigate('Player', {currentSong, playlistFlow: false}); 
   };
 
   const showSuccessAlert = () => {
@@ -137,7 +132,7 @@ const CrearMemoria = ({ navigation }) => {
         <ItemSong
           song={currentSong.title}
           artist={currentSong.artist}
-          imageUri={songArtwork || placeholderImage}
+          imageUri={currentSong.artwork || placeholderImage}
           onPlay={playSong}
         />
       </View>

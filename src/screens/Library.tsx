@@ -21,6 +21,8 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import MiniPlayer from '../components/MiniPlayer';
+
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
@@ -295,6 +297,7 @@ const Library = () => {
           </View>
         </View>
       </Modal>
+      <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
     </View>
   );
 };

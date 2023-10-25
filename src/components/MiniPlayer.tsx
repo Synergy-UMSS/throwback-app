@@ -39,8 +39,8 @@ const MiniPlayer = ({ navigation }) => {
                     <Image source={require('../assets/logo.png')} style={styles.coverImage} />
                 )}
                 <View style={styles.textContainer}>
-                    <Text style={styles.songTitle} numberOfLines={1}>{currentSong.title}</Text>
-                    <Text style={styles.songArtist} numberOfLines={1}>{currentSong.artist}</Text>
+                    <Text style={styles.songTitle} numberOfLines={1} ellipsizeMode="tail">{currentSong.title}</Text>
+                    <Text style={styles.songArtist} numberOfLines={1} ellipsizeMode="tail">{currentSong.artist}</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     textContainer: {
         marginLeft: 10,
         flexShrink: 1,
+        maxWidth: '80%',  // Establece un ancho máximo para el contenedor del texto
     },
     songTitle: {
         color: 'white',
@@ -88,7 +89,10 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 12,
     },
-    playPauseButton: {},
+    playPauseButton: {
+        width: 40, // Establece un ancho fijo para el botón
+        alignItems: 'center',
+    },
 });
 
 export default MiniPlayer;

@@ -6,6 +6,8 @@ import {
   serverTimestamp,
   getDocs,
   deleteDoc,
+  query,
+  orderBy,
 } from 'firebase/firestore';
 import {create} from 'zustand';
 
@@ -51,7 +53,7 @@ export const useSearchStore = create<SearchStore>(set => ({
           deleteDoc(doc.ref);
         }
       });
-  
+
       set(state => ({
         recentSearches: state.recentSearches.filter(
           query => query !== searchQuery,
@@ -126,22 +128,22 @@ export const useSearchStore = create<SearchStore>(set => ({
   },
   updateRecentSearches: async () => {
     try {
-      const res = [];
-      const historyQuery = query(collection(db, 'history'), orderBy('searchDate', 'asc')); // Ordenar por 'searchDate' en orden ascendente (más antiguas primero)
+      const res: string[] = [];
   
-      const historyQuerySnapshot = await getDocs(historyQuery);
+      // Usa await para esperar a que se resuelva la promesa de getDocs
+      const querySnapshot = await getDocs(query(collection(db, 'history'), orderBy('searchDate', 'desc')));
   
-      historyQuerySnapshot.forEach(doc => {
+      // Itera sobre los documentos a través de .docs
+      querySnapshot.docs.forEach(doc => {
         const history = doc.data();
         res.push(history.searchQuery);
       });
-  
-      console.log('Historial de búsquedas:', res);
   
       // Actualizar el estado de 'recentSearches' con las búsquedas ordenadas
       set(state => ({
         recentSearches: res,
       }));
+      // Reverse res
       return res;
     } catch (error) {
       console.error('Error al obtener las búsquedas recientes:', error);

@@ -118,8 +118,7 @@ const Search = ({navigation}) => {
     if (showHistory) {
       updateRecentSearches();
     }
-  }, [showHistory]);
-
+  }, [showHistory, updateRecentSearches]);
   return (
     <View
       style={{
@@ -165,10 +164,7 @@ const Search = ({navigation}) => {
         {showHistory && (
           <View>
             {recentSearches.map((search, index) => (
-              <RecentSearchItem
-                key={index}
-                searchQuery={search}
-              />
+              <RecentSearchItem key={index} searchQuery={search} />
             ))}
           </View>
         )}

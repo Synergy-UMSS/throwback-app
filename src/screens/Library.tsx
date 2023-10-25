@@ -104,7 +104,27 @@ const Library = () => {
     setShowModal(false);
     setError('');
   };
+  const handleDeletePlaylist = async (playlistName) => {
+    try {
+      const playlistRef = await firestore()
+        .collection('playlists')
+        .where('name', '==', playlistName)
+        .get();
 
+      if (!playlistRef.empty) {
+        const playlistDoc = playlistRef.docs[0];
+        await firestore().collection('playlists').doc(playlistDoc.id).delete();
+
+        // Actualiza la lista de playlists después de eliminar
+        const updatedPlaylists = playlists.filter((name) => name !== playlistName);
+        setPlaylists(updatedPlaylists);
+      } else {
+        console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar la playlist:', error);
+    }
+  };
   const MAX_NAME_LENGTH = 50;
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
@@ -208,7 +228,9 @@ const Library = () => {
                       />
                     </MenuTrigger>
                     <MenuOptions customStyles={optionsStyles}>
-                      <MenuOption>
+                      <MenuOption
+                        onSelect={handleDeletePlaylist.bind(this, playlist)}
+                     >
                         <Text style={styles.optionText}>Eliminar</Text>
                       </MenuOption>
                     </MenuOptions>

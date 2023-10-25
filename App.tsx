@@ -166,24 +166,14 @@ const App = () => {
           name="Library"
           component={Library}
           options={{
-            tabBarLabel: 'Library',
+            tabBarLabel: 'Tu Biblioteca',
             tabBarIcon: ({color, size}) => (
               <Ionicons name="library" color={color} size={size} />
             ),
             headerShown: false,
           }}
         />
-        <Tab.Screen
-          name="Playlist"
-          component={Playlist}
-          options={{
-            tabBarLabel: 'Playlist',
-            tabBarIcon: ({color, size}) => (
-              <MaterialIcons name="library-music" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />
+        
       </Tab.Navigator>
     );
   }

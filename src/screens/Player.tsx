@@ -13,7 +13,6 @@ import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
-import Playlist from './Playlist';
 
 let color: string[] = [
 	'#C7A9D560',
@@ -22,7 +21,6 @@ let color: string[] = [
 ]
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
-
 
 const tracks = [];
 
@@ -138,10 +136,6 @@ const Player = ({ navigation, route }) => {
 
 	const changeValuesTrack = async () => {
 		try {
-			{/*const isPlayerInitialized = await TrackPlayer.isInitialized();*/}
-			{/*if (!playerInitialized) {
-				await setPlayer();
-			}*/}
 			const trackIndex = await TrackPlayer.getCurrentTrack();
 			{/*const track = await TrackPlayer.getTrack(currentSong.id);*/}
 			const idNumerico = parseInt(currentSong.id);
@@ -175,42 +169,9 @@ const Player = ({ navigation, route }) => {
 	};
 
 	useEffect(() => {
-    /*const removeLastSong = async () => {
-        try {
-            await TrackPlayer.remove(lastSong);
-            console.log('Canción eliminada correctamente');
-        } catch (error) {
-            console.error('Error al eliminar la canción:', error);
-        }
-    };
-
-    const handleCurrentSongChange = async () => {
-        try {
-            if (currentSong && !playlistFlow) {
-                console.log('deberia estar aca');
-                await changeValuesTrack();
-
-                console.log(lastSong);
-                lastSong = currentSong;
-            } else {
-                await changeValuesTrack();
-            }
-        } catch (e) {
-            console.log('Error en handleCurrentSongChange:', e);
-        }
-    };
-
-	if (playerInitialized) {*/
-	changeValuesTrack();
-    /*}} else {
-        console.log('vine aca');
-        setPlayer()
-            .then(() => setPlayerInitialized(true))
-            .catch(error => console.error('Error al inicializar el reproductor:', error));
-    }
-    console.log(playerInitialized);*/
-	console.log('currentSong', currentSong);
-}, [currentSong, playlistFlow]);
+		changeValuesTrack();
+		console.log('currentSong', currentSong);
+	}, [currentSong, playlistFlow]);
 
 	useEffect(() => {
 		setIsPlaying(true);

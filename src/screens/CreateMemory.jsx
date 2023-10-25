@@ -1,39 +1,86 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Pressable } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  Pressable,
+} from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
-import { usePlayerStore } from '../store/playerStore';
+import {usePlayerStore} from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
 import RequiredField from '../components/RequiredField';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
+import EmotionPicker from '../components/EmotionPicker';
 
-
-
-
-const CrearMemoria = ({ navigation }) => {
-  const { control, handleSubmit, formState: { errors } } = useForm();
+// obtener el color de la memoria basado en la emocion
+function getColorForEmotion(emotion) {
+  return emociones[emotion] || '#000000';
+}
+const emociones = {
+  emo1: '#F6EA7E',
+  emo2: '#FBBAA4',
+  emo3: '#C7A9D5',
+  emo4: '#FFC1D8',
+  emo5: '#F0CC8B',
+  emo6: '#B6BFD4',
+  emo7: '#FFC1D8',
+  emo8: '#FBBAA4',
+  emo9: '#F6EA7E',
+  emo10: '#9DE0D2',
+  emo11: '#B6BFD4',
+  emo12: '#F0CC8B',
+  emo13: '#9DE0D2',
+  emo14: '#C7A9D5',
+};
+// aclarar un color hexadecimal
+function aclararColor(hex, porcentaje = 0.5) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  r = Math.floor(r + (255 - r) * porcentaje);
+  g = Math.floor(g + (255 - g) * porcentaje);
+  b = Math.floor(b + (255 - b) * porcentaje);
+  return `#${r.toString(16).padStart(2, '0')}${g
+    .toString(16)
+    .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+const CrearMemoria = ({navigation}) => {
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const {setCurrentSong, currentSong} = usePlayerStore();
   const songg = songs.find(s => s.title === currentSong.title);
   const songArtwork = songg ? songg.artwork : null;
 
+  const [selectedEmotion, setSelectedEmotion] = useState('emo1');
+  const [selectedEmotionName, setSelectedEmotionName] = useState('emo1');
 
-  const onSubmit = async (data) => {
+  const handleEmotionSelected = emotion => {
+    setSelectedEmotion(emotion);
+  };
+
+  const onSubmit = async data => {
     const memoria = {
-      titulo_memoria: data.tituloMemoria,
-      descripcion_memoria: data.descripcionMemoria,
-      fecha_creacion: firestore.Timestamp.now(),
-      fecha_memoria: firestore.Timestamp.fromDate(selectedDate),
-      titulo_cancion: currentSong.title,
-      artista_cancion: currentSong.artist,
+      title: data.tituloMemoria,
+      description: data.descripcionMemoria,
+      emotion: selectedEmotion,
+      createDate: firestore.Timestamp.now(),
+      memoryDate: firestore.Timestamp.fromDate(selectedDate),
+      song: parseInt(currentSong.id), //debe ser un entero
     };
 
     try {
-      await firestore().collection('memorias').add(memoria);
+      await firestore().collection('memories').add(memoria);
       console.log('Memoria guardada correctamente.');
       showSuccessAlert();
     } catch (error) {
@@ -45,7 +92,7 @@ const CrearMemoria = ({ navigation }) => {
     const songToPlay = songs.find(s => s.title === currentSong.title);
     if (!songToPlay) return;
     await setCurrentSong(songToPlay);
-    navigation.navigate('Player'); 
+    navigation.navigate('Player');
   };
 
   const showSuccessAlert = () => {
@@ -56,29 +103,31 @@ const CrearMemoria = ({ navigation }) => {
         {
           text: 'Aceptar',
           onPress: () => {
-            navigation.navigate('Tus memorias musicales'); // Redirige a la vista "home"
+            navigation.navigate('Tus Memorias Musicales'); // Redirige a la vista "home"
           },
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
 
-
   return (
-    <View style={styles.container}>
-    
+    <View
+      style={[
+        styles.container,
+        {backgroundColor: aclararColor(getColorForEmotion(selectedEmotion))},
+      ]}>
       <Text style={styles.pageTitle}>Crear memoria musical</Text>
 
       <RequiredField>Título de la Memoria:</RequiredField>
       <Controller
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({field: {onChange, value}}) => (
           <TextInput
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={25}
+            maxLength={50}
           />
         )}
         name="tituloMemoria"
@@ -86,37 +135,40 @@ const CrearMemoria = ({ navigation }) => {
         rules={{
           required: 'Este campo es obligatorio',
           validate: {
-            noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
-            noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+            noSpecialChars: value =>
+              !/[!@#$%^&*(),.?":{}|<>]/.test(value) ||
+              'No se permiten caracteres especiales',
+            noEmojis: value =>
+              !/\p{Extended_Pictographic}/u.test(value) ||
+              'No se permiten caracteres especiales',
           },
         }}
       />
-      {errors.tituloMemoria && <Text style={styles.error}>{errors.tituloMemoria.message}</Text>}
-
+      {errors.tituloMemoria && (
+        <Text style={styles.error}>{errors.tituloMemoria.message}</Text>
+      )}
 
       <Text style={styles.label}>Descripción:</Text>
       <Controller
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({field: {onChange, value}}) => (
           <TextInput
             style={styles.input}
             value={value}
             onChangeText={onChange}
-            maxLength={150}
+            maxLength={500}
           />
         )}
         name="descripcionMemoria"
         defaultValue=""
       />
-          
       <Text style={styles.label}>Fecha:</Text>
       <TextInput
         style={styles.input}
-        value={format(selectedDate, 'dd/MM/yyyy')} // Cambia el formato aquí
+        value={format(selectedDate, 'dd/MM/yyyy')}
         onFocus={() => setShowDatePicker(true)}
         placeholder="dd/mm/aaaa"
       />
-
       {showDatePicker && (
         <DateTimePicker
           value={selectedDate}
@@ -131,19 +183,25 @@ const CrearMemoria = ({ navigation }) => {
           maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
         />
       )}
-
+      <RequiredField style={styles.label}>Emoción:</RequiredField>
+      <EmotionPicker onEmotionChange={handleEmotionSelected} />
       <Text style={styles.label}>Canción vinculada:</Text>
       <View style={styles.marginBottom}>
         <ItemSong
           song={currentSong.title}
           artist={currentSong.artist}
-          imageUri={songArtwork || placeholderImage}
+          imageUri={currentSong.artwork || placeholderImage}
           onPlay={playSong}
         />
       </View>
 
-      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
-        <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
+      <Pressable
+        title="Crear Memoria"
+        onPress={handleSubmit(onSubmit)}
+        style={styles.button}>
+        <Text style={{color: 'white', fontSize: 16, fontWeight: 'bold'}}>
+          Crear Memoria
+        </Text>
       </Pressable>
     </View>
   );
@@ -153,7 +211,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#e4e6dc',
   },
   pageTitle: {
     fontSize: 24,
@@ -179,7 +236,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     color: 'black',
-
   },
   marginBottom: {
     marginTop: 8,

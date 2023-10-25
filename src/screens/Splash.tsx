@@ -14,7 +14,10 @@ const Splash = ({navigation}: SplashProps) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo-no-background.png')} style={styles.logo} />
+      <Image
+        source={require('../assets/logo-no-background.png')}
+        style={styles.logo}
+      />
     </View>
   );
 };

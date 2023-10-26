@@ -1,55 +1,98 @@
 import React, { useContext } from 'react';
-import {
-  View,
-  Modal,
-  Button,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Image,
-  StyleSheet,
-} from 'react-native';
-import Player from '../screens/Player';
-import { MusicPlayerContext } from '../components/MusicPlayerContext';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { usePlayerStore } from '../store/playerStore';
+import { MusicPlayerContext } from './MusicPlayerContext';
 
 const MiniPlayer = ({ navigation }) => {
-  const { isPlaying } = useContext(MusicPlayerContext);
-  {/*console.log('isPlaying:', isPlaying);*/}
-  if (isPlaying) {
-    {/*console.log('isPlaying:', isPlaying);*/}
+    const { currentSong } = usePlayerStore();
+    const musicPlayer = useContext(MusicPlayerContext);
+    const isPlaying = musicPlayer.isPlaying;
+    const playPause = musicPlayer.playPause;
+
+    const isValidURL = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    const handlePressPlayer = () => {
+        navigation.navigate('Player', { songData: currentSong });
+    };
+
+    if (!currentSong) {
+        return null;
+    }
+
+    console.log('artwork:', currentSong.artwork);
+
     return (
-      <View style={style.container}>
-        <TouchableOpacity
-          style={style.button}
-          onPress={() => navigation.navigate('Player')}>
-          <Text> Regresar al reproductor </Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.miniPlayerContainer}>
+            <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>
+                {isValidURL(currentSong.artwork) ? (
+                    <Image source={{ uri: currentSong.artwork }} style={styles.coverImage} />
+                ) : (
+                    <Image source={require('../assets/logo.png')} style={styles.coverImage} />
+                )}
+                <View style={styles.textContainer}>
+                    <Text style={styles.songTitle} numberOfLines={1} ellipsizeMode="tail">{currentSong.title}</Text>
+                    <Text style={styles.songArtist} numberOfLines={1} ellipsizeMode="tail">{currentSong.artist}</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
+                <Ionicons name={isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
+            </TouchableOpacity>
+        </View>
     );
-  }
-  return null;
 };
 
-export default MiniPlayer;
-
-const style = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#96EAD2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 0, // Coloca el componente en la parte inferior de la pantalla
-    left: 0,
-    width: '100%',
-    marginBottom:49,
-  },
-  button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
+const styles = StyleSheet.create({
+    miniPlayerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'rgba(149,228,206,0.7)',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 30,
+        position: 'absolute',
+        left: 10,
+        right: 10,
+        bottom: 50,
+    },
+    contentRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        marginRight: 10,
+    },
+    coverImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
+    textContainer: {
+        marginLeft: 10,
+        flexShrink: 1,
+        maxWidth: '80%',  
+    },
+    songTitle: {
+        color: 'black',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    songArtist: {
+        color: 'black',
+        fontSize: 12,
+    },
+    playPauseButton: {
+        width: 40, 
+        alignItems: 'center',
+    },
 });
+
+export default MiniPlayer;

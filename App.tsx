@@ -23,7 +23,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 import {MenuProvider} from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import SearchSelect from './src/screens/SearchSelect';
-
+import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -161,20 +161,9 @@ const App = () => {
           name="Library"
           component={Library}
           options={{
-            tabBarLabel: 'Library',
+            tabBarLabel: 'Tu Biblioteca',
             tabBarIcon: ({color, size}) => (
               <Ionicons name="library" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />
-        <Tab.Screen
-          name="Playlist"
-          component={Playlist}
-          options={{
-            tabBarLabel: 'Playlist',
-            tabBarIcon: ({color, size}) => (
-              <MaterialIcons name="library-music" color={color} size={size} />
             ),
             headerShown: false,
           }}

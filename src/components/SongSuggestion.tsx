@@ -37,10 +37,10 @@ const SongSuggestion = ({songData, screenSelected}) => {
 
   const handlePlayPress = () => {
     setCurrentSong(songData);
-    navigation.navigate('Player', {songData});
+    navigation.navigate('Player', {songData, playlistFlow: false});
   };
 
-  const checkSongMemory = async song => {
+  const checkSongMemory = async (song) => {
     const memoriesRef = firestore().collection('memorias');
     const querySnapshot = await memoriesRef
       .where('titulo_cancion', '==', song.title)
@@ -211,8 +211,8 @@ const SongSuggestion = ({songData, screenSelected}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.salmonButton]}
-                  onPress={handleOptionPress}>
-                  <Text style={styles.buttonText}>Cerrar</Text>
+                  onPress={backToPlaylist}>
+                  <Text style={styles.buttonText}>Guardar en una playlist</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
   },
   salmonButton: {
-    backgroundColor: 'salmon',
+    backgroundColor: '#DAA1D1',
   },
   cyanButton: {
     backgroundColor: '#4ADCC8',

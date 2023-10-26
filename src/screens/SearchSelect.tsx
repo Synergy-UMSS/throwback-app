@@ -5,42 +5,46 @@ import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
 import {useSearchStore} from '../store/searchStore';
 import SongSuggestionSelect from '../components/SongSuggestionSelect';
-import songs from '../../data/Prueba/Data';
-import {ScrollView} from 'react-native';
-import {firebase} from '@react-native-firebase/firestore';
+import { ScrollView } from 'react-native';
+import { firebase } from '@react-native-firebase/firestore';
+import {getSongsGlobal} from '../helpcomponents/songsGlobal';
 
 let tracks = [];
 
 const SearchSelect = ({navigation}) => {
   const db = firebase.firestore();
   const songsRef = db.collection('songs');
+  const {isLoading, setIsLoading } = getSongsGlobal();
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const querySnapshot = await songsRef.get();
-        const songs1 = [];
-        querySnapshot.forEach(doc => {
-          const song = doc.data();
-          songs1.push(song);
-        });
-        songs1.forEach((song, index) => {
-          const track = {
-            id: song.id.toString(),
-            url: song.songURL,
-            title: song.title,
-            artist: song.artist,
-            artwork: song.coverURL,
-          };
-          tracks.push(track);
-        });
-      } catch (e) {
-        console.error('Error al obtener las canciones:', e);
-      }
-    };
-    fetchSongs();
-  }, []);
+		const fetchSongs = async () => {
+			try {
+				const querySnapshot = await songsRef.get();
+				const songs1 = [];
+				querySnapshot.forEach((doc) => {
+					const song = doc.data();
+					songs1.push(song);
+				});
+				songs1.forEach((song, index) => {
+					const track = {
+						id:  parseInt(song.id),
+						url: song.songURL,
+						title: song.title,
+						artist: song.artist,
+						artwork: song.coverURL,
+					};
+					tracks.push(track);
+				});
+			} catch (e) {
+				console.error('Error al obtener las canciones:', e);
+			}
+		};
+    if(!isLoading){
+      fetchSongs();
+      setIsLoading(true);
+    }else{}
+	}, []);
 
-  const {clearRecentSearches, recentSearches, showHistory, currentSearch} =
+  const {clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches,} =
     useSearchStore();
 
   const clearSearches = () => {
@@ -71,17 +75,12 @@ const SearchSelect = ({navigation}) => {
 
   let suggests = [];
   const displaySongSuggestionsSelect = () => {
-    if (showHistory || currentSearch.length === 0) return null;
+    if (showHistory || currentSearch.length===0) return null;
     suggests = [];
     let mimi = currentSearch;
-    for (let i = 0; i < songs.length; i++) {
-      if (matching(mimi, songs[i])) {
-        suggests.push(songs[i]);
-      }
-    }
-    for (let j = 0; j < tracks.length; j++) {
+    for (let j = 0; j < tracks.length; j++){
       if (matching(mimi, tracks[j])) {
-        suggests.push(tracks[j]);
+        suggests.push(tracks[j])
       }
     }
 
@@ -92,18 +91,20 @@ const SearchSelect = ({navigation}) => {
             key={index}
             songData={song}
             onOptionPress={handlePress}
-            screenSelected="search2"
+            screenSelected='search2'
           />
         ))}
-        {suggests.length === 0 && (
-          <Text style={{textAlign: 'center', color: '#777'}}>
-            No se ha encontrado ningún resultado
-          </Text>
-        )}
+        {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}
       </View>
+      
     );
   };
 
+  useEffect(() => {
+    if (showHistory) {
+      updateRecentSearches();
+    }
+  }, [showHistory, updateRecentSearches]);
   return (
     <View
       style={{
@@ -129,8 +130,7 @@ const SearchSelect = ({navigation}) => {
             height: 50,
           }}>
           {showHistory && (
-            <Text
-              style={{fontSize: 16 /*, fontWeight: 'nunito'*/, color: 'black'}}>
+            <Text style={{ fontSize: 16/*, fontWeight: 'nunito'*/, color: 'black' }}>
               Búsquedas Recientes
             </Text>
           )}
@@ -146,12 +146,19 @@ const SearchSelect = ({navigation}) => {
           </TouchableOpacity>
         </View>
         {displaySongSuggestionsSelect()}
-        {displaySearches()}
+        {showHistory && (
+          <View>
+            {recentSearches.map((search, index) => (
+              <RecentSearchItem key={index} searchQuery={search} />
+            ))}
+          </View>
+        )}
         <Text>{'\n\n'}</Text>
       </ScrollView>
       <MiniPlayer navigation={navigation} />
     </View>
   );
 };
+
 
 export default SearchSelect;

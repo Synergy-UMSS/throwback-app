@@ -1,32 +1,33 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import EmocionWrapped from '../components/EmotionWrapped';
-import {Dimensions} from 'react-native';
+import { Dimensions } from 'react-native';
 
 const screenHeight = Dimensions.get('window').height;
 function getColorForEmotion(emotion) {
-  return emociones[emotion] || '#000000';
+  return emociones[emotion] || "#000000";
 }
 const emociones = {
-  emo1: '#F6EA7E',
-  emo2: '#FBBAA4',
-  emo3: '#C7A9D5',
-  emo4: '#FFC1D8',
-  emo5: '#F0CC8B',
-  emo6: '#B6BFD4',
-  emo7: '#FFC1D8',
-  emo8: '#FBBAA4',
-  emo9: '#F6EA7E',
-  emo10: '#9DE0D2',
-  emo11: '#B6BFD4',
-  emo12: '#F0CC8B',
-  emo13: '#9DE0D2',
-  emo14: '#C7A9D5',
+  emo1: "#F6EA7E",       
+  emo2: "#FBBAA4",  
+  emo3: "#C7A9D5",       
+  emo4: "#FFC1D8",     
+  emo5: "#F0CC8B",      
+  emo6: "#B6BFD4",       
+  emo7: "#FFC1D8",         
+  emo8: "#FBBAA4",   
+  emo9: "#F6EA7E",     
+  emo10: "#9DE0D2",
+  emo11: "#B6BFD4",
+  emo12: "#F0CC8B",
+  emo13: "#9DE0D2",
+  emo14: "#C7A9D5",  
 };
 
-import {usePlayerStore} from '../store/playerStore';
+import { usePlayerStore } from '../store/playerStore';
+
 
 const formatDate = date => {
   const d = new Date(date);
@@ -36,33 +37,36 @@ const formatDate = date => {
   return `${day}/${month}/${year}`;
 };
 
-const MemoryDetail = ({route, navigation}) => {
+const MemoryDetail = ({ route, navigation}) => {
   const {emotion} = route.params;
-  const {memoriaId, index} = route.params;
-  const {memorie, song} = route.params;
+  const { memoriaId, index } = route.params;
+  const { memorie, song } = route.params;
 
-  const {setCurrentSong} = usePlayerStore();
+  const { setCurrentSong } = usePlayerStore();
   const playSong = async () => {
     if (!song || !song.title) {
       console.warn("No hay datos de la canción en 'memorie'.");
       return;
     }
     await setCurrentSong({
+      id: song.id,
       title: song.title,
       artist: song.artist,
       artwork: song.coverURL,
-      url: song.songURL,
+      url: song.songURL
     });
     navigation.navigate('Player', {
-      songData: {
+      songData:{
+        id: song.id,
         title: song.title,
         artist: song.artist,
         artwork: song.coverURL,
-        url: song.songURL,
-      },
-    });
+        url: song.songURL
+      }, playlistFlow: false});
   };
 
+
+  //navigation.navigate('Player', {songData, playlistFlow: false});
   // const playSong = async () => {
   //   const songToPlay = songs.find(s => s.title === memory.titulo_cancion);
   //   if (!songToPlay) return;
@@ -72,37 +76,31 @@ const MemoryDetail = ({route, navigation}) => {
 
   return (
     <ScrollView style={styles.scrollView}>
-      <View
-        style={[
-          styles.fechaContainer,
-          {backgroundColor: getColorForEmotion(memorie.emotion)},
-        ]}>
+      <View style={[styles.fechaContainer, { backgroundColor: getColorForEmotion(memorie.emotion)}]}>
         <Text style={styles.fechaText}>
-          {typeof memorie !== 'undefined'
-            ? memorie.memoryDate && formatDate(memorie.memoryDate.toDate())
-            : 'FECHA'}
+          { typeof memorie !== 'undefined' ? memorie.memoryDate && formatDate(memorie.memoryDate.toDate()) : "FECHA" }
         </Text>
       </View>
-      <View
-        style={[
-          styles.container,
-          {backgroundColor: getColorForEmotion(memorie.emotion)},
-        ]}>
+      <View style={[styles.container, { backgroundColor: getColorForEmotion(memorie.emotion)}]}>       
         <View style={styles.emoContainer}>
           <EmocionWrapped nombre={memorie.emotion} />
         </View>
 
         <Text style={styles.title}>
-          {typeof memorie !== 'undefined' ? memorie.title : 'TITLE'}
+          { typeof memorie !== 'undefined' ? memorie.title  : "TITLE" }
         </Text>
 
-        <Text style={styles.subtitle}>{'Descripción:'}</Text>
+        <Text style={styles.subtitle}>
+          {"Descripción:"}
+        </Text>
 
         <Text style={styles.description}>
-          {typeof memorie !== 'undefined' ? memorie.description : 'DESCRIPCION'}
+        { typeof memorie !== 'undefined' ? memorie.description  : "DESCRIPCION" }
         </Text>
 
-        <Text style={styles.tsong}>{'Canción vinculada al recuerdo:'}</Text>
+        <Text style={styles.tsong}>
+          {"Canción vinculada al recuerdo:"}
+        </Text>
 
         <ItemSong
           song={song.title}
@@ -120,13 +118,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   fechaContainer: {
-    marginTop: 100,
-    marginBottom: 10,
-    marginRight: 17,
+    marginTop:100,
+    marginBottom:10,
+    marginRight:17,
     paddingVertical: 7,
     paddingHorizontal: 17,
     alignItems: 'center',
-    borderRadius: 18,
+    borderRadius:18,
     alignSelf: 'flex-end',
   },
   fechaText: {
@@ -138,20 +136,21 @@ const styles = StyleSheet.create({
     marginBottom: 23,
     borderColor: 'black',
     borderWidth: 0,
-    borderRadius: 40,
-    marginBottom: 30,
+    borderRadius:40,
+    marginBottom:30,
     padding: 25,
-    paddingRight: 50,
-    paddingLeft: 50,
+    paddingRight:50,
+    paddingLeft:50,
     elevation: 10,
     shadowColor: 'black',
-    minHeight: screenHeight * 0.9,
+    minHeight:screenHeight*0.9,
   },
-  emoContainer: {
-    alignItems: 'center',
+  emoContainer:{
+    alignItems:'center',
+
   },
   title: {
-    fontFamily: 'Quicksand-VariableFont',
+    fontFamily:'Quicksand-VariableFont',
     fontSize: 24,
     color: 'black',
     fontWeight: 'bold',
@@ -159,21 +158,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontFamily: 'Arial',
+    fontFamily:'Arial',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
   description: {
-    fontFamily: 'Arial',
+    fontFamily:'Arial',
     fontSize: 18,
-    color: '#5C5C5C',
+    color:'#5C5C5C',
     marginBottom: 20,
     borderColor: 'black',
     textAlign: 'justify',
   },
   tsong: {
-    fontFamily: 'Arial',
+    fontFamily:'Arial',
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',

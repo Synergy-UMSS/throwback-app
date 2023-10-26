@@ -95,6 +95,11 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion}) => {
               <MenuOption onSelect={showDeleteConfirmation}>
                 <Text style={styles.optionText}>Eliminar</Text>
               </MenuOption>
+              {/* <MenuOption onSelect={() => {
+                  console.log('Opción 2 seleccionada');
+              }}>
+                <Text style={styles.optionText}>Opción 2</Text>
+              </MenuOption> */}
             </MenuOptions>
           </Menu>
         </View>

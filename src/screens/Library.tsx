@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,28 @@ import {
   TextInput,
   Modal,
   ScrollView,
+  Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
-import {useNavigation} from '@react-navigation/native';
-import {usePlaylistStore} from '../store/playlistStore';
+import { useNavigation } from '@react-navigation/native';
+import { usePlaylistStore } from '../store/playlistStore';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import MiniPlayer from '../components/MiniPlayer';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
   const [colorIndex, setColorIndex] = useState(0);
-  const [playlistColors, setPlaylistColors] = useState<{[key: string]: string}>(
+  const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
   );
   const [error, setError] = useState('');
@@ -43,18 +52,15 @@ const Library = () => {
     '#C7A9D5',
     '#FFC1D8',
   ];
-<<<<<<< Updated upstream
-=======
+
   const images = [
     require('../assets/playlist/1.png'),
     require('../assets/playlist/2.png'),
     require('../assets/playlist/3.png'),
     require('../assets/playlist/4.png'),
   ];
-
->>>>>>> Stashed changes
   const navigation = useNavigation();
-  const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+  const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 
   const handlePressMore = () => {
     setShowModal(true);
@@ -69,8 +75,8 @@ const Library = () => {
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
-        setCurrentPlaylist({id: playlistId, name: playlistName});
-        navigation.navigate('Playlist', {playlistName, playlistId});
+        setCurrentPlaylist({ id: playlistId, name: playlistName });
+        navigation.navigate('Playlist', { playlistName, playlistId });
         console.log(currentPlaylist);
       } else {
         console.error(
@@ -88,11 +94,10 @@ const Library = () => {
       .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
       .onSnapshot(querySnapshot => {
         const playlistsData: string[] = [];
-        const colorsData: {[key: string]: string} = {};
+        const colorsData: { [key: string]: string } = {};
         querySnapshot.forEach(doc => {
-          const {name, createDate} = doc.data();
+          const { name, createDate } = doc.data();
           playlistsData.push(name);
-          // Puedes ajustar esta lógica según tu implementación específica para obtener el color
           const color =
             initialColors[Math.floor(Math.random() * initialColors.length)];
           colorsData[name] = color;
@@ -108,19 +113,40 @@ const Library = () => {
     setShowModal(false);
     setError('');
   };
+  const handleDeletePlaylist = async (playlistName) => {
+    try {
+      const playlistRef = await firestore()
+        .collection('playlists')
+        .where('name', '==', playlistName)
+        .get();
 
+      if (!playlistRef.empty) {
+        const playlistDoc = playlistRef.docs[0];
+        await firestore().collection('playlists').doc(playlistDoc.id).delete();
+
+        // Actualiza la lista de playlists después de eliminar
+        const updatedPlaylists = playlists.filter((name) => name !== playlistName);
+        setPlaylists(updatedPlaylists);
+      } else {
+        console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar la playlist:', error);
+    }
+  };
   const MAX_NAME_LENGTH = 50;
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
     } else {
       setError('');
-      const colorIndex = playlists.length % colorSequence.length;
+      const colorIndex = playlists.length % initialColors.length;
       const color = colorSequence[colorIndex];
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
+        songs: [],
       };
 
       firestore()
@@ -130,7 +156,7 @@ const Library = () => {
           console.log('Se ha creado la playlist:', name);
           const updatedPlaylists = [name, ...playlists];
           setPlaylists(updatedPlaylists);
-          setPlaylistColors({...playlistColors, [name]: color});
+          setPlaylistColors({ ...playlistColors, [name]: color });
           setPlaylistName('');
           setShowModal(false);
         })
@@ -149,10 +175,10 @@ const Library = () => {
       .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
       .onSnapshot(querySnapshot => {
         const playlistsData: string[] = [];
-        const colorsData: {[key: string]: string} = {};
+        const colorsData: { [key: string]: string } = {};
         let index = 0;
         querySnapshot.forEach(doc => {
-          const {name, createDate} = doc.data();
+          const { name, createDate } = doc.data();
           playlistsData.push(name);
           const color = colorSequence[index % colorSequence.length];
           colorsData[name] = color;
@@ -169,9 +195,6 @@ const Library = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleSearch}>
-            <Ionicons name="search" size={28} color="black" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handlePressMore}>
             <Ionicons name="add" size={28} color="black" />
           </TouchableOpacity>
@@ -189,6 +212,7 @@ const Library = () => {
             const color =
               playlistColors[playlist] ||
               initialColors[index % initialColors.length];
+            const imageIndex = index % images.length;
             return (
               <TouchableOpacity
                 key={index}
@@ -197,12 +221,43 @@ const Library = () => {
                 <View
                   style={[
                     styles.playlistBackground,
-                    {backgroundColor: `${color}B3`},
+                    { backgroundColor: `${color}B3` },
                   ]}
                 />
                 <View style={styles.playlistBox}>
-                  <Text style={styles.playlistName}>{playlist}</Text>
-                  <Text style={styles.playlistLabel}>Playlist</Text>
+                  <View style={styles.playlistContent}>
+                    <Image
+                      source={images[imageIndex]}
+                      style={styles.playlistImage}
+                    />
+                    <View style={[styles.playlistText, { width: 200 }]}>
+                      <Text
+                        style={styles.playlistName}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                      >
+                        {playlist}
+                      </Text>
+                      <Text style={styles.playlistLabel}>Playlist</Text>
+                    </View>
+                    <Menu style={styles.menuContainer}>
+                      <MenuTrigger>
+                        <Icon
+                          name="more-vert"
+                          size={24}
+                          color="black"
+                          style={styles.menuIcon}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions customStyles={optionsStyles}>
+                        <MenuOption
+                          onSelect={handleDeletePlaylist.bind(this, playlist)}
+                        >
+                          <Text style={styles.optionText}>Eliminar</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
+                  </View>
                 </View>
               </TouchableOpacity>
             );
@@ -242,6 +297,7 @@ const Library = () => {
           </View>
         </View>
       </Modal>
+      <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
     </View>
   );
 };
@@ -341,16 +397,19 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.8)',
     padding: 20,
     borderRadius: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   playlistName: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'left',
     marginBottom: 5,
   },
   playlistLabel: {
     color: 'gray',
-    fontSize: 14,
+    fontSize: 13,
     textAlign: 'left',
   },
   playlistContainer: {
@@ -366,7 +425,7 @@ const styles = StyleSheet.create({
     bottom: -5,
     zIndex: -1,
     borderRadius: 15,
-    opacity: 0.8,
+    opacity: 0.7,
   },
   errorText: {
     color: 'red',
@@ -385,5 +444,42 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  playlistContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  playlistText: {
+    marginLeft: 10,
+    width: 200, 
+  },
+  playlistImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    marginLeft: -10,
+  },
+  menuContainer: {
+    position: 'absolute',
+    right: 0,
+  },
 });
+
+const optionsStyles = {
+  optionsContainer: {
+    marginTop: 10,
+    marginLeft: 0,
+    width: 130,
+    // elevation: 0,
+    borderWidth: 0,
+    borderRadius: 15,
+    borderColor: 'black',
+    backgroundColor: '#EBF2F9',
+    justifyContent: 'center',
+  },
+  optionWrapper: {
+    margin: 5,
+    alignItems: 'center',
+  },
+};
+
 export default Library;

@@ -12,11 +12,11 @@ interface PlayerStore {
 
 export const usePlayerStore = create<PlayerStore>(set => ({
   currentSong: {
-    id: 19,
-    title: 'As it was',
-    artist: 'Harry Styles',
-    artwork: require('../../assets-prueba/images/harry_styles.jpg'),
-    url: require('../../assets-prueba/songs/Harry-Styles-As-It-Was.mp3'),
+    id: 131,
+    title: ' title',
+    artist: 'artist',
+    artwork: null,
+    url: null,
   },
   setCurrentSong: song => {
     set(state => ({

@@ -12,8 +12,12 @@ import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
+<<<<<<< Updated upstream
 import {usePlayerStore} from '../store/playerStore';
 import songs from '../../data/Prueba/Data';
+=======
+import { usePlayerStore } from '../store/playerStore';
+>>>>>>> Stashed changes
 import RequiredField from '../components/RequiredField';
 import {format} from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
@@ -59,8 +63,6 @@ const CrearMemoria = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const {setCurrentSong, currentSong} = usePlayerStore();
-  const songg = songs.find(s => s.title === currentSong.title);
-  const songArtwork = songg ? songg.artwork : null;
 
   const [selectedEmotion, setSelectedEmotion] = useState('emo1');
   const [selectedEmotionName, setSelectedEmotionName] = useState('emo1');

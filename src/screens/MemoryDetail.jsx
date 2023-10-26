@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
-import songs from '../../data/Prueba/Data';
 import EmocionWrapped from '../components/EmotionWrapped';
 import {Dimensions} from 'react-native';
 

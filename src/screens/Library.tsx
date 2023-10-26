@@ -43,6 +43,16 @@ const Library = () => {
     '#C7A9D5',
     '#FFC1D8',
   ];
+<<<<<<< Updated upstream
+=======
+  const images = [
+    require('../assets/playlist/1.png'),
+    require('../assets/playlist/2.png'),
+    require('../assets/playlist/3.png'),
+    require('../assets/playlist/4.png'),
+  ];
+
+>>>>>>> Stashed changes
   const navigation = useNavigation();
   const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
 

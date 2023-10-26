@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import { Dimensions } from 'react-native';
-import songs from '../../data/Prueba/Data';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+
+
 const screenWidth = Dimensions.get('window').width;
-import { useNavigation } from '@react-navigation/native';
 
 // obtener el color de la memoria basado en la emocion
 function getColorForEmotion(emotion) {

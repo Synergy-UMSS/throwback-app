@@ -6,7 +6,6 @@ import DateTimePicker from '@react-native-community/datetimepicker'; // Importa 
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import { usePlayerStore } from '../store/playerStore';
-import songs from '../../data/Prueba/Data';
 import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
@@ -46,8 +45,6 @@ const CrearMemoria = ({ navigation }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const {setCurrentSong, currentSong} = usePlayerStore();
-  const songg = songs.find(s => s.title === currentSong.title);
-  const songArtwork = songg ? songg.artwork : null;
 
   const [selectedEmotion, setSelectedEmotion] = useState("emo1");
   const [selectedEmotionName, setSelectedEmotionName] = useState("emo1");

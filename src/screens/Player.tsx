@@ -4,7 +4,6 @@ import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import songs from '../../data/Prueba/Data';
 import Connection from '../components/Connection';
 import TrackPlayer, { Event, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';

@@ -1,15 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, Platform, TouchableOpacity} from 'react-native';
 import MiniPlayer from '../components/MiniPlayer';
 import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
 import {useSearchStore} from '../store/searchStore';
 import SongSuggestion from '../components/SongSuggestion';
-import songs from '../../data/Prueba/Data';
 import {ScrollView} from 'react-native';
-import firestore, {firebase} from '@react-native-firebase/firestore';
-import {getDocs, collection, query} from 'firebase/firestore';
-import {withMenuContext} from 'react-native-popup-menu';
+import {firebase} from '@react-native-firebase/firestore';
 let tracks = [];
 
 const Search = ({navigation}) => {

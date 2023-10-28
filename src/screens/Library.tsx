@@ -52,13 +52,13 @@ const Library = () => {
     '#C7A9D5',
     '#FFC1D8',
   ];
-  const images = [
-    require('../../assets-prueba/images-cover/1.png'),
-    require('../../assets-prueba/images-cover/2.png'),
-    require('../../assets-prueba/images-cover/3.png'),
-    require('../../assets-prueba/images-cover/4.png'),
-  ];
 
+  const images = [
+    require('../assets/playlist/1.png'),
+    require('../assets/playlist/2.png'),
+    require('../assets/playlist/3.png'),
+    require('../assets/playlist/4.png'),
+  ];
   const navigation = useNavigation();
   const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 

@@ -5,7 +5,6 @@ import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
-import songs from '../../data/Prueba/Data';
 import firestore from '@react-native-firebase/firestore';
 import {useRoute} from '@react-navigation/native';
 import {usePlaylistStore} from '../store/playlistStore';

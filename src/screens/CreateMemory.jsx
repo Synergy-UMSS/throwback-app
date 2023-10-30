@@ -116,6 +116,7 @@ const CrearMemoria = ({ navigation }) => {
           validate: {
             noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
             noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+            noDashPlusBrackets: (value) => !/[-+\[\]]/.test(value) || 'No se permiten caracteres especiales',
           },
         }}
       />

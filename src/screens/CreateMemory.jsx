@@ -48,9 +48,13 @@ const CrearMemoria = ({ navigation }) => {
 
   const [selectedEmotion, setSelectedEmotion] = useState("emo1");
   const [selectedEmotionName, setSelectedEmotionName] = useState("emo1");
+  const [showName, setShowName] = useState(true);
+
 
   const handleEmotionSelected = (emotion) => {
     setSelectedEmotion(emotion);
+    setSelectedEmotionName(emotion);
+    setShowName(true);
   };
 
   const onSubmit = async (data) => {
@@ -98,7 +102,7 @@ const CrearMemoria = ({ navigation }) => {
     
       <Text style={styles.pageTitle}>Crear memoria musical</Text>
 
-      <RequiredField>Título de la Memoria:</RequiredField>
+      <RequiredField style={styles.label}>Título:</RequiredField>
       <Controller
         control={control}
         render={({ field: { onChange, value } }) => (
@@ -116,6 +120,7 @@ const CrearMemoria = ({ navigation }) => {
           validate: {
             noSpecialChars: (value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value) || 'No se permiten caracteres especiales',
             noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+            noDashPlusBrackets: (value) => !/[-+\[\]]/.test(value) || 'No se permiten caracteres especiales',
           },
         }}
       />
@@ -127,10 +132,13 @@ const CrearMemoria = ({ navigation }) => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <TextInput
-            style={styles.input}
+            style={styles.inputDesc}
             value={value}
             onChangeText={onChange}
-            maxLength={500}
+            maxLength={200}
+            multiline
+            numberOfLines={5}
+            scrollEnabled
           />
         )}
         name="descripcionMemoria"
@@ -142,6 +150,7 @@ const CrearMemoria = ({ navigation }) => {
             value={format(selectedDate, 'dd/MM/yyyy')}
             onFocus={() => setShowDatePicker(true)}
             placeholder="dd/mm/aaaa"
+            editable={true} //recordatorio cambiar a falso y usar un boton para cambiar el contenido
           />
           {showDatePicker && (
         <DateTimePicker
@@ -207,6 +216,20 @@ const styles = StyleSheet.create({
     color: 'black',
 
   },
+
+  inputDesc: {
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+    marginTop: 8,
+    fontFamily: 'Arial',
+    borderRadius: 10,
+    backgroundColor: 'white',
+    color: 'black',
+    textAlignVertical: 'top'
+  },
+
   marginBottom: {
     marginTop: 8,
     marginBottom: 8,

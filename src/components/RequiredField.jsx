@@ -20,10 +20,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 4,
     color: 'black',
+    marginTop: 16
   },
   asterisk: {
     fontSize: 16,
     color: 'red',
+    marginTop: 16
   },
 });
 

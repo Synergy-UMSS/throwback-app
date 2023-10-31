@@ -28,6 +28,8 @@ const Library = () => {
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
   const [colorIndex, setColorIndex] = useState(0);
+  const modalBackgroundColor = '#ffffff'; 
+  const modalTextColor = '#000000';
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
   );
@@ -266,21 +268,22 @@ const Library = () => {
         </ScrollView>
       )}
       <Modal visible={showModal} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
+        <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
           <View style={styles.customModalContent}>
-            <Text style={[styles.modalTitle, {textAlign: 'left'}]}>
+            <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Dale un nombre a tu playlist
             </Text>
-            <View style={[styles.inputContainer, {marginBottom: 20}]}>
+            <View style={[styles.inputContainer, { marginBottom: 20 }]}>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
                 value={playlistName}
                 onChangeText={text => {
                   setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
                   setError('');
                 }}
+                placeholderTextColor={modalTextColor}
               />
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              {error ? <Text style={[styles.errorText, { color: modalTextColor }]}>{error}</Text> : null}
             </View>
             <View style={styles.buttonGroup}>
               <TouchableOpacity

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Modal} from 'react-native';
+import { Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
@@ -31,12 +32,15 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
             songs: data.songs
     })
       .then(() => {
-        console.log('Dato agregado con éxito');
+          console.log('Dato agregado con éxito');
+          Alert.alert('Éxito', 'Canción agregada con éxito');
+          navigation.navigate('Playlist', { currentSong });
       })
+      
       .catch((error) => {
         console.error('Error al actualizar el documento:', error);
       });
-            navigation.navigate('Playlist', {currentSong});
+            //navigation.navigate('Playlist', {currentSong});
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -44,6 +48,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
         console.error('No se encontró el documento');
       }
     });
+
   }
 
   const backToPlaylist = () => {

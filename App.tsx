@@ -23,6 +23,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 import {MenuProvider} from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import SearchSelect from './src/screens/SearchSelect';
+import {Image, View} from 'react-native'; 
 import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -163,7 +164,9 @@ const App = () => {
           options={{
             tabBarLabel: 'Tu Biblioteca',
             tabBarIcon: ({color, size}) => (
-              <Ionicons name="library" color={color} size={size} />
+              <View style={{ borderRadius: 7 / 2, overflow: 'hidden' }}>
+              <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size, height: size }} />
+            </View>
             ),
             headerShown: false,
           }}

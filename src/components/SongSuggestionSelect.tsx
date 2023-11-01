@@ -40,7 +40,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
       .catch((error) => {
         console.error('Error al actualizar el documento:', error);
       });
-            //navigation.navigate('Playlist', {currentSong});
+
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }

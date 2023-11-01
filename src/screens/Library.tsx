@@ -30,6 +30,8 @@ const Library = () => {
   const [colorIndex, setColorIndex] = useState(0);
   const modalBackgroundColor = '#ffffff'; 
   const modalTextColor = '#000000';
+  const [selectedPlaylist, setSelectedPlaylist] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
   );
@@ -173,6 +175,11 @@ const Library = () => {
   const handleSearch = () => {
     // Posible lógica para el Search
   };
+
+  const handleEditPlaylist = (playlistName) => {
+    // Inserte lógica de editar nombre del Playlist
+    console.log(`Editando playlist: ${playlistName}`);
+  };
   useEffect(() => {
     if (showModal) {
       setPlaylistName(''); 
@@ -261,9 +268,10 @@ const Library = () => {
                         />
                       </MenuTrigger>
                       <MenuOptions customStyles={optionsStyles}>
-                        <MenuOption
-                          onSelect={handleDeletePlaylist.bind(this, playlist)}
-                        >
+                        <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
+                          <Text style={styles.optionText}>Editar</Text>
+                        </MenuOption>
+                        <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
                           <Text style={styles.optionText}>Eliminar</Text>
                         </MenuOption>
                       </MenuOptions>
@@ -472,7 +480,11 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     position: 'absolute',
-    right: 0,
+    right: -30,
+  },
+  optionText: {
+    color: '#000000', 
+    fontSize: 16,
   },
 });
 const optionsStyles = {
@@ -484,13 +496,13 @@ const optionsStyles = {
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',
-    backgroundColor: '#EBF2F9',
-    justifyContent: 'center',
+    backgroundColor: 'white',
+    padding: 5,
   },
   optionWrapper: {
     margin: 5,
-    alignItems: 'center',
-  },
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
+  }
 };
-
 export default Library;

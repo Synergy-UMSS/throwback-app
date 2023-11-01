@@ -28,7 +28,7 @@ const Library = () => {
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
   const [colorIndex, setColorIndex] = useState(0);
-   const modalBackgroundColor = '#ffffff'; 
+  const modalBackgroundColor = '#ffffff'; 
   const modalTextColor = '#000000';
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
@@ -140,7 +140,7 @@ const Library = () => {
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
-    } else if (playlists.includes(name)) {
+    } else if (playlists.includes(name)) { //Bug: Playlist creada con nombre ya existente.
       setError('Esta playlist ya existe en tu biblioteca.');
     } else {
       setError('');
@@ -202,7 +202,7 @@ const Library = () => {
     return () => unsubscribe();
   }, []);
   return (
-    <View style={styles.container}>
+      <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
@@ -213,7 +213,7 @@ const Library = () => {
       </View>
       {playlists.length === 0 ? (
         <View style={styles.content}>
-          <Text style={styles.message}>
+          <Text style={[styles.message, { color: 'black' }]}>
             Aún no tienes ninguna playlist, presiona "+" para crear una.
           </Text>
         </View>

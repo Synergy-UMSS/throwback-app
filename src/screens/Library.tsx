@@ -28,6 +28,8 @@ const Library = () => {
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
   const [colorIndex, setColorIndex] = useState(0);
+  const modalBackgroundColor = '#ffffff'; 
+  const modalTextColor = '#000000';
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
   );
@@ -138,6 +140,8 @@ const Library = () => {
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
+    } else if (playlists.includes(name)) { //Bug: Playlist creada con nombre ya existente.
+      setError('Esta playlist ya existe en tu biblioteca.');
     } else {
       setError('');
       const colorIndex = playlists.length % initialColors.length;
@@ -148,7 +152,7 @@ const Library = () => {
         createDate: timestamp,
         songs: [],
       };
-
+  
       firestore()
         .collection('playlists')
         .add(playlistData)
@@ -165,9 +169,16 @@ const Library = () => {
         });
     }
   };
+  
   const handleSearch = () => {
     // Posible lógica para el Search
   };
+  useEffect(() => {
+    if (showModal) {
+      setPlaylistName(''); 
+      setError(''); 
+    }
+  }, [showModal]);
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -191,7 +202,7 @@ const Library = () => {
     return () => unsubscribe();
   }, []);
   return (
-    <View style={styles.container}>
+      <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
@@ -202,7 +213,7 @@ const Library = () => {
       </View>
       {playlists.length === 0 ? (
         <View style={styles.content}>
-          <Text style={styles.message}>
+          <Text style={[styles.message, { color: 'black' }]}>
             Aún no tienes ninguna playlist, presiona "+" para crear una.
           </Text>
         </View>
@@ -266,19 +277,20 @@ const Library = () => {
         </ScrollView>
       )}
       <Modal visible={showModal} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
+        <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
           <View style={styles.customModalContent}>
-            <Text style={[styles.modalTitle, {textAlign: 'left'}]}>
+          <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Dale un nombre a tu playlist
             </Text>
             <View style={[styles.inputContainer, {marginBottom: 20}]}>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
                 value={playlistName}
                 onChangeText={text => {
                   setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
                   setError('');
                 }}
+                placeholderTextColor={modalTextColor}
               />
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
@@ -463,7 +475,6 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
-
 const optionsStyles = {
   optionsContainer: {
     marginTop: 10,

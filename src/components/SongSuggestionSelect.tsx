@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 
 const SongSuggestionSelect = ({ songData, screenSelected }) => {
   const { title, artist, artwork } = songData;
   const [showOptions, setShowOptions] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(''); // Estado para el mensaje de éxito
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
-  const {currentPlaylist} = usePlaylistStore();
+  const { currentPlaylist } = usePlaylistStore();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
-		console.log('en interno', songData);
+    console.log('en interno', songData);
     setShowOptions(!showOptions);
   };
 
@@ -27,16 +28,18 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
           data.songs.push(song);
-    docRef.update({
-            songs: data.songs
-    })
-      .then(() => {
-        console.log('Dato agregado con éxito');
-      })
-      .catch((error) => {
-        console.error('Error al actualizar el documento:', error);
-      });
-            navigation.navigate('Playlist', {currentSong});
+          docRef
+            .update({
+              songs: data.songs,
+            })
+            .then(() => {
+              // Muestra el mensaje de éxito
+              setSuccessMessage('Canción agregada con éxito');
+              navigation.navigate('Playlist', { currentSong });
+            })
+            .catch((error) => {
+              console.error('Error al actualizar el documento:', error);
+            });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -44,7 +47,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
         console.error('No se encontró el documento');
       }
     });
-  }
+  };
 
   const backToPlaylist = () => {
 		setCurrentSong(songData);
@@ -53,7 +56,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
   }
 
   return (
-    <TouchableOpacity onPress={backToPlaylist}>
+    <TouchableOpacity onPress={handleOptionPress}>
       <View host="lazyload-list" style={styles.container}>
         <View style={styles.songContainer}>
           {artwork ? (
@@ -94,10 +97,22 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
               <Text style={styles.songName}>{title}</Text>
               <Text style={styles.artistName}>{artist}</Text>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
+		<TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
                   <Text style={styles.buttonText}>Agregar canción</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={() => {
+                  addSongPlaylist(songData);
+                  setSuccessMessage('');
+                }}>
+                  <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
               </View>
+              {/* Mostrar el mensaje de éxito si existe */}
+              {successMessage && (
+                <View style={styles.successMessageContainer}>
+                  <Text style={styles.successMessageText}>{successMessage}</Text>
+                </View>
+              )}
             </View>
           </View>
         </Modal>
@@ -185,6 +200,17 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 5,
+  },
+  successMessageContainer: {
+    backgroundColor: 'green', // Color de fondo del mensaje de éxito
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  successMessageText: {
+    color: 'white', // Color del texto del mensaje de éxito
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

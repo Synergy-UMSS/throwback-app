@@ -46,17 +46,11 @@ const Library = () => {
     '#C7A9D5',
     '#FFC1D8',
   ];
-  const initialColors = [
-    '#FBBAA4',
-    '#F0CC8B',
-    '#F6EA7E',
-    '#BFEAAF',
-    '#9DE0D2',
-    '#B6BFD4',
-    '#C7A9D5',
-    '#FFC1D8',
-  ];
-
+  
+  const getColorForPlaylist = (index: number): string => {
+    const colorIndex = index % colorSequence.length;
+    return colorSequence[colorIndex];
+  };
   const images = [
     require('../assets/playlist/1.png'),
     require('../assets/playlist/2.png'),
@@ -99,19 +93,18 @@ const Library = () => {
       .onSnapshot(querySnapshot => {
         const playlistsData: string[] = [];
         const colorsData: { [key: string]: string } = {};
-        querySnapshot.forEach(doc => {
-          const { name, createDate } = doc.data();
+        querySnapshot.forEach((doc, index) => {
+          const { name, createDate, color } = doc.data();
           playlistsData.push(name);
-          const color =
-            initialColors[Math.floor(Math.random() * initialColors.length)];
-          colorsData[name] = color;
+          colorsData[name] = color || colorSequence[index % colorSequence.length];
         });
         setPlaylists(playlistsData);
         setPlaylistColors(colorsData);
       });
-
+  
     return () => unsubscribe();
   }, []);
+  
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -142,17 +135,18 @@ const Library = () => {
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
-    } else if (playlists.includes(name)) { //Bug: Playlist creada con nombre ya existente.
+    } else if (playlists.includes(name)) {
       setError('Esta playlist ya existe en tu biblioteca.');
     } else {
       setError('');
-      const colorIndex = playlists.length % initialColors.length;
-      const color = colorSequence[colorIndex];
+      const colorIndex = playlists.length % colorSequence.length;
+      const color = colorSequence[colorIndex]; // Obtener el color de la secuencia
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
         songs: [],
+        color: color, // Agregar el color al objeto playlistData
       };
   
       firestore()
@@ -194,22 +188,21 @@ const Library = () => {
       .onSnapshot(querySnapshot => {
         const playlistsData: string[] = [];
         const colorsData: { [key: string]: string } = {};
-        let index = 0;
+        let colorIndex = 0;
         querySnapshot.forEach(doc => {
-          const { name, createDate } = doc.data();
+          const { name, createDate, color } = doc.data();
           playlistsData.push(name);
-          const color = colorSequence[index % colorSequence.length];
-          colorsData[name] = color;
-          index++;
+          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
+          colorIndex++;
         });
         setPlaylists(playlistsData);
         setPlaylistColors(colorsData);
       });
-
+  
     return () => unsubscribe();
   }, []);
   return (
-      <View style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Tu Biblioteca</Text>
         <View style={styles.buttonContainer}>
@@ -225,21 +218,21 @@ const Library = () => {
           </Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {playlists.map((playlist, index) => {
-            const color =
-              playlistColors[playlist] ||
-              initialColors[index % initialColors.length];
-            const imageIndex = index % images.length;
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handlePlayListView(playlist)}
-                style={[styles.playlistContainer]}>
-                <View
-                  style={[
-                    styles.playlistBackground,
-                    { backgroundColor: `${color}B3` },
+      
+<ScrollView contentContainerStyle={styles.scrollContent}>
+  {playlists.map((playlist, index) => {
+    const color = playlistColors[playlist] || getColorForPlaylist(index);
+    const imageIndex = index % images.length;
+    return (
+      <TouchableOpacity
+        key={index}
+        onPress={() => handlePlayListView(playlist)}
+        style={[styles.playlistContainer]}
+      >
+        <View
+          style={[
+            styles.playlistBackground,
+            { backgroundColor: `${color}B3` },
                   ]}
                 />
                 <View style={styles.playlistBox}>

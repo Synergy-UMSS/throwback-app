@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius:18,
     alignSelf: 'flex-end',
+    marginTop:20, //para el bug del espacio en blanco
   },
   fechaText: {
     fontSize: 18,

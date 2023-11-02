@@ -8,12 +8,13 @@ import SongSuggestion from '../components/SongSuggestion';
 import firestore from '@react-native-firebase/firestore';
 import {useRoute} from '@react-navigation/native';
 import {usePlaylistStore} from '../store/playlistStore';
+import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 
 const Playlist = ({navigation}) => {
   const ruta = useRoute();
   const {playlistName, playlistId} = ruta.params;
   const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
-  console.log('el view dice', currentPlaylist.id);
+  const {isAdded, setIsAdded} = useSuccesfulMessage();
   const [localSongsAdded, setLocalSongsAdded] = useState([]);
 
   useEffect(() => {
@@ -50,6 +51,11 @@ const Playlist = ({navigation}) => {
 			</View>
 		)
 	};
+	const goToSearchSelect = () => {
+		setIsAdded(false);
+		navigation.navigate('SearchSelect');
+	};
+
 	const imagePlaylist = {
 		display: 'flex',
 		backgroundColor: 'white',
@@ -132,7 +138,7 @@ return (
 			</View>
 			<View style={style.mainContainer}>
 				<View style={style.container}>
-					<TouchableOpacity style={style.add} onPress={() => navigation.navigate('SearchSelect')}>
+					<TouchableOpacity style={style.add} onPress={goToSearchSelect}>
 						<Octicons name='diff-added' size={40} color='black' />
 					</TouchableOpacity>
 					<View style={style.textContainer}>
@@ -142,6 +148,11 @@ return (
 				{displaySongsInPlayLists()}
 			</View>
 		</ScrollView>
+		{isAdded && (
+            <View style={style.successMessageContainer}>
+                <Text style={style.successMessageText}>Agregado con exito</Text>
+            </View>
+    	)}
 	</SafeAreaView>
 );
 };
@@ -217,5 +228,17 @@ const style = StyleSheet.create({
   },
   add: {
     margin: 10,
+  },
+  successMessageContainer: {
+    backgroundColor: 'green', // Color de fondo del mensaje de éxito
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+	marginBottom: 40,
+  },
+  successMessageText: {
+    color: 'white', // Color del texto del mensaje de éxito
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

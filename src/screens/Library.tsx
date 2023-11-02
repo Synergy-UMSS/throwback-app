@@ -8,6 +8,7 @@ import {
   Modal,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
@@ -18,7 +19,7 @@ import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger,
+  MenuTrigger
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MiniPlayer from '../components/MiniPlayer';
@@ -111,26 +112,44 @@ const Library = () => {
     setError('');
   };
   const handleDeletePlaylist = async (playlistName) => {
-    try {
-      const playlistRef = await firestore()
-        .collection('playlists')
-        .where('name', '==', playlistName)
-        .get();
-
-      if (!playlistRef.empty) {
-        const playlistDoc = playlistRef.docs[0];
-        await firestore().collection('playlists').doc(playlistDoc.id).delete();
-
-        // Actualiza la lista de playlists después de eliminar
-        const updatedPlaylists = playlists.filter((name) => name !== playlistName);
-        setPlaylists(updatedPlaylists);
-      } else {
-        console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
-      }
-    } catch (error) {
-      console.error('Error al eliminar la playlist:', error);
-    }
+    // Muestra un cuadro de diálogo de confirmación
+    Alert.alert(
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar esta playlist?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Aceptar",
+          onPress: async () => {
+            // Usuario presionó "Aceptar", continuamos con la eliminación
+            try {
+              const playlistRef = await firestore()
+                .collection('playlists')
+                .where('name', '==', playlistName)
+                .get();
+  
+              if (!playlistRef.empty) {
+                const playlistDoc = playlistRef.docs[0];
+                await firestore().collection('playlists').doc(playlistDoc.id).delete();
+  
+                // Actualiza la lista de playlists después de eliminar
+                const updatedPlaylists = playlists.filter((name) => name !== playlistName);
+                setPlaylists(updatedPlaylists);
+              } else {
+                console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
+              }
+            } catch (error) {
+              console.error('Error al eliminar la playlist:', error);
+            }
+          }
+        }
+      ]
+    );
   };
+  
   const MAX_NAME_LENGTH = 50;
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {

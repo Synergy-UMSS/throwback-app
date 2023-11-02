@@ -1,36 +1,37 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'; // Importa ScrollView desde react-native
 import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
-
 const screenWidth = Dimensions.get('window').width;
 
-// obtener el color de la memoria basado en la emocion
+// obtener el color de la memoria basado en la emoción
 function getColorForEmotion(emotion) {
   return emociones[emotion] || "#000000";
 }
+
 const emociones = {
-  emo1: "#F6EA7E",       
-  emo2: "#FBBAA4",  
-  emo3: "#C7A9D5",       
-  emo4: "#FFC1D8",     
-  emo5: "#F0CC8B",      
-  emo6: "#B6BFD4",       
-  emo7: "#FFC1D8",         
-  emo8: "#FBBAA4",   
-  emo9: "#F6EA7E",     
+  emo1: "#F6EA7E",
+  emo2: "#FBBAA4",
+  emo3: "#C7A9D5",
+  emo4: "#FFC1D8",
+  emo5: "#F0CC8B",
+  emo6: "#B6BFD4",
+  emo7: "#FFC1D8",
+  emo8: "#FBBAA4",
+  emo9: "#F6EA7E",
   emo10: "#9DE0D2",
   emo11: "#B6BFD4",
   emo12: "#F0CC8B",
   emo13: "#9DE0D2",
-  emo14: "#C7A9D5",  
+  emo14: "#C7A9D5",
 };
+
 // aclarar un color hexadecimal
-function aclararColor(hex, porcentaje=0.2) {
+function aclararColor(hex, porcentaje = 0.2) {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
   let b = parseInt(hex.slice(5, 7), 16);
@@ -40,22 +41,22 @@ function aclararColor(hex, porcentaje=0.2) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-const PreviewMemory = ({ memoria, song, onPress, index, emotion}) => {
+const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
   // color de memoria
-  const color = getColorForEmotion(emotion);  
+  const color = getColorForEmotion(emotion);
   const colorOscurecido = aclararColor(color);
   // borrado de memoria
   const showDeleteConfirmation = () => {
     Alert.alert(
-        "Confirmación",
-        "¿Estás seguro de que deseas eliminar esta memoria?",
-        [
-            {
-                text: "Cancelar",
-                style: "cancel"
-            },
-            { text: "Aceptar", onPress: () => deleteMemoryFromFirestore(memoria.id) }
-        ]
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar esta memoria?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        { text: "Aceptar", onPress: () => deleteMemoryFromFirestore(memoria.id) }
+      ]
     );
   }
   const deleteMemoryFromFirestore = (memoryId) => {
@@ -63,54 +64,49 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion}) => {
     console.log(memoryId);
     const reference = firestore().collection('memories').doc(memoryId);
     reference.delete()
-    .then(() => {
+      .then(() => {
         console.log('Memoria eliminada con éxito');
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error("Error eliminando memoria: ", error);
-    });
+      });
   }
   return (
     <View style={styles.mainContainer}>
-      <TouchableOpacity 
+      <TouchableOpacity
         onPress={() => onPress(memoria.id)}
-        // onPress={handleOpenMemoryDetail}
         style={{ ...styles.container, backgroundColor: color }}
       >
         <View style={styles.headerContainer}>
-          <Text style={{...styles.titulo}}>
-            {/* {memoria.titulo_memoria} */}
+          <Text style={{ ...styles.titulo }}>
             {memoria.title}
           </Text>
           <Menu style={styles.menuContainer}>
             <MenuTrigger>
               <Icon
-                  name="more-vert"
-                  size={24}
-                  color="black"
-                  style={styles.menuIcon}
+                name="more-vert"
+                size={24}
+                color="black"
+                style={styles.menuIcon}
               />
             </MenuTrigger>
             <MenuOptions customStyles={optionsStyles}>
               <MenuOption onSelect={showDeleteConfirmation}>
                 <Text style={styles.optionText}>Eliminar</Text>
               </MenuOption>
-              {/* <MenuOption onSelect={() => {
-                  console.log('Opción 2 seleccionada');
-              }}>
-                <Text style={styles.optionText}>Opción 2</Text>
-              </MenuOption> */}
             </MenuOptions>
           </Menu>
         </View>
-        
+
         <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
-          <Text style={styles.iconoMusica}>🎵</Text>
-          <Text style={styles.cancion}>
-            { typeof song !== 'undefined' ? song.title : "TITLE" } - { typeof song !== 'undefined' ? song.artist : "ARTIST" }
-          </Text>
-        </View>
-        </TouchableOpacity>
+  <Text style={styles.iconoMusica}>🎵</Text>
+  <ScrollView horizontal={true}>
+    <Text style={styles.cancion}>
+      {typeof song !== 'undefined' ? song.title : "TITLE" } - {typeof song !== 'undefined' ? song.artist : "ARTIST" }
+    </Text>
+  </ScrollView>
+</View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -139,46 +135,44 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titulo: {
-    marginLeft:10,
-    fontFamily:'arial-bold',
+    marginLeft: 10,
+    fontFamily: 'arial-bold',
     fontSize: 18,
     color: 'black',
-    marginBottom:5,
+    marginBottom: 5,
     textAlign: 'center',
     textAlignVertical: 'center',
-    flex:0.9,
+    flex: 0.9,
     borderRadius: 17,
   },
   cancionContainer: {
-    fontFamily:'Arial',
-    marginLeft:10,
-    marginRight:10,
+    fontFamily: 'Arial',
+    marginLeft: 10,
+    marginRight: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft:5,
-    paddingRight:5,
-    paddingTop:5,
-    paddingBottom:5,
-    borderRadius:14,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
+    borderRadius: 14,
   },
   iconoMusica: {
     marginRight: 5,
     color: 'black',
   },
   cancion: {
-    marginRight:30,
-    fontFamily:'Arial',
+    marginRight: 30,
+    fontFamily: 'Arial',
     fontSize: 13.5,
     color: 'black',
-    flex:1,
-    
+    flex: 1,
   },
   menuIcon: {
     position: 'absolute',
     top: -15,
     right: -5,
     alignItems: 'center',
-
   },
   optionText: {
     color: 'black',
@@ -187,16 +181,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
 const optionsStyles = {
   optionsContainer: {
     marginTop: 10,
     marginLeft: 0,
-    width : 130,
+    width: 130,
     // elevation: 0,
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',
-    backgroundColor:'#EBF2F9',
+    backgroundColor: '#EBF2F9',
     justifyContent: 'center',
   },
   optionWrapper: {

@@ -5,7 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
+import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 
 const SongSuggestionSelect = ({ songData, screenSelected }) => {
   const { title, artist, artwork } = songData;
@@ -13,6 +14,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
   const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
   const {currentPlaylist} = usePlaylistStore();
+  const {setIsAdded} = useSuccesfulMessage();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
@@ -36,6 +38,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
       .catch((error) => {
         console.error('Error al actualizar el documento:', error);
       });
+            setIsAdded(true);
             navigation.navigate('Playlist', {currentSong});
         } else {
           console.error('El campo songs no es un arreglo o no existe');

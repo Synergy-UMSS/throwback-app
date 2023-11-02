@@ -102,9 +102,10 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
           {typeof song !== 'undefined' && (song.title.length + song.artist.length > 40) ? (
             <TextTicker
               style={[styles.cancion, styles.ticker]}
-              duration={8000}
+              // duration={9000}
+              scrollSpeed={15}
               loop
-              bounce
+              // bounce
               repeatSpacer={50}
               marqueeDelay={1000}
             >

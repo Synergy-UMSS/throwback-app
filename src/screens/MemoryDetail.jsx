@@ -90,13 +90,26 @@ const MemoryDetail = ({ route, navigation}) => {
           { typeof memorie !== 'undefined' ? memorie.title  : "TITLE" }
         </Text>
 
-        <Text style={styles.subtitle}>
+        {/* <Text style={styles.subtitle}>
           {"Descripción:"}
         </Text>
 
         <Text style={styles.description}>
         { typeof memorie !== 'undefined' ? memorie.description  : "DESCRIPCION" }
-        </Text>
+        </Text> */}
+        { 
+          typeof memorie !== 'undefined' && memorie.description && memorie.description.trim() !== '' ? (
+            <>
+              <Text style={styles.subtitle}>
+                {"Descripción:"}
+              </Text>
+
+              <Text style={styles.description}>
+                {memorie.description}
+              </Text>
+            </>
+          ) : null
+        }
 
         <Text style={styles.tsong}>
           {"Canción vinculada al recuerdo:"}

@@ -90,13 +90,26 @@ const MemoryDetail = ({ route, navigation}) => {
           { typeof memorie !== 'undefined' ? memorie.title  : "TITLE" }
         </Text>
 
-        <Text style={styles.subtitle}>
+        {/* <Text style={styles.subtitle}>
           {"Descripción:"}
         </Text>
 
         <Text style={styles.description}>
         { typeof memorie !== 'undefined' ? memorie.description  : "DESCRIPCION" }
-        </Text>
+        </Text> */}
+        { 
+          typeof memorie !== 'undefined' && memorie.description && memorie.description.trim() !== '' ? (
+            <>
+              <Text style={styles.subtitle}>
+                {"Descripción:"}
+              </Text>
+
+              <Text style={styles.description}>
+                {memorie.description}
+              </Text>
+            </>
+          ) : null
+        }
 
         <Text style={styles.tsong}>
           {"Canción vinculada al recuerdo:"}
@@ -126,6 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius:18,
     alignSelf: 'flex-end',
+    marginTop:20, //para el bug del espacio en blanco
   },
   fechaText: {
     fontSize: 18,
@@ -144,6 +158,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     shadowColor: 'black',
     minHeight:screenHeight*0.9,
+    marginTop:10, //para el bug del espacio en blanco
   },
   emoContainer:{
     alignItems:'center',

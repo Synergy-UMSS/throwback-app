@@ -171,6 +171,14 @@ const App = () => {
             headerShown: false,
           }}
         />
+        <Tab.Screen
+          name="Playlist"
+          component={Playlist}
+          options={{
+            tabBarButton: (props) => null,
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     );
   }

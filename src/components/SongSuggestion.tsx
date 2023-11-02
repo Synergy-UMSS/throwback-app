@@ -103,9 +103,17 @@ const SongSuggestion = ({songData, screenSelected}) => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
+          let ind = 0;
+          for (let i = 0; i < data.songs.length; i++) {
+            if (data.songs[i].title === songData.title) {
+              ind = i;
+              break;
+            }
+          }
+          
           const updatedSongs = data.songs.filter(
-            song => song.title !== songData.title,
-          );
+            (song, index) => index !== ind,
+            );
           docRef
             .update({
               songs: updatedSongs,

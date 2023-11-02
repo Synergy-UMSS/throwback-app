@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     shadowColor: 'black',
     minHeight:screenHeight*0.9,
+    marginTop:10, //para el bug del espacio en blanco
   },
   emoContainer:{
     alignItems:'center',

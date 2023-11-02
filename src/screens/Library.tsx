@@ -135,18 +135,16 @@ const Library = () => {
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('Este campo es obligatorio.');
-    } else if (playlists.includes(name)) {
-      setError('Esta playlist ya existe en tu biblioteca.');
     } else {
       setError('');
       const colorIndex = playlists.length % colorSequence.length;
-      const color = colorSequence[colorIndex]; // Obtener el color de la secuencia
+      const color = colorSequence[colorIndex]; 
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
         name: name,
         createDate: timestamp,
         songs: [],
-        color: color, // Agregar el color al objeto playlistData
+        color: color, 
       };
   
       firestore()
@@ -156,7 +154,7 @@ const Library = () => {
           console.log('Se ha creado la playlist:', name);
           const updatedPlaylists = [name, ...playlists];
           setPlaylists(updatedPlaylists);
-          setPlaylistColors({ ...playlistColors, [name]: color });
+          setPlaylistColors({ ...playlistColors, [name]: color }); 
           setPlaylistName('');
           setShowModal(false);
         })
@@ -165,7 +163,7 @@ const Library = () => {
         });
     }
   };
-  
+
   const handleSearch = () => {
     // Posible lógica para el Search
   };

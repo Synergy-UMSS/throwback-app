@@ -181,7 +181,7 @@ const Library = () => {
   const MAX_NAME_LENGTH = 50;
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
-      setError('Este campo es obligatorio.');
+      setError('El nombre de la playlist no puede estar vacío.');
     } else {
       setError('');
       const colorIndex = playlists.length % colorSequence.length;

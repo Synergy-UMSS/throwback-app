@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import TextTicker from 'react-native-text-ticker';
 
 const ItemSong = ({ song, artist, onPlay, imageUri, memoriaId }) => {
     return (
@@ -11,12 +12,37 @@ const ItemSong = ({ song, artist, onPlay, imageUri, memoriaId }) => {
           style={styles.listItemImage} 
         />
         <View style={styles.textContainer}>
-          <Text style={styles.songTitle}>
-            {song}
-          </Text>
-          <Text style={styles.songArtist}>
-            {artist}
-          </Text>
+          {typeof song !== 'undefined' && song.length > 40 ? (
+            <TextTicker
+              style={[styles.songTitle, styles.ticker]}
+              scrollSpeed={15}
+              loop
+              repeatSpacer={50}
+              marqueeDelay={1000}
+            >
+              {song}
+            </TextTicker>
+          ) : (
+            <Text style={styles.songTitle}>
+              {song}
+            </Text>
+          )}
+          
+          {typeof artist !== 'undefined' && artist.length > 40 ? (
+            <TextTicker
+              style={[styles.songArtist, styles.ticker]}
+              scrollSpeed={15}
+              loop
+              repeatSpacer={50}
+              marqueeDelay={1000}
+            >
+              {artist}
+            </TextTicker>
+          ) : (
+            <Text style={styles.songArtist}>
+              {artist}
+            </Text>
+          )}
         </View>
   
       </TouchableOpacity>

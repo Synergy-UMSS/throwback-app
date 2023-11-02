@@ -100,12 +100,6 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
 		<TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
                   <Text style={styles.buttonText}>Agregar canción</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={() => {
-                  addSongPlaylist(songData);
-                  setSuccessMessage('');
-                }}>
-                  <Text style={styles.buttonText}>Cancelar</Text>
-                </TouchableOpacity>
               </View>
               {/* Mostrar el mensaje de éxito si existe */}
               {successMessage && (

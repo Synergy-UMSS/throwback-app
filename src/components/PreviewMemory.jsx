@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'; // Importa ScrollView desde react-native
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'; //Importar para el scroll 
 import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -97,15 +97,21 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
             </MenuOptions>
           </Menu>
         </View>
-
         <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
-  <Text style={styles.iconoMusica}>🎵</Text>
-  <ScrollView horizontal={true}>
+      <Text style={styles.iconoMusica}>🎵</Text>
+      {typeof song !== 'undefined' && (song.title.length > 40 || song.artist.length > 40) ? (  //para restringir caracteres
+          <ScrollView horizontal={true}>
+      <Text style={styles.cancion}>
+        {song.title} - {song.artist}
+      </Text>
+    </ScrollView>
+  ) : (
     <Text style={styles.cancion}>
-      {typeof song !== 'undefined' ? song.title : "TITLE" } - {typeof song !== 'undefined' ? song.artist : "ARTIST" }
+      {song.title} - {song.artist}
     </Text>
-  </ScrollView>
+  )}
 </View>
+
       </TouchableOpacity>
     </View>
   );

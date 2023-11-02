@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-
+import TextTicker from 'react-native-text-ticker';
 const screenWidth = Dimensions.get('window').width;
 
 // obtener el color de la memoria basado en la emoción
@@ -98,26 +98,33 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
           </Menu>
         </View>
         <View style={{ ...styles.cancionContainer, backgroundColor: colorOscurecido }}>
-      <Text style={styles.iconoMusica}>🎵</Text>
-      {typeof song !== 'undefined' && (song.title.length > 40 || song.artist.length > 40) ? (  //para restringir caracteres
-          <ScrollView horizontal={true}>
-      <Text style={styles.cancion}>
-        {song.title} - {song.artist}
-      </Text>
-    </ScrollView>
-  ) : (
-    <Text style={styles.cancion}>
-      {song.title} - {song.artist}
-    </Text>
-  )}
-</View>
-
+          <Text style={styles.iconoMusica}>🎵</Text>
+          {typeof song !== 'undefined' && (song.title.length + song.artist.length > 40) ? (
+            <TextTicker
+              style={[styles.cancion, styles.ticker]}
+              duration={8000}
+              loop
+              bounce
+              repeatSpacer={50}
+              marqueeDelay={1000}
+            >
+              {song.title} - {song.artist}
+            </TextTicker>
+          ) : (
+            <Text style={styles.cancion}>
+              {typeof song !== 'undefined' ? song.title : "TITLE" } - {typeof song !== 'undefined' ? song.artist : "ARTIST" }
+            </Text>
+          )}
+        </View>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  ticker: {
+    width: screenWidth * 0.4,
+  },
   mainContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -162,6 +169,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     borderRadius: 14,
+    flex:1,
   },
   iconoMusica: {
     marginRight: 5,

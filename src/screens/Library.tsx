@@ -159,38 +159,18 @@ const Library = () => {
     setError('');
   };
   const handleDeletePlaylist = async (playlistName) => {
-    try {
-      const playlistRef = await firestore()
-        .collection('playlists')
-        .where('name', '==', playlistName)
-        .get();
-
-      if (!playlistRef.empty) {
-        const playlistDoc = playlistRef.docs[0];
-        await firestore().collection('playlists').doc(playlistDoc.id).delete();
-
-        // Actualizando tablita
-        const updatedPlaylists = playlists.filter((name) => name !== playlistName);
-        setPlaylists(updatedPlaylists);
-      } else {
-        console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
-      }
-    } catch (error) {
-      console.error('Error al eliminar la playlist:', error);
-    }
     // Muestra un cuadro de diálogo de confirmación
     Alert.alert(
-      "Confirmación",
-      "¿Estás seguro de que deseas eliminar esta playlist?",
+      "Confirmar Eliminación",
+      `¿Estás seguro de que deseas eliminar la playlist "${playlistName}"?`,
       [
         {
           text: "Cancelar",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Aceptar",
           onPress: async () => {
-            // Usuario presionó "Aceptar", continuamos con la eliminación
             try {
               const playlistRef = await firestore()
                 .collection('playlists')
@@ -205,13 +185,15 @@ const Library = () => {
                 const updatedPlaylists = playlists.filter((name) => name !== playlistName);
                 setPlaylists(updatedPlaylists);
               } else {
-                console.error(`No se encontró ninguna playlist con el nombre ${playlistName}`);
+                console.error(`No se encontró ninguna playlist con el nombre "${playlistName}"`);
+                // Puedes mostrar un mensaje de error al usuario aquí si lo prefieres
               }
             } catch (error) {
               console.error('Error al eliminar la playlist:', error);
+              // Puedes mostrar un mensaje de error al usuario aquí si lo prefieres
             }
-          }
-        }
+          },
+        },
       ]
     );
   };

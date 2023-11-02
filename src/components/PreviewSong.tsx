@@ -14,7 +14,7 @@ const ItemSong = ({ song, artist, onPlay, imageUri, memoriaId }) => {
         <View style={styles.textContainer}>
           {typeof song !== 'undefined' && song.length > 40 ? (
             <TextTicker
-              style={[styles.songTitle, styles.ticker]}
+              style={[styles.songTitle, styles.ticker]} 
               scrollSpeed={15}
               loop
               repeatSpacer={50}
@@ -38,17 +38,14 @@ const ItemSong = ({ song, artist, onPlay, imageUri, memoriaId }) => {
             >
               {artist}
             </TextTicker>
-          ) : (
-            <Text style={styles.songArtist}>
-              {artist}
-            </Text>
+              ) : (
+            <Text style={styles.songArtist}> {artist} </Text>
           )}
         </View>
   
       </TouchableOpacity>
     );
-  };
-  
+  };  
 
 const styles = StyleSheet.create({
     listItem: {

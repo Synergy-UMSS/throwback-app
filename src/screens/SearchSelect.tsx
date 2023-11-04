@@ -92,6 +92,7 @@ const SearchSelect = ({navigation}) => {
             songData={song}
             onOptionPress={handlePress}
             screenSelected='search2'
+            navigation={navigation}
           />
         ))}
         {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}

@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
 import FastImage from 'react-native-fast-image';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 
-const SongSuggestionSelect = ({ songData, screenSelected }) => {
+const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
   const { title, artist, artwork } = songData;
   const [showOptions, setShowOptions] = useState(false);
-  const navigation = useNavigation();
   const { setCurrentSong, currentSong } = usePlayerStore();
   const {currentPlaylist} = usePlaylistStore();
   const {setIsAdded} = useSuccesfulMessage();
@@ -39,7 +37,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
         console.error('Error al actualizar el documento:', error);
       });
             setIsAdded(true);
-            navigation.navigate('Playlist', {currentSong});
+            navigation.navigate('Playlist', { playlistName: currentPlaylist.name, playlistId: currentPlaylist.id});
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -53,6 +51,7 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
 		setCurrentSong(songData);
     console.log('en externo', songData);
     addSongPlaylist(songData);
+    navigation.navigate('Playlist', { playlistId: currentPlaylist.id }); 
   }
 
   return (

@@ -39,7 +39,7 @@ const Player = ({ navigation, route }) => {
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
 
-  const setPlayer = async () => {
+    const setPlayer = async () => {
     try {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add([currentSong]);

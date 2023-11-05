@@ -9,7 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 import {useRoute} from '@react-navigation/native';
 import {usePlaylistStore} from '../store/playlistStore';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
-
+import { useSearchStore } from '../store/searchStore';
 
 const Playlist = ({navigation}) => {
   const ruta = useRoute();
@@ -17,6 +17,17 @@ const Playlist = ({navigation}) => {
   const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
   const {isAdded, setIsAdded} = useSuccesfulMessage();
   const [localSongsAdded, setLocalSongsAdded] = useState([]);
+
+	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
+
+	useEffect(() => {
+    const unsubscribeFocus = navigation.addListener('focus', () => {
+      showHistoryTrue(); 
+    });
+    return () => {
+      unsubscribeFocus(); 
+    };
+  }, [navigation]);
 
   useEffect(() => {
 	if (isAdded) {
@@ -138,7 +149,7 @@ return (
 		<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
 			<Ionicons name="arrow-back" size={30} color="white" />
 		</TouchableOpacity>
-		<ScrollView>
+		<ScrollView style={style.scrollStyle}>
 			<View style={style.portada}>
 				<View style={style.containerimgs}>
 					{imgs}
@@ -196,6 +207,9 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 15,
   },
+	scrollStyle: {
+		marginBottom: 50,
+	},
   textTitle: {
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,15 +1,15 @@
-import React, {useEffect} from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import MiniPlayer from '../components/MiniPlayer';
 import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
-import {useSearchStore} from '../store/searchStore';
+import { useSearchStore } from '../store/searchStore';
 import SongSuggestion from '../components/SongSuggestion';
-import {ScrollView} from 'react-native';
-import {firebase} from '@react-native-firebase/firestore';
+import { ScrollView } from 'react-native';
+import { firebase } from '@react-native-firebase/firestore';
 let tracks = [];
 
-const Search = ({navigation}) => {
+const Search = ({ navigation }) => {
   const db = firebase.firestore();
   const songsRef = db.collection('songs');
   useEffect(() => {
@@ -65,7 +65,7 @@ const Search = ({navigation}) => {
     console.log('handlePress ' + paila);
   };
   const matching = (query, song) => {
-    const {title, artist} = song;
+    const { title, artist } = song;
     const lowerCaseQuery = query ? query.toLowerCase() : '';
     const lowerCaseTitle = title ? title.toLowerCase() : '';
     const lowerCaseArtist = artist ? artist.toLowerCase() : '';
@@ -103,7 +103,7 @@ const Search = ({navigation}) => {
           />
         ))}
         {suggests.length === 0 && (
-          <Text style={{textAlign: 'center', color: '#777'}}>
+          <Text style={{ textAlign: 'center', color: '#777' }}>
             No se ha encontrado ningún resultado
           </Text>
         )}
@@ -124,6 +124,8 @@ const Search = ({navigation}) => {
         position: 'relative', // Agrega esta propiedad
       }}>
       <SearchBar
+        comeNav={false}
+        navigation={navigation}
         style={{
           position: 'absolute',
           top: 0,
@@ -131,7 +133,7 @@ const Search = ({navigation}) => {
           right: 0,
         }}
       />
-      <ScrollView style={{paddingTop: 0}}>
+      <ScrollView style={{ paddingTop: 0 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -142,7 +144,7 @@ const Search = ({navigation}) => {
           }}>
           {showHistory && (
             <Text
-              style={{fontSize: 16 /*, fontWeight: 'nunito'*/, color: 'black'}}>
+              style={{ fontSize: 16 /*, fontWeight: 'nunito'*/, color: 'black' }}>
               Búsquedas Recientes
             </Text>
           )}
@@ -151,7 +153,7 @@ const Search = ({navigation}) => {
               clearSearches();
             }}>
             {showHistory && (
-              <Text style={{fontSize: 12, color: 'gray'}}>
+              <Text style={{ fontSize: 12, color: 'gray' }}>
                 Borrar Historial
               </Text>
             )}

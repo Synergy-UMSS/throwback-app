@@ -4,6 +4,7 @@ import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Connection from '../components/Connection';
 import TrackPlayer, { Event, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
@@ -18,6 +19,12 @@ let color: string[] = [
   '#96ead280',
   '#FFC1D860',
 ];
+let colorSec: string[] = [
+  '#64556B',
+  '#4B7569',
+  '#80616C',
+];
+
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
@@ -220,8 +227,14 @@ const Player = ({ navigation, route }) => {
         </View>
 
         <View style={style.songControl}>
+        <TouchableOpacity  onPress={() => playTrack(playState)}>
+            <Ionicons style={{color: colorSec[currentSong.id % 3]}} name="play-skip-back-outline" size={35} color="white" />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => playTrack(playState)}>
-            <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
+            <Ionicons style={{color: colorSec[currentSong.id % 3]}} name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={50} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => playTrack(playState)}>
+            <Ionicons style={{color: colorSec[currentSong.id % 3]}} name="play-skip-forward-outline" size={35} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -293,10 +306,11 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
   },
   songControl: {
-    width: 50,
-    height: 40,
+    width: '60%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
   },
   flechita: {
     justifyContent: 'flex-start',

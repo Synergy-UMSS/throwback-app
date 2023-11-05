@@ -9,8 +9,6 @@ import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
-import { useSearchStore } from '../store/searchStore';
-
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
@@ -283,4 +281,5 @@ const style = StyleSheet.create({
 		color: 'black', // Color del texto del mensaje de éxito
 		textAlign: 'center',
 	},
+
 });

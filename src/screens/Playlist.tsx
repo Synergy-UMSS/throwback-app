@@ -9,7 +9,6 @@ import firestore from '@react-native-firebase/firestore';
 import {useRoute} from '@react-navigation/native';
 import {usePlaylistStore} from '../store/playlistStore';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
-import { useSearchStore } from '../store/searchStore';
 
 
 const Playlist = ({navigation}) => {
@@ -18,17 +17,6 @@ const Playlist = ({navigation}) => {
   const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
   const {isAdded, setIsAdded} = useSuccesfulMessage();
   const [localSongsAdded, setLocalSongsAdded] = useState([]);
-	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
-
-	useEffect(() => {
-    const unsubscribeFocus = navigation.addListener('focus', () => {
-      showHistoryTrue(); // Establece showHistory en true cada vez que el componente esté en primer plano
-    });
-
-    return () => {
-      unsubscribeFocus(); // Limpiar el listener cuando el componente se desmonte
-    };
-  }, [navigation]);
 
   useEffect(() => {
 	if (isAdded) {
@@ -150,7 +138,7 @@ return (
 		<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
 			<Ionicons name="arrow-back" size={30} color="white" />
 		</TouchableOpacity>
-		<ScrollView style={style.scrollStyle}>
+		<ScrollView>
 			<View style={style.portada}>
 				<View style={style.containerimgs}>
 					{imgs}
@@ -208,9 +196,6 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 15,
   },
-	scrollStyle: {
-		marginBottom: 50,
-	},
   textTitle: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -220,6 +205,7 @@ const style = StyleSheet.create({
     color: 'black',
     fontSize: 20,
     fontWeight: '400',
+    textTransform: 'uppercase',
   },
   mainContainer: {
     backgroundColor: 'pink',

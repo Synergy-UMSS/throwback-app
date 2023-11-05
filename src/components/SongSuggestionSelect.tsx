@@ -15,7 +15,6 @@ const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
   const {setIsAdded} = useSuccesfulMessage();
 
   const handleOptionPress = () => {
-    setCurrentSong(songData);
 		console.log('en interno', songData);
     setShowOptions(!showOptions);
   };
@@ -48,7 +47,6 @@ const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
   }
 
   const backToPlaylist = () => {
-		setCurrentSong(songData);
     console.log('en externo', songData);
     addSongPlaylist(songData);
     navigation.navigate('Playlist', { playlistId: currentPlaylist.id }); 

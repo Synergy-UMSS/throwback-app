@@ -66,6 +66,65 @@ const Library = () => {
     setShowModal(true);
   };
 
+  
+  const MAX_NAME_LENGTH = 50;
+  const handleCreatePlaylist = (name: string) => {
+    if (name.trim() === '') {
+      setError('El nombre de la playlist no puede estar vacío.');
+    } else {
+      setError('');
+      const colorIndex = playlists.length % colorSequence.length;
+      const color = colorSequence[colorIndex]; 
+      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+      const playlistData = {
+        name: name,
+        createDate: timestamp,
+        songs: [],
+        color: color, 
+      };
+  
+      firestore()
+        .collection('playlists')
+        .add(playlistData)
+        .then(docRef => {
+          console.log('Se ha creado la playlist:', name);
+          const updatedPlaylists = [name, ...playlists];
+          setPlaylists(updatedPlaylists);
+          setPlaylistColors({ ...playlistColors, [name]: color }); 
+          setPlaylistName('');
+          setShowModal(false);
+        })
+        .catch(error => {
+          console.error('Error al crear la playlist:', error);
+        });
+    }
+  };
+
+  const handleSearch = () => {
+    // Posible lógica para el Search
+  };
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('playlists')
+      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+      .onSnapshot(querySnapshot => {
+        const playlistsData: string[] = [];
+        const colorsData: { [key: string]: string } = {};
+        let colorIndex = 0;
+        querySnapshot.forEach(doc => {
+          const { name, createDate, color } = doc.data();
+          playlistsData.push(name);
+          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
+          colorIndex++;
+        });
+        setPlaylists(playlistsData);
+        setPlaylistColors(colorsData);
+      });
+  
+    return () => unsubscribe();
+  }, []);
+
   const handlePlayListView = async playlistName => {
     try {
       const playlistRef = await firestore()
@@ -158,6 +217,8 @@ const Library = () => {
     setShowModal(false);
     setError('');
   };
+
+  //DELETE
   const handleDeletePlaylist = async (playlistName) => {
     // Muestra un cuadro de diálogo de confirmación
     Alert.alert(
@@ -167,6 +228,9 @@ const Library = () => {
         {
           text: "Cancelar",
           style: "cancel",
+          onPress: () => {
+            console.log(`No se eliminó la playlist "${playlistName}"`);
+          },
         },
         {
           text: "Aceptar",
@@ -198,63 +262,6 @@ const Library = () => {
     );
   };
   
-  const MAX_NAME_LENGTH = 50;
-  const handleCreatePlaylist = (name: string) => {
-    if (name.trim() === '') {
-      setError('El nombre de la playlist no puede estar vacío.');
-    } else {
-      setError('');
-      const colorIndex = playlists.length % colorSequence.length;
-      const color = colorSequence[colorIndex]; 
-      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
-      const playlistData = {
-        name: name,
-        createDate: timestamp,
-        songs: [],
-        color: color, 
-      };
-  
-      firestore()
-        .collection('playlists')
-        .add(playlistData)
-        .then(docRef => {
-          console.log('Se ha creado la playlist:', name);
-          const updatedPlaylists = [name, ...playlists];
-          setPlaylists(updatedPlaylists);
-          setPlaylistColors({ ...playlistColors, [name]: color }); 
-          setPlaylistName('');
-          setShowModal(false);
-        })
-        .catch(error => {
-          console.error('Error al crear la playlist:', error);
-        });
-    }
-  };
-
-  const handleSearch = () => {
-    // Posible lógica para el Search
-  };
-
-  useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('playlists')
-      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
-      .onSnapshot(querySnapshot => {
-        const playlistsData: string[] = [];
-        const colorsData: { [key: string]: string } = {};
-        let colorIndex = 0;
-        querySnapshot.forEach(doc => {
-          const { name, createDate, color } = doc.data();
-          playlistsData.push(name);
-          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
-          colorIndex++;
-        });
-        setPlaylists(playlistsData);
-        setPlaylistColors(colorsData);
-      });
-  
-    return () => unsubscribe();
-  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.header}>

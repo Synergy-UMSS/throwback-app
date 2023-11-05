@@ -28,8 +28,6 @@ const MiniPlayer = ({ navigation }) => {
         return null;
     }
 
-    console.log('artwork:', currentSong.artwork);
-
     return (
         <View style={styles.miniPlayerContainer}>
             <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>

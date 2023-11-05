@@ -114,6 +114,8 @@ const SearchSelect = ({navigation}) => {
         position: 'relative', // Agrega esta propiedad
       }}>
       <SearchBar
+        comeNav={true} 
+        navigation={navigation}
         style={{
           position: 'absolute',
           top: 0,

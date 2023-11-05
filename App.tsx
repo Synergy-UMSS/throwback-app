@@ -92,11 +92,9 @@ function MemoryNavigator() {
           headerTintColor: 'black',
         }}
       />
-  
     </Stack.Navigator>
   );
 }
-
 
 const App = () => {
   function Movible() {
@@ -181,14 +179,6 @@ const App = () => {
             headerShown: false,
           }}
         />
-        <Tab.Screen
-          name="SearchSelect"
-          component={SearchSelect}
-          options={{
-            tabBarButton: (props) => null,
-            headerShown: false,
-          }}
-        />
       </Tab.Navigator>
     );
   }
@@ -246,7 +236,6 @@ const App = () => {
               name="Playlist"
               component={Playlist}
               options={{headerShown: false}}
-              key={Math.random().toString()}
             />
           </Stack.Navigator>
         </NavigationContainer>

@@ -44,7 +44,7 @@ const SearchSelect = ({navigation}) => {
     }else{}
 	}, []);
 
-  const {clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches, showHistoryTrue, showHistoryFalse} =
+  const {clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches,} =
     useSearchStore();
 
   const clearSearches = () => {
@@ -92,7 +92,6 @@ const SearchSelect = ({navigation}) => {
             songData={song}
             onOptionPress={handlePress}
             screenSelected='search2'
-            navigation={navigation}
           />
         ))}
         {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}
@@ -114,8 +113,6 @@ const SearchSelect = ({navigation}) => {
         position: 'relative', // Agrega esta propiedad
       }}>
       <SearchBar
-        comeNav={true} 
-        navigation={navigation}
         style={{
           position: 'absolute',
           top: 0,

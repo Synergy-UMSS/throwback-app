@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
@@ -46,7 +46,7 @@ const Player = ({ navigation, route }) => {
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
 
-    const setPlayer = async () => {
+  const setPlayer = async () => {
     try {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add([currentSong]);
@@ -125,7 +125,7 @@ const Player = ({ navigation, route }) => {
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
 		if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
 			const idNumerico = parseInt(currentSong.id);
-			const track = await TrackPlayer.getTrack(parseInt(idNumerico));
+			const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));
 			const { title, artwork, artist } = track;
 			setTrackTitle(title);
 			setTrackArtist(artist);
@@ -134,6 +134,13 @@ const Player = ({ navigation, route }) => {
 		}
 	});
 
+  const skipTo = async trackId => {
+    await TrackPlayer.skipToNext();
+  }
+
+  const previousTo = async trackId=> {
+    await TrackPlayer.skipToPrevious();
+  }
   const changeValuesTrack = async () => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
@@ -183,7 +190,7 @@ const Player = ({ navigation, route }) => {
       justifyContent: 'center',
     }}>
       <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="white" />
+        <Ionicons style={{color: colorSec[currentSong.id%3]}} name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
 
       <View style={style.container}>
@@ -205,10 +212,10 @@ const Player = ({ navigation, route }) => {
 
         <View>
           <View style={style.songDurationMain}>
-            <Text>
+            <Text style={style.songTimer}>
               {new Date(sliderWork.position * 1000).toLocaleTimeString().substring(3, 8)}
             </Text>
-            <Text>
+            <Text style={style.songTimer}>
               {new Date(sliderWork.duration * 1000).toLocaleTimeString().substring(3, 8)}
             </Text>
           </View>
@@ -217,9 +224,9 @@ const Player = ({ navigation, route }) => {
             value={sliderWork.position}
             minimumValue={0}
             maximumValue={sliderWork.duration}
-            thumbTintColor='pink'
-            minimumTrackTintColor='white'
-            maximumTrackTintColor='#FFFFFF80'
+            thumbTintColor={colorSec[currentSong.id % 3]}
+            minimumTrackTintColor= 'white'
+            maximumTrackTintColor= {colorSec[currentSong.id % 3]}
             onSlidingComplete={isConnected ? async time => {
               await TrackPlayer.seekTo(time);
             } : undefined}
@@ -227,13 +234,13 @@ const Player = ({ navigation, route }) => {
         </View>
 
         <View style={style.songControl}>
-        <TouchableOpacity  onPress={() => playTrack(playState)}>
+        <TouchableOpacity  onPress={() => previousTo()}>
             <Ionicons style={{color: colorSec[currentSong.id % 3]}} name="play-skip-back-outline" size={35} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => playTrack(playState)}>
             <Ionicons style={{color: colorSec[currentSong.id % 3]}} name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={50} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => playTrack(playState)}>
+          <TouchableOpacity onPress={() => skipTo(currentSong.id)}>
             <Ionicons style={{color: colorSec[currentSong.id % 3]}} name="play-skip-forward-outline" size={35} color="white" />
           </TouchableOpacity>
         </View>
@@ -296,6 +303,9 @@ const style = StyleSheet.create({
     width: 350,
     height: 30,
     flexDirection: 'row',
+  },
+  songTimer:{
+    color: '#3D3939',
   },
   songDurationMain: {
     fontFamily: 'Quicksand-VariableFont',

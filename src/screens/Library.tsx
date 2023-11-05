@@ -34,6 +34,7 @@ const Library = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedPlaylistName, setSelectedPlaylistName] = useState('');
+  const [editPlaylistName, setEditPlaylistName] = useState('');
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
   );
@@ -170,47 +171,37 @@ const Library = () => {
   //EDIT 
   const handleEditPlaylist = (playlistName, color) => {
     setSelectedPlaylistName(playlistName);
+    console.log('Playlist seleccionada:', playlistName);
     setShowEditModal(true);
   };
 
-  const handleUpdatePlaylist = (newName) => {
-    if (!newName.trim()) {
+  const handleUpdatePlaylist = () => {
+    if (editPlaylistName.trim() === '') {
       setError('El nombre de la playlist no puede estar vacío.');
-      return;
-    }
-  
-    if (selectedPlaylistName === newName) {
-      console.log('El nombre de la playlist no ha cambiado.');
-      setShowEditModal(false);
-      return;
-    }
-  
-    const firestoreRef = firestore().collection('playlists');
-    firestoreRef
-      .where('name', '==', selectedPlaylistName)
-      .get()
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          const playlistDoc = querySnapshot.docs[0];
-          const playlistRef = firestoreRef.doc(playlistDoc.id);
-          playlistRef
-            .update({
-              name: newName,
-            })
-            .then(() => {
-              console.log('Nombre de la playlist actualizado exitosamente.');
-              setShowEditModal(false);
-            })
-            .catch((error) => {
-              console.error('Error al actualizar el nombre de la playlist:', error);
-            });
-        } else {
-          console.error(`No se encontró ninguna playlist con el nombre ${selectedPlaylistName}`);
-        }
-      })
-      .catch((error) => {
-        console.error('Error al obtener la referencia del documento:', error);
+    } else {
+      setError('');
+      let playlistRef = firestore()
+        .collection('playlists')
+        .where('name', '==', selectedPlaylistName);
+      // solo una playlist debería coincidir con el nombre
+      playlistRef = playlistRef.limit(1);
+      playlistRef.get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          doc.ref.update({ name: editPlaylistName });
+        });
       });
+  
+      const updatedPlaylists = playlists.map(playlist => {
+        if (playlist === selectedPlaylistName) {
+          return editPlaylistName;
+        }
+        return playlist;
+      });
+  
+      setPlaylists(updatedPlaylists);
+      setSelectedPlaylistName(editPlaylistName);
+      setShowEditModal(false);
+    }
   };
   
   const handleCloseModal = () => {
@@ -349,7 +340,7 @@ const Library = () => {
                 style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
                 value={playlistName}
                 onChangeText={text => {
-                  setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                  setPlaylistName(text);
                   setError('');
                 }}
                 placeholderTextColor={modalTextColor}
@@ -381,9 +372,9 @@ const Library = () => {
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-              value={selectedPlaylistName}
+              value={editPlaylistName}
               onChangeText={text => {
-                setSelectedPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                setEditPlaylistName(text);
                 setError('');
               }}
               placeholderTextColor={modalTextColor}

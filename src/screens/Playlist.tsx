@@ -150,7 +150,7 @@ return (
 		<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
 			<Ionicons name="arrow-back" size={30} color="white" />
 		</TouchableOpacity>
-		<ScrollView>
+		<ScrollView style={style.scrollStyle}>
 			<View style={style.portada}>
 				<View style={style.containerimgs}>
 					{imgs}
@@ -208,6 +208,9 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 15,
   },
+	scrollStyle: {
+		marginBottom: 50,
+	},
   textTitle: {
     alignItems: 'center',
     justifyContent: 'center',

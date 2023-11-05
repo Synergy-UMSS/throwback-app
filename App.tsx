@@ -179,6 +179,14 @@ const App = () => {
             headerShown: false,
           }}
         />
+        <Tab.Screen
+          name="SearchSelect"
+          component={SearchSelect}
+          options={{
+            tabBarButton: (props) => null,
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     );
   }

@@ -69,6 +69,8 @@ const Library = () => {
 
   
   const MAX_NAME_LENGTH = 50;
+
+  //CREATE
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('El nombre de la playlist no puede estar vacío.');
@@ -78,6 +80,7 @@ const Library = () => {
       const color = colorSequence[colorIndex]; 
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
+        id: '', 
         name: name,
         createDate: timestamp,
         songs: [],
@@ -88,18 +91,23 @@ const Library = () => {
         .collection('playlists')
         .add(playlistData)
         .then(docRef => {
-          console.log('Se ha creado la playlist:', name);
-          const updatedPlaylists = [name, ...playlists];
-          setPlaylists(updatedPlaylists);
-          setPlaylistColors({ ...playlistColors, [name]: color }); 
-          setPlaylistName('');
-          setShowModal(false);
+          const playlistId = docRef.id; 
+          docRef.update({ id: playlistId }).then(() => {
+            console.log('Se ha creado la playlist:', name, 'con ID:', playlistId);
+            const updatedPlaylists = [name, ...playlists];
+            setPlaylists(updatedPlaylists);
+            setPlaylistColors({ ...playlistColors, [name]: color }); 
+            setPlaylistName('');
+            setShowModal(false);
+          });
         })
         .catch(error => {
           console.error('Error al crear la playlist:', error);
         });
     }
   };
+  
+  
 
   const handleSearch = () => {
     // Posible lógica para el Search
@@ -171,7 +179,7 @@ const Library = () => {
   //EDIT 
   const handleEditPlaylist = (playlistName, color) => {
     setSelectedPlaylistName(playlistName);
-    console.log('Playlist seleccionada:', playlistName);
+    setEditPlaylistName(playlistName); 
     setShowEditModal(true);
   };
 
@@ -364,22 +372,22 @@ const Library = () => {
       
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
       <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
-        <View style={styles.customModalContent}>
-          <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-            Edita el nombre de tu playlist
-          </Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-              value={editPlaylistName}
-              onChangeText={text => {
-                setEditPlaylistName(text);
-                setError('');
-              }}
-              placeholderTextColor={modalTextColor}
-            />
-          </View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <View style={styles.customModalContent}>
+        <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
+          Edita el nombre de tu playlist
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+            value={editPlaylistName}
+            onChangeText={text => {
+              setEditPlaylistName(text);
+              setError('');
+            }}
+            placeholderTextColor={modalTextColor}
+          />
+        </View>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
           <View style={styles.buttonGroup}>
             <TouchableOpacity
               style={styles.createButton}

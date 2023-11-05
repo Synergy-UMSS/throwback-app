@@ -219,9 +219,10 @@ const SongSuggestion = ({songData, screenSelected}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.salmonButton]}
-                  onPress={backToPlaylist}>
-                  <Text style={styles.buttonText}>Guardar en una playlist</Text>
+                  onPress={handleOptionPress}>
+                  <Text style={styles.buttonText}>Cerrar</Text>
                 </TouchableOpacity>
+
               </View>
             </View>
           </View>

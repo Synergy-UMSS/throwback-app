@@ -180,10 +180,11 @@ const Library = () => {
       setError('El nombre de la playlist no puede estar vacío.');
     } else {
       setError('');
-      const playlistRef = firestore()
+      let playlistRef = firestore()
         .collection('playlists')
         .where('name', '==', selectedPlaylistName);
-  
+      // solo una playlist debería coincidir con el nombre
+      playlistRef = playlistRef.limit(1);
       playlistRef.get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
           doc.ref.update({ name: editPlaylistName });

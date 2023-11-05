@@ -126,10 +126,10 @@ const SongSuggestion = ({songData, screenSelected}) => {
             });
           navigation.navigate('Playlist', {currentSong: songData});
         } else {
-          console.error('El campo songs no es un arreglo o no existe');
+          console.error('El campo songs no es un arreglo o no existe.');
         }
       } else {
-        console.error('No se encontró el documento');
+        console.error('No se encontró el documento.');
       }
     });
   };
@@ -198,7 +198,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
                 </TouchableOpacity>
               </View>
               {artwork ? (
-                typeof artwork === 'number' ? (
+                typeof artwork === 'number' ? ( 
                   <Image source={artwork} style={styles.imageSelected} />
                 ) : (
                   <Image source={{uri: artwork}} style={styles.imageSelected} />

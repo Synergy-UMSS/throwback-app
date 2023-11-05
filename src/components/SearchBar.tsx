@@ -8,7 +8,7 @@ import {useSearchStore} from '../store/searchStore';
 const SearchBar = () => {
   const [busqueda, setBusqueda] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [isSearchBoxFocused, setIsSearchBoxFocused] = useState(false);
+  const [setIsSearchBoxFocused] = useState(false);
   const {
     addRecentSearch,
     showHistory,
@@ -78,7 +78,7 @@ const SearchBar = () => {
             alignItems: 'center',
             borderWidth: 1,
             borderColor: 'gray',
-            borderRadius: 10, // Ajusta este valor para redondear las esquinas
+            borderRadius: 10, 
             height: 40,
             paddingHorizontal: 10,
           }}>

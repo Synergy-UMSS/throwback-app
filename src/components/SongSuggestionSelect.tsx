@@ -8,16 +8,13 @@ import firestore from '@react-native-firebase/firestore';
 import FastImage from 'react-native-fast-image';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 
-const SongSuggestionSelect = ({ songData, screenSelected }) => {
+const SongSuggestionSelect = ({ navigation, songData }) => {
   const { title, artist, artwork } = songData;
   const [showOptions, setShowOptions] = useState(false);
-  const navigation = useNavigation();
-  const { setCurrentSong, currentSong } = usePlayerStore();
-  const {currentPlaylist} = usePlaylistStore();
-  const {setIsAdded} = useSuccesfulMessage();
+  const { currentPlaylist } = usePlaylistStore();
+  const { setIsAdded } = useSuccesfulMessage();
 
   const handleOptionPress = () => {
-		console.log('en interno', songData);
     setShowOptions(!showOptions);
   };
 
@@ -28,17 +25,17 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
           data.songs.push(song);
-    docRef.update({
+          docRef.update({
             songs: data.songs
-    })
-      .then(() => {
-        console.log('Dato agregado con éxito');
-      })
-      .catch((error) => {
-        console.error('Error al actualizar el documento:', error);
-      });
-            setIsAdded(true);
-            navigation.navigate('Playlist', {currentSong});
+          })
+            .then(() => {
+              console.log('Dato agregado con éxito');
+            })
+            .catch((error) => {
+              console.error('Error al actualizar el documento:', error);
+            });
+          setIsAdded(true);
+          navigation.navigate('Playlist', { playlistName: currentPlaylist.name, playlistId: currentPlaylist.id });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -49,8 +46,8 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
   }
 
   const backToPlaylist = () => {
-    console.log('en externo', songData);
     addSongPlaylist(songData);
+    navigation.navigate('Playlist', { playlistId: currentPlaylist.id });
   }
 
   return (
@@ -75,33 +72,33 @@ const SongSuggestionSelect = ({ songData, screenSelected }) => {
           <MaterialCommunityIcons name="dots-vertical" size={30} color="gray" />
         </TouchableOpacity>
       </View>
-        <Modal visible={showOptions} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={styles.closeButtonContainer}>
-                <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
-                  <MaterialCommunityIcons name="close" size={30} color="gray" />
-                </TouchableOpacity>
-              </View>
-              {artwork ? (
-                typeof artwork === 'number' ? (
-                  <FastImage source={artwork} style={styles.imageSelected} />
-                ) : (
-                  <FastImage source={{ uri: artwork }} style={styles.imageSelected} />
-                )
+      <Modal visible={showOptions} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.closeButtonContainer}>
+              <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                <MaterialCommunityIcons name="close" size={30} color="gray" />
+              </TouchableOpacity>
+            </View>
+            {artwork ? (
+              typeof artwork === 'number' ? (
+                <FastImage source={artwork} style={styles.imageSelected} />
               ) : (
-                <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
-              )}
-              <Text style={styles.songName}>{title}</Text>
-              <Text style={styles.artistName}>{artist}</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
-                  <Text style={styles.buttonText}>Agregar canción</Text>
-                </TouchableOpacity>
-              </View>
+                <FastImage source={{ uri: artwork }} style={styles.imageSelected} />
+              )
+            ) : (
+              <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
+            )}
+            <Text style={styles.songName}>{title}</Text>
+            <Text style={styles.artistName}>{artist}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
+                <Text style={styles.buttonText}>Agregar canción</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
     </TouchableOpacity>
   );
 };

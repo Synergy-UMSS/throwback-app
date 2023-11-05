@@ -1,50 +1,50 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import MiniPlayer from '../components/MiniPlayer';
 import SearchBar from '../components/SearchBar';
 import RecentSearchItem from '../components/RecentSearch';
-import {useSearchStore} from '../store/searchStore';
+import { useSearchStore } from '../store/searchStore';
 import SongSuggestionSelect from '../components/SongSuggestionSelect';
 import { ScrollView } from 'react-native';
 import { firebase } from '@react-native-firebase/firestore';
-import {getSongsGlobal} from '../helpcomponents/songsGlobal';
+import { getSongsGlobal } from '../helpcomponents/songsGlobal';
 
 let tracks = [];
 
-const SearchSelect = ({navigation}) => {
+const SearchSelect = ({ navigation }) => {
   const db = firebase.firestore();
   const songsRef = db.collection('songs');
-  const {isLoading, setIsLoading } = getSongsGlobal();
+  const { isLoading, setIsLoading } = getSongsGlobal();
   useEffect(() => {
-		const fetchSongs = async () => {
-			try {
-				const querySnapshot = await songsRef.get();
-				const songs1 = [];
-				querySnapshot.forEach((doc) => {
-					const song = doc.data();
-					songs1.push(song);
-				});
-				songs1.forEach((song, index) => {
-					const track = {
-						id:  parseInt(song.id),
-						url: song.songURL,
-						title: song.title,
-						artist: song.artist,
-						artwork: song.coverURL,
-					};
-					tracks.push(track);
-				});
-			} catch (e) {
-				console.error('Error al obtener las canciones:', e);
-			}
-		};
-    if(!isLoading){
+    const fetchSongs = async () => {
+      try {
+        const querySnapshot = await songsRef.get();
+        const songs1 = [];
+        querySnapshot.forEach((doc) => {
+          const song = doc.data();
+          songs1.push(song);
+        });
+        songs1.forEach((song, index) => {
+          const track = {
+            id: parseInt(song.id),
+            url: song.songURL,
+            title: song.title,
+            artist: song.artist,
+            artwork: song.coverURL,
+          };
+          tracks.push(track);
+        });
+      } catch (e) {
+        console.error('Error al obtener las canciones:', e);
+      }
+    };
+    if (!isLoading) {
       fetchSongs();
       setIsLoading(true);
-    }else{}
-	}, []);
+    } else { }
+  }, []);
 
-  const {clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches,} =
+  const { clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches, showHistoryTrue, showHistoryFalse } =
     useSearchStore();
 
   const clearSearches = () => {
@@ -62,7 +62,7 @@ const SearchSelect = ({navigation}) => {
     console.log('handlePress ' + paila);
   };
   const matching = (query, song) => {
-    const {title, artist} = song;
+    const { title, artist } = song;
     const lowerCaseQuery = query ? query.toLowerCase() : '';
     const lowerCaseTitle = title ? title.toLowerCase() : '';
     const lowerCaseArtist = artist ? artist.toLowerCase() : '';
@@ -75,10 +75,10 @@ const SearchSelect = ({navigation}) => {
 
   let suggests = [];
   const displaySongSuggestionsSelect = () => {
-    if (showHistory || currentSearch.length===0) return null;
+    if (showHistory || currentSearch.length === 0) return null;
     suggests = [];
     let mimi = currentSearch;
-    for (let j = 0; j < tracks.length; j++){
+    for (let j = 0; j < tracks.length; j++) {
       if (matching(mimi, tracks[j])) {
         suggests.push(tracks[j])
       }
@@ -94,9 +94,9 @@ const SearchSelect = ({navigation}) => {
             screenSelected='search2'
           />
         ))}
-        {suggests.length === 0 && (<Text style={{textAlign: 'center',color:'#777'}}>No se ha encontrado ningún resultado</Text>)}
+        {suggests.length === 0 && (<Text style={{ textAlign: 'center', color: '#777' }}>No se ha encontrado ningún resultado</Text>)}
       </View>
-      
+
     );
   };
 
@@ -113,6 +113,8 @@ const SearchSelect = ({navigation}) => {
         position: 'relative', // Agrega esta propiedad
       }}>
       <SearchBar
+        comeNav={true}
+        navigation={navigation}
         style={{
           position: 'absolute',
           top: 0,
@@ -120,7 +122,7 @@ const SearchSelect = ({navigation}) => {
           right: 0,
         }}
       />
-      <ScrollView style={{paddingTop: 0}}>
+      <ScrollView style={{ paddingTop: 0 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -139,7 +141,7 @@ const SearchSelect = ({navigation}) => {
               clearSearches();
             }}>
             {showHistory && (
-              <Text style={{fontSize: 12, color: 'gray'}}>
+              <Text style={{ fontSize: 12, color: 'gray' }}>
                 Borrar Historial
               </Text>
             )}

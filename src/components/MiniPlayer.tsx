@@ -23,13 +23,10 @@ const MiniPlayer = ({ navigation }) => {
     const handlePressPlayer = () => {
         navigation.navigate('Player', { songData: currentSong });
     };
-
     if (!currentSong) {
         return null;
     }
-
-    console.log('artwork:', currentSong.artwork);
-
+    
     return (
         <View style={styles.miniPlayerContainer}>
             <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>

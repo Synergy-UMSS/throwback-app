@@ -29,7 +29,7 @@ const Library = () => {
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
   const [colorIndex, setColorIndex] = useState(0);
-  const modalBackgroundColor = '#ffffff'; 
+  const modalBackgroundColor = '#ffffff';
   const modalTextColor = '#000000';
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
@@ -48,11 +48,11 @@ const Library = () => {
     '#C7A9D5',
     '#FFC1D8',
   ];
-  
+
   const getColorForPlaylist = (index: number): string => {
     return colorSequence[index % colorSequence.length];
   };
-  
+
   const images = [
     require('../assets/playlist/1.png'),
     require('../assets/playlist/2.png'),
@@ -162,7 +162,7 @@ const Library = () => {
         setPlaylists(playlistsData);
         setPlaylistColors(colorsData);
       });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -178,13 +178,13 @@ const Library = () => {
       setError('El nombre de la playlist no puede estar vacío.');
       return;
     }
-  
+
     if (selectedPlaylistName === newName) {
       console.log('El nombre de la playlist no ha cambiado.');
       setShowEditModal(false);
       return;
     }
-  
+
     const firestoreRef = firestore().collection('playlists');
     firestoreRef
       .where('name', '==', selectedPlaylistName)
@@ -212,7 +212,7 @@ const Library = () => {
         console.error('Error al obtener la referencia del documento:', error);
       });
   };
-  
+
   const handleCloseModal = () => {
     setShowModal(false);
     setError('');
@@ -240,11 +240,11 @@ const Library = () => {
                 .collection('playlists')
                 .where('name', '==', playlistName)
                 .get();
-  
+
               if (!playlistRef.empty) {
                 const playlistDoc = playlistRef.docs[0];
                 await firestore().collection('playlists').doc(playlistDoc.id).delete();
-  
+
                 // Actualiza la lista de playlists después de eliminar
                 const updatedPlaylists = playlists.filter((name) => name !== playlistName);
                 setPlaylists(updatedPlaylists);
@@ -261,7 +261,64 @@ const Library = () => {
       ]
     );
   };
-  
+
+  const MAX_NAME_LENGTH = 50;
+  const handleCreatePlaylist = (name: string) => {
+    if (name.trim() === '') {
+      setError('El nombre de la playlist no puede estar vacío.');
+    } else {
+      setError('');
+      const colorIndex = playlists.length % colorSequence.length;
+      const color = colorSequence[colorIndex];
+      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+      const playlistData = {
+        name: name,
+        createDate: timestamp,
+        songs: [],
+        color: color,
+      };
+
+      firestore()
+        .collection('playlists')
+        .add(playlistData)
+        .then(docRef => {
+          console.log('Se ha creado la playlist:', name);
+          const updatedPlaylists = [name, ...playlists];
+          setPlaylists(updatedPlaylists);
+          setPlaylistColors({ ...playlistColors, [name]: color });
+          setPlaylistName('');
+          setShowModal(false);
+        })
+        .catch(error => {
+          console.error('Error al crear la playlist:', error);
+        });
+    }
+  };
+
+  const handleSearch = () => {
+    // Posible lógica para el Search
+  };
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('playlists')
+      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+      .onSnapshot(querySnapshot => {
+        const playlistsData: string[] = [];
+        const colorsData: { [key: string]: string } = {};
+        let colorIndex = 0;
+        querySnapshot.forEach(doc => {
+          const { name, createDate, color } = doc.data();
+          playlistsData.push(name);
+          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
+          colorIndex++;
+        });
+        setPlaylists(playlistsData);
+        setPlaylistColors(colorsData);
+      });
+
+    return () => unsubscribe();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -279,21 +336,21 @@ const Library = () => {
           </Text>
         </View>
       ) : (
-      
-<ScrollView contentContainerStyle={styles.scrollContent}>
-{playlists.map((playlist, index) => {
-  const color = playlistColors[playlist] || getColorForPlaylist(index);
-  const imageIndex = index % images.length;
-  return (
-      <TouchableOpacity
-        key={index}
-        onPress={() => handlePlayListView(playlist)}
-        style={[styles.playlistContainer]}
-      >
-        <View
-          style={[
-            styles.playlistBackground,
-            { backgroundColor: `${color}B3` },
+
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {playlists.map((playlist, index) => {
+            const color = playlistColors[playlist] || getColorForPlaylist(index);
+            const imageIndex = index % images.length;
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handlePlayListView(playlist)}
+                style={[styles.playlistContainer]}
+              >
+                <View
+                  style={[
+                    styles.playlistBackground,
+                    { backgroundColor: `${color}B3` },
                   ]}
                 />
                 <View style={styles.playlistBox}>
@@ -341,10 +398,10 @@ const Library = () => {
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
           <View style={styles.customModalContent}>
-          <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
+            <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Dale un nombre a tu playlist
             </Text>
-            <View style={[styles.inputContainer, {marginBottom: 20}]}>
+            <View style={[styles.inputContainer, { marginBottom: 20 }]}>
               <TextInput
                 style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
                 value={playlistName}
@@ -371,43 +428,43 @@ const Library = () => {
           </View>
         </View>
       </Modal>
-      
+
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
-      <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
-        <View style={styles.customModalContent}>
-          <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-            Edita el nombre de tu playlist
-          </Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-              value={selectedPlaylistName}
-              onChangeText={text => {
-                setSelectedPlaylistName(text.slice(0, MAX_NAME_LENGTH));
-                setError('');
-              }}
-              placeholderTextColor={modalTextColor}
-            />
-          </View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity
-              style={styles.createButton}
-              onPress={() => handleUpdatePlaylist(selectedPlaylistName)}>
-              <Text style={styles.buttonText}>Actualizar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                setShowEditModal(false);
-                setError('');
-              }}>
-              <Text style={styles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
+        <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
+          <View style={styles.customModalContent}>
+            <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
+              Edita el nombre de tu playlist
+            </Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+                value={selectedPlaylistName}
+                onChangeText={text => {
+                  setSelectedPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                  setError('');
+                }}
+                placeholderTextColor={modalTextColor}
+              />
+            </View>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.createButton}
+                onPress={() => handleUpdatePlaylist(selectedPlaylistName)}>
+                <Text style={styles.buttonText}>Actualizar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => {
+                  setShowEditModal(false);
+                  setError('');
+                }}>
+                <Text style={styles.buttonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
       <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
     </View>
   );
@@ -418,6 +475,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E4E6DC',
+    paddingBottom: 60, /*para que se pueda eliminar el del final*/
   },
   header: {
     flexDirection: 'row',
@@ -561,7 +619,7 @@ const styles = StyleSheet.create({
   },
   playlistText: {
     marginLeft: 10,
-    width: 200, 
+    width: 200,
   },
   playlistImage: {
     width: 50,
@@ -574,7 +632,7 @@ const styles = StyleSheet.create({
     right: -30,
   },
   optionText: {
-    color: '#000000', 
+    color: '#000000',
     fontSize: 16,
   },
 });

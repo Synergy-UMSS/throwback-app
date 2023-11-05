@@ -10,13 +10,10 @@ import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
   const { title, artist, artwork } = songData;
   const [showOptions, setShowOptions] = useState(false);
-  const { setCurrentSong, currentSong } = usePlayerStore();
   const {currentPlaylist} = usePlaylistStore();
   const {setIsAdded} = useSuccesfulMessage();
 
   const handleOptionPress = () => {
-    setCurrentSong(songData);
-		console.log('en interno', songData);
     setShowOptions(!showOptions);
   };
 
@@ -48,8 +45,6 @@ const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
   }
 
   const backToPlaylist = () => {
-		setCurrentSong(songData);
-    console.log('en externo', songData);
     addSongPlaylist(songData);
     navigation.navigate('Playlist', { playlistId: currentPlaylist.id });
   }

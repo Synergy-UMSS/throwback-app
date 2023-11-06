@@ -166,6 +166,7 @@ const CrearMemoria = ({ navigation }) => {
           name="descripcionMemoria"
           defaultValue=""
         />
+
             <Text style={styles.label}>Fecha:</Text>
             <TextInput
               style={styles.input}
@@ -188,8 +189,10 @@ const CrearMemoria = ({ navigation }) => {
             maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
           />
         )}
+
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected}/>
+        
         <Text style={styles.label}>Canción vinculada:</Text>
         <View style={styles.marginBottom}>
           <ItemSong
@@ -206,7 +209,7 @@ const CrearMemoria = ({ navigation }) => {
             </Text>
         </Pressable>
 
-        </ScrollView>
+      </ScrollView>
 
     </View>
   );

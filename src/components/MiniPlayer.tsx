@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextTicker from 'react-native-text-ticker';
@@ -8,15 +8,19 @@ import { MusicPlayerContext } from './MusicPlayerContext';
 const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
-    const isPlaying = musicPlayer.isPlaying;
-    const playPause = musicPlayer.playPause;
+    const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
 
-    const isValidURL = (url) => {
-        try {
-            new URL(url);
-            return true;
-        } catch (e) {
-            return false;
+    // para que se actualice cuando se reproduce una cancion 
+    useEffect(() => {
+        if (currentSong && musicPlayer.isPlaying) {
+            setHasStartedPlaying(true);
+        }
+    }, [currentSong, musicPlayer.isPlaying]);
+
+    const playPause = () => {
+        if (currentSong) {
+            musicPlayer.playPause();
+            setHasStartedPlaying(true); 
         }
     };
 
@@ -24,15 +28,15 @@ const MiniPlayer = ({ navigation }) => {
         navigation.navigate('Player', { songData: currentSong });
     };
 
-    // Si no hay canción actual o la música no está en reproducción, no renderizar el MiniPlayer.
-    if (!currentSong || !isPlaying) {
+    // bug solucionado, ya no se muestra el miniplayer cuando no se esta reproduciendo una cancion xd
+    if (!currentSong || !hasStartedPlaying) {
         return null;
     }
 
     return (
         <View style={styles.miniPlayerContainer}>
             <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>
-                {isValidURL(currentSong.artwork) ? (
+                {currentSong.artwork && isValidURL(currentSong.artwork) ? (
                     <Image source={{ uri: currentSong.artwork }} style={styles.coverImage} />
                 ) : (
                     <Image source={require('../assets/logo.png')} style={styles.coverImage} />
@@ -61,10 +65,20 @@ const MiniPlayer = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
-                <Ionicons name={isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
+                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
             </TouchableOpacity>
         </View>
     );
+};
+
+
+const isValidURL = (url) => {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 
 const styles = StyleSheet.create({

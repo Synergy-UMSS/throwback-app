@@ -1,51 +1,84 @@
-import React, { useContext } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import TextTicker from 'react-native-text-ticker';
 import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
 const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
-    const isPlaying = musicPlayer.isPlaying;
-    const playPause = musicPlayer.playPause;
+    const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
 
-    const isValidURL = (url) => {
-        try {
-            new URL(url);
-            return true;
-        } catch (e) {
-            return false;
+    // para que se actualice cuando se reproduce una cancion 
+    useEffect(() => {
+        if (currentSong && musicPlayer.isPlaying) {
+            setHasStartedPlaying(true);
         }
-    }
+    }, [currentSong, musicPlayer.isPlaying]);
+
+    const playPause = () => {
+        if (currentSong) {
+            musicPlayer.playPause();
+            setHasStartedPlaying(true); 
+        }
+    };
 
     const handlePressPlayer = () => {
         navigation.navigate('Player', { songData: currentSong });
     };
 
-    if (!currentSong) {
+    // bug solucionado, ya no se muestra el miniplayer cuando no se esta reproduciendo una cancion xd
+    if (!currentSong || !hasStartedPlaying) {
         return null;
     }
 
     return (
         <View style={styles.miniPlayerContainer}>
             <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>
-                {isValidURL(currentSong.artwork) ? (
+                {currentSong.artwork && isValidURL(currentSong.artwork) ? (
                     <Image source={{ uri: currentSong.artwork }} style={styles.coverImage} />
                 ) : (
                     <Image source={require('../assets/logo.png')} style={styles.coverImage} />
                 )}
                 <View style={styles.textContainer}>
-                    <Text style={styles.songTitle} numberOfLines={1} ellipsizeMode="tail">{currentSong.title}</Text>
-                    <Text style={styles.songArtist} numberOfLines={1} ellipsizeMode="tail">{currentSong.artist}</Text>
+                    <TextTicker
+                        style={styles.songTitle}
+                        duration={15000}
+                        loop
+                        bounce
+                        repeatSpacer={50}
+                        marqueeDelay={1000}
+                    >
+                        {currentSong.title}
+                    </TextTicker>
+                    <TextTicker
+                        style={styles.songArtist}
+                        duration={15000}
+                        loop
+                        bounce
+                        repeatSpacer={50}
+                        marqueeDelay={3000}
+                    >
+                        {currentSong.artist}
+                    </TextTicker>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
-                <Ionicons name={isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
+                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
             </TouchableOpacity>
         </View>
     );
+};
+
+
+const isValidURL = (url) => {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 
 const styles = StyleSheet.create({
@@ -88,7 +121,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     playPauseButton: {
-        width: 40, 
+        width: 40,
         alignItems: 'center',
     },
 });

@@ -136,9 +136,9 @@ const CrearMemoria = ({ navigation }) => {
         rules={{
           required: 'Este campo es obligatorio',
           validate: {
-            noSpecialChars: (value) => !/[^a-zA-Z0-9ñ]+/.test(value) || 'No se permiten caracteres especiales',
+            noSpecialChars: (value) => !/[^a-zA-Z0-9ñ\s]+/.test(value) || 'No se permiten caracteres especiales',
             noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
-            
+            noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
           },
         }}
       />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, Pressable } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
@@ -50,6 +50,9 @@ const CrearMemoria = ({ navigation }) => {
   const [selectedEmotionName, setSelectedEmotionName] = useState("emo1");
   const [showName, setShowName] = useState(true);
 
+  const [isCreatingMemory, setIsCreatingMemory] = useState(false);
+  const cooldownTime = 5000;
+
 
   const handleEmotionSelected = (emotion) => {
     setSelectedEmotion(emotion);
@@ -58,6 +61,12 @@ const CrearMemoria = ({ navigation }) => {
   };
 
   const onSubmit = async (data) => {
+    if (isCreatingMemory) {
+      return;
+    }
+
+    setIsCreatingMemory(true);
+
     const memoria = {
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
@@ -73,6 +82,10 @@ const CrearMemoria = ({ navigation }) => {
       showSuccessAlert();
     } catch (error) {
       console.error('Error al guardar la memoria: ', error);
+    } finally {
+      setTimeout(() => {
+        setIsCreatingMemory(false); // Habilita la creación de memoria después del tiempo de cooldown
+      }, cooldownTime);
     }
   };
 
@@ -120,6 +133,7 @@ const CrearMemoria = ({ navigation }) => {
           validate: {
             noSpecialChars: (value) => !/[^a-zA-Z0-9ñ]+/.test(value) || 'No se permiten caracteres especiales',
             noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+            
           },
         }}
       />
@@ -178,7 +192,9 @@ const CrearMemoria = ({ navigation }) => {
       </View>
 
       <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
-        <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>Crear Memoria</Text>
+        <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>
+          {isCreatingMemory ? 'Creando Memoria...' : 'Crear Memoria'}
+          </Text>
       </Pressable>
     </View>
   );

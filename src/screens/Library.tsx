@@ -34,6 +34,7 @@ const Library = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedPlaylistName, setSelectedPlaylistName] = useState('');
+  const [editPlaylistName, setEditPlaylistName] = useState('');
   const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
     {},
   );
@@ -65,6 +66,73 @@ const Library = () => {
   const handlePressMore = () => {
     setShowModal(true);
   };
+
+  
+  const MAX_NAME_LENGTH = 50;
+
+  //CREATE
+  const handleCreatePlaylist = (name: string) => {
+    if (name.trim() === '') {
+      setError('El nombre de la playlist no puede estar vacío.');
+    } else {
+      setError('');
+      const colorIndex = playlists.length % colorSequence.length;
+      const color = colorSequence[colorIndex]; 
+      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
+      const playlistData = {
+        id: '', 
+        name: name,
+        createDate: timestamp,
+        songs: [],
+        color: color, 
+      };
+  
+      firestore()
+        .collection('playlists')
+        .add(playlistData)
+        .then(docRef => {
+          const playlistId = docRef.id; 
+          docRef.update({ id: playlistId }).then(() => {
+            console.log('Se ha creado la playlist:', name, 'con ID:', playlistId);
+            const updatedPlaylists = [name, ...playlists];
+            setPlaylists(updatedPlaylists);
+            setPlaylistColors({ ...playlistColors, [name]: color }); 
+            setPlaylistName('');
+            setShowModal(false);
+          });
+        })
+        .catch(error => {
+          console.error('Error al crear la playlist:', error);
+        });
+    }
+  };
+  
+  
+
+  const handleSearch = () => {
+    // Posible lógica para el Search
+  };
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('playlists')
+      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+      .onSnapshot(querySnapshot => {
+        const playlistsData: string[] = [];
+        const colorsData: { [key: string]: string } = {};
+        let colorIndex = 0;
+        querySnapshot.forEach(doc => {
+          const { name, createDate, color } = doc.data();
+          playlistsData.push(name);
+          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
+          colorIndex++;
+        });
+        setPlaylists(playlistsData);
+        setPlaylistColors(colorsData);
+      });
+  
+    return () => unsubscribe();
+  }, []);
 
   const handlePlayListView = async playlistName => {
     try {
@@ -111,53 +179,45 @@ const Library = () => {
   //EDIT 
   const handleEditPlaylist = (playlistName, color) => {
     setSelectedPlaylistName(playlistName);
+    setEditPlaylistName(playlistName); 
     setShowEditModal(true);
   };
 
-  const handleUpdatePlaylist = (newName) => {
-    if (!newName.trim()) {
+  const handleUpdatePlaylist = () => {
+    if (editPlaylistName.trim() === '') {
       setError('El nombre de la playlist no puede estar vacío.');
-      return;
-    }
-  
-    if (selectedPlaylistName === newName) {
-      console.log('El nombre de la playlist no ha cambiado.');
-      setShowEditModal(false);
-      return;
-    }
-  
-    const firestoreRef = firestore().collection('playlists');
-    firestoreRef
-      .where('name', '==', selectedPlaylistName)
-      .get()
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          const playlistDoc = querySnapshot.docs[0];
-          const playlistRef = firestoreRef.doc(playlistDoc.id);
-          playlistRef
-            .update({
-              name: newName,
-            })
-            .then(() => {
-              console.log('Nombre de la playlist actualizado exitosamente.');
-              setShowEditModal(false);
-            })
-            .catch((error) => {
-              console.error('Error al actualizar el nombre de la playlist:', error);
-            });
-        } else {
-          console.error(`No se encontró ninguna playlist con el nombre ${selectedPlaylistName}`);
-        }
-      })
-      .catch((error) => {
-        console.error('Error al obtener la referencia del documento:', error);
+    } else {
+      setError('');
+      let playlistRef = firestore()
+        .collection('playlists')
+        .where('name', '==', selectedPlaylistName);
+      // solo una playlist debería coincidir con el nombre
+      playlistRef = playlistRef.limit(1);
+      playlistRef.get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          doc.ref.update({ name: editPlaylistName });
+        });
       });
+  
+      const updatedPlaylists = playlists.map(playlist => {
+        if (playlist === selectedPlaylistName) {
+          return editPlaylistName;
+        }
+        return playlist;
+      });
+  
+      setPlaylists(updatedPlaylists);
+      setSelectedPlaylistName(editPlaylistName);
+      setShowEditModal(false);
+    }
   };
   
   const handleCloseModal = () => {
     setShowModal(false);
     setError('');
   };
+
+  //DELETE
   const handleDeletePlaylist = async (playlistName) => {
     // Muestra un cuadro de diálogo de confirmación
     Alert.alert(
@@ -167,6 +227,9 @@ const Library = () => {
         {
           text: "Cancelar",
           style: "cancel",
+          onPress: () => {
+            console.log(`No se eliminó la playlist "${playlistName}"`);
+          },
         },
         {
           text: "Aceptar",
@@ -198,63 +261,6 @@ const Library = () => {
     );
   };
   
-  const MAX_NAME_LENGTH = 50;
-  const handleCreatePlaylist = (name: string) => {
-    if (name.trim() === '') {
-      setError('El nombre de la playlist no puede estar vacío.');
-    } else {
-      setError('');
-      const colorIndex = playlists.length % colorSequence.length;
-      const color = colorSequence[colorIndex]; 
-      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
-      const playlistData = {
-        name: name,
-        createDate: timestamp,
-        songs: [],
-        color: color, 
-      };
-  
-      firestore()
-        .collection('playlists')
-        .add(playlistData)
-        .then(docRef => {
-          console.log('Se ha creado la playlist:', name);
-          const updatedPlaylists = [name, ...playlists];
-          setPlaylists(updatedPlaylists);
-          setPlaylistColors({ ...playlistColors, [name]: color }); 
-          setPlaylistName('');
-          setShowModal(false);
-        })
-        .catch(error => {
-          console.error('Error al crear la playlist:', error);
-        });
-    }
-  };
-
-  const handleSearch = () => {
-    // Posible lógica para el Search
-  };
-
-  useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('playlists')
-      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
-      .onSnapshot(querySnapshot => {
-        const playlistsData: string[] = [];
-        const colorsData: { [key: string]: string } = {};
-        let colorIndex = 0;
-        querySnapshot.forEach(doc => {
-          const { name, createDate, color } = doc.data();
-          playlistsData.push(name);
-          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
-          colorIndex++;
-        });
-        setPlaylists(playlistsData);
-        setPlaylistColors(colorsData);
-      });
-  
-    return () => unsubscribe();
-  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -342,7 +348,7 @@ const Library = () => {
                 style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
                 value={playlistName}
                 onChangeText={text => {
-                  setPlaylistName(text.slice(0, MAX_NAME_LENGTH));
+                  setPlaylistName(text);
                   setError('');
                 }}
                 placeholderTextColor={modalTextColor}
@@ -367,22 +373,22 @@ const Library = () => {
       
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
       <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
-        <View style={styles.customModalContent}>
-          <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-            Edita el nombre de tu playlist
-          </Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-              value={selectedPlaylistName}
-              onChangeText={text => {
-                setSelectedPlaylistName(text.slice(0, MAX_NAME_LENGTH));
-                setError('');
-              }}
-              placeholderTextColor={modalTextColor}
-            />
-          </View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <View style={styles.customModalContent}>
+        <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
+          Edita el nombre de tu playlist
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+            value={editPlaylistName}
+            onChangeText={text => {
+              setEditPlaylistName(text);
+              setError('');
+            }}
+            placeholderTextColor={modalTextColor}
+          />
+        </View>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
           <View style={styles.buttonGroup}>
             <TouchableOpacity
               style={styles.createButton}
@@ -411,6 +417,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E4E6DC',
+    paddingBottom: 60,
   },
   header: {
     flexDirection: 'row',

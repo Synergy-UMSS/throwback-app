@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
@@ -120,89 +120,94 @@ const CrearMemoria = ({ navigation }) => {
     
       <Text style={styles.pageTitle}>Crear memoria musical</Text>
 
-      <RequiredField style={styles.label}>Título:</RequiredField>
-      <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            value={value}
-            onChangeText={onChange}
-            maxLength={50}
-          />
-        )}
-        name="tituloMemoria"
-        defaultValue=""
-        rules={{
-          required: 'Este campo es obligatorio',
-          validate: {
-            noSpecialChars: (value) => !/[^a-zA-Z0-9ñ\s]+/.test(value) || 'No se permiten caracteres especiales',
-            noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
-            noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
-          },
-        }}
-      />
-      {errors.tituloMemoria && <Text style={styles.error}>{errors.tituloMemoria.message}</Text>}
+      <ScrollView>
 
-
-      <Text style={styles.label}>Descripción:</Text>
-      <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.inputDesc}
-            value={value}
-            onChangeText={(text) => {
-              const sanitizedText = text.replace(/(\r\n|\n|\r)/g, '');
-              onChange(sanitizedText);
-            }}
-            maxLength={500}
-            multiline
-            rows={5}
-          />
-        )}
-        name="descripcionMemoria"
-        defaultValue=""
-      />
-          <Text style={styles.label}>Fecha:</Text>
-          <TextInput
-            style={styles.input}
-            value={format(selectedDate, 'dd/MM/yyyy')}
-            onFocus={() => setShowDatePicker(true)}
-            placeholder="dd/mm/aaaa"
-            editable={true} //recordatorio cambiar a falso y usar un boton para cambiar el contenido
-          />
-          {showDatePicker && (
-        <DateTimePicker
-          value={selectedDate}
-          mode="date"
-          display="default"
-          onChange={(event, date) => {
-            if (date) {
-              setSelectedDate(date);
-              setShowDatePicker(false);
-            }
+        <RequiredField style={styles.label}>Título:</RequiredField>
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              value={value}
+              onChangeText={onChange}
+              maxLength={50}
+            />
+          )}
+          name="tituloMemoria"
+          defaultValue=""
+          rules={{
+            required: 'Este campo es obligatorio',
+            validate: {
+              noSpecialChars: (value) => !/[^a-zA-Z0-9ñ\s]+/.test(value) || 'No se permiten caracteres especiales',
+              noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+              noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
+            },
           }}
-          maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
         />
-      )}
-      <RequiredField style={styles.label}>Emoción:</RequiredField>
-      <EmotionPicker onEmotionChange={handleEmotionSelected}/>
-      <Text style={styles.label}>Canción vinculada:</Text>
-      <View style={styles.marginBottom}>
-        <ItemSong
-          song={currentSong.title}
-          artist={currentSong.artist}
-          imageUri={currentSong.artwork || placeholderImage}
-          onPlay={playSong}
-        />
-      </View>
+        {errors.tituloMemoria && <Text style={styles.error}>{errors.tituloMemoria.message}</Text>}
 
-      <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
-        <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>
-          {isCreatingMemory ? 'Creando Memoria...' : 'Crear Memoria'}
-          </Text>
-      </Pressable>
+
+        <Text style={styles.label}>Descripción:</Text>
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.inputDesc}
+              value={value}
+              onChangeText={(text) => {
+                const sanitizedText = text.replace(/(\r\n|\n|\r)/g, '');
+                onChange(sanitizedText);
+              }}
+              multiline
+              maxLength={500}
+              numberOfLines={5}
+            />
+          )}
+          name="descripcionMemoria"
+          defaultValue=""
+        />
+            <Text style={styles.label}>Fecha:</Text>
+            <TextInput
+              style={styles.input}
+              value={format(selectedDate, 'dd/MM/yyyy')}
+              onFocus={() => setShowDatePicker(true)}
+              placeholder="dd/mm/aaaa"
+              editable={true} //recordatorio cambiar a falso y usar un boton para cambiar el contenido
+            />
+            {showDatePicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="default"
+            onChange={(event, date) => {
+              if (date) {
+                setSelectedDate(date);
+                setShowDatePicker(false);
+              }
+            }}
+            maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
+          />
+        )}
+        <RequiredField style={styles.label}>Emoción:</RequiredField>
+        <EmotionPicker onEmotionChange={handleEmotionSelected}/>
+        <Text style={styles.label}>Canción vinculada:</Text>
+        <View style={styles.marginBottom}>
+          <ItemSong
+            song={currentSong.title}
+            artist={currentSong.artist}
+            imageUri={currentSong.artwork || placeholderImage}
+            onPlay={playSong}
+          />
+        </View>
+
+        <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
+          <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>
+            {isCreatingMemory ? 'Creando Memoria...' : 'Crear Memoria'}
+            </Text>
+        </Pressable>
+
+        </ScrollView>
+
     </View>
   );
 };

@@ -24,7 +24,8 @@ const MiniPlayer = ({ navigation }) => {
         navigation.navigate('Player', { songData: currentSong });
     };
 
-    if (!currentSong) {
+    // Si no hay canción actual o la música no está en reproducción, no renderizar el MiniPlayer.
+    if (!currentSong || !isPlaying) {
         return null;
     }
 
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     playPauseButton: {
-        width: 40, 
+        width: 40,
         alignItems: 'center',
     },
 });

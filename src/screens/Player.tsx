@@ -122,13 +122,18 @@
     }, []);
   
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-      if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-        const track = await TrackPlayer.getTrack(event.nextTrack);
-        const { title, artwork, artist } = track || {};
-        setTrackTitle(title);
-        setTrackArtist(artist);
-        setTrackArtwork(artwork);
-        await setCurrentSong(track);
+      if (event.type === Event.PlaybackTrackChanged) {
+        //solucion a bug del bug Dx para que no se guarde la anterior duracion de la cancion
+        sliderWork.position = 0;
+        
+        if (event.nextTrack !== null) {
+          const track = await TrackPlayer.getTrack(event.nextTrack);
+          const { title, artwork, artist } = track || {};
+          setTrackTitle(title);
+          setTrackArtist(artist);
+          setTrackArtwork(artwork);
+          await setCurrentSong(track);
+        }
       }
     });
 
@@ -170,7 +175,7 @@
         await changeValuesTrack();
         if (isConnected) {
           setIsPlaying(true);
-          await TrackPlayer.play(); // Reproducir la nueva canción directamente.
+          await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
         }
       };
   

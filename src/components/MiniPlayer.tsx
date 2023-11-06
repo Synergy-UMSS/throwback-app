@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import TextTicker from 'react-native-text-ticker';
 import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
@@ -18,7 +18,7 @@ const MiniPlayer = ({ navigation }) => {
         } catch (e) {
             return false;
         }
-    }
+    };
 
     const handlePressPlayer = () => {
         navigation.navigate('Player', { songData: currentSong });
@@ -37,8 +37,26 @@ const MiniPlayer = ({ navigation }) => {
                     <Image source={require('../assets/logo.png')} style={styles.coverImage} />
                 )}
                 <View style={styles.textContainer}>
-                    <Text style={styles.songTitle} numberOfLines={1} ellipsizeMode="tail">{currentSong.title}</Text>
-                    <Text style={styles.songArtist} numberOfLines={1} ellipsizeMode="tail">{currentSong.artist}</Text>
+                    <TextTicker
+                        style={styles.songTitle}
+                        duration={15000}
+                        loop
+                        bounce
+                        repeatSpacer={50}
+                        marqueeDelay={1000}
+                    >
+                        {currentSong.title}
+                    </TextTicker>
+                    <TextTicker
+                        style={styles.songArtist}
+                        duration={15000}
+                        loop
+                        bounce
+                        repeatSpacer={50}
+                        marqueeDelay={3000}
+                    >
+                        {currentSong.artist}
+                    </TextTicker>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>

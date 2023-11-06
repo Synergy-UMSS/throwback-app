@@ -60,6 +60,11 @@ const CrearMemoria = ({ navigation }) => {
     setShowName(true);
   };
 
+  const handleDescriptionChange = (newText) => {
+    const sanitizedText = newText.replace(/(\r\n|\n|\r)/g, '');
+    setDescription(sanitizedText);
+  };
+
   const onSubmit = async (data) => {
     if (isCreatingMemory) {
       return;
@@ -147,11 +152,13 @@ const CrearMemoria = ({ navigation }) => {
           <TextInput
             style={styles.inputDesc}
             value={value}
-            onChangeText={onChange}
-            maxLength={200}
+            onChangeText={(text) => {
+              const sanitizedText = text.replace(/(\r\n|\n|\r)/g, '');
+              onChange(sanitizedText);
+            }}
+            maxLength={500}
             multiline
-            numberOfLines={5}
-            scrollEnabled
+            rows={5}
           />
         )}
         name="descripcionMemoria"

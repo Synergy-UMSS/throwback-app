@@ -7,6 +7,7 @@ import EmotionWithMemory from '../components/EmotionWithMemory';
 
 
 import { TouchableOpacity, Keyboard } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 // import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -114,6 +115,14 @@ const MemoryList = ({ navigation }) => {
   ];
 
   const filterMemories = (term) => {
+    return memories.filter(memory =>
+      memory.title.toLowerCase().includes(term.toLowerCase()) ||
+      memory.description.toLowerCase().includes(term.toLowerCase())
+    );
+  };
+
+
+  const filterMemories = (term) => {
     const lowerCaseTerm = term.toLowerCase();
 
     const memoriesWithIndexAndSpace = memories.map(memory => {
@@ -121,7 +130,38 @@ const MemoryList = ({ navigation }) => {
       const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
       const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm; // Verifica si es una coincidencia exacta
       const followsSpaceInTitle = memory.title.toLowerCase().startsWith(`${lowerCaseTerm} `, titleIndex); // Verifica si un espacio sigue al término de búsqueda en el título
+
+      return {
+        ...memory,
+        titleIndex,
+        descriptionIndex,
+        isExactMatch, // Agrega esta propiedad para cada memoria
+        followsSpaceInTitle // Agrega esta propiedad para verificar el espacio después del término
+      };
     });
+
+    return memoriesWithIndexAndSpace
+      .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
+      .sort((a, b) => {
+          // Primero verificar coincidencias exactas
+          if (a.isExactMatch && !b.isExactMatch) return -1;
+          if (!a.isExactMatch && b.isExactMatch) return 1;
+
+          // Si ambos siguen un espacio, ordenar alfabéticamente
+          if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
+            return a.title.localeCompare(b.title);
+          }
+        }
+
+        // Continuar ordenando por la posición del término
+        if (a.titleIndex !== b.titleIndex) {
+          return a.titleIndex - b.titleIndex;
+        }
+
+        // Por último, ordenar alfabéticamente si todas las otras condiciones son iguales
+        return a.title.localeCompare(b.title);
+      });
+  };
 
   const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
 
@@ -221,6 +261,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     // flex: 1,
     // width: 900,
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 10,    
   },
 
 });

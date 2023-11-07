@@ -222,7 +222,6 @@ const style = StyleSheet.create({
 		color: 'black',
 		fontSize: 20,
 		fontWeight: '400',
-		textTransform: 'uppercase',
 	},
 	mainContainer: {
 		backgroundColor: 'pink',

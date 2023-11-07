@@ -1,10 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import {View, FlatList, Text, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, Text, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import MiniPlayer from '../components/MiniPlayer';
 import EmotionWithMemory from '../components/EmotionWithMemory';
 
-const MemoryList = ({navigation}) => {
+import Feather from 'react-native-vector-icons/Feather';
+import * as Animatable from 'react-native-animatable';
+// import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+
+
+// NEW 
+import { TextInput } from 'react-native';
+
+const MemoryList = ({ navigation }) => {
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
   // navegacion
   const abrirDetalles = (id, item, songForMemory, index) => {
     emotionWrapp = listaEmociones[index % listaEmociones.length];
@@ -66,16 +78,17 @@ const MemoryList = ({navigation}) => {
   };
   // control de lista vacia
   // if (true) {
-  if (memories.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.messageText}>
-          No tiene memorias musicales creadas.
-        </Text>
-        <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
-      </View>
-    );
-  }
+
+  // if (memories.length === 0) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Text style={styles.messageText}>
+  //         No tiene memorias musicales creadas.
+  //       </Text>
+  //       <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
+  //     </View>
+  //   );
+  // }
 
   // const listaEmociones = ['worried', 'genial', 'tired',  'leisurely', 'no_trouble', 'sad','happy','confused', 'speechless', 'angry',  'pluff'];
   const listaEmociones = [
@@ -94,14 +107,30 @@ const MemoryList = ({navigation}) => {
     'emo13',
     'emo14',
   ];
+
   return (
     <View style={styles.container}>
+      <View style={styles.searchContainer}>
+  {(isKeyboardOpen || searchTerm !== '') && (
+    <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
+      <Animatable.View
+        animation="slideInLeft"
+        duration={700}
+        style={styles.iconAnimationContainer}
+      >
+        <MaterialIcons name="arrow-back" size={30} color="gray" />
+      </Animatable.View>
+    </TouchableOpacity>
+  )}
+  </View>
+
+
       <FlatList
-        data={memories}
+        data={filteredMemories}
         keyExtractor={(item, index) =>
           item.id ? item.id.toString() : index.toString()
         }
-        renderItem={({item, index}) => {
+        renderItem={({ item, index }) => {
           const songForMemory = findSongById(item.song);
           // console.log('songformemory');
           // console.log(songForMemory);
@@ -136,6 +165,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 18,
     color: 'black',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 10,
+    height: 60,
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    zIndex: 10,
+    paddingLeft: 10,
   },
 });
 

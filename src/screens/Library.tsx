@@ -344,15 +344,18 @@ const Library = () => {
               Dale un nombre a tu lista
             </Text>
             <View style={[styles.inputContainer, {marginBottom: 20}]}>
-              <TextInput
-                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-                value={playlistName}
-                onChangeText={text => {
+            <TextInput
+              style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+              value={playlistName}
+              onChangeText={text => {
+                if (text.length <= MAX_NAME_LENGTH) {
                   setPlaylistName(text);
                   setError('');
-                }}
-                placeholderTextColor={modalTextColor}
-              />
+                }
+              }}
+              maxLength={MAX_NAME_LENGTH}
+              placeholderTextColor={modalTextColor}
+            />
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
             <View style={styles.buttonGroup}>
@@ -378,13 +381,16 @@ const Library = () => {
           Edita el nombre de tu lista
         </Text>
         <View style={styles.inputContainer}>
-          <TextInput
+        <TextInput
             style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
             value={editPlaylistName}
             onChangeText={text => {
-              setEditPlaylistName(text);
-              setError('');
+              if (text.length <= MAX_NAME_LENGTH) {
+                setEditPlaylistName(text);
+                setError('');
+              }
             }}
+            maxLength={MAX_NAME_LENGTH}
             placeholderTextColor={modalTextColor}
           />
         </View>

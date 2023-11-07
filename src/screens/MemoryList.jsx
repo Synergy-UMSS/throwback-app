@@ -4,6 +4,9 @@ import firestore from '@react-native-firebase/firestore';
 import MiniPlayer from '../components/MiniPlayer';
 import EmotionWithMemory from '../components/EmotionWithMemory';
 
+
+
+import { TouchableOpacity, Keyboard } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 // import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -76,6 +79,8 @@ const MemoryList = ({ navigation }) => {
   const findSongById = songId => {
     return songs.find(song => song.id === songId);
   };
+
+
   // control de lista vacia
   // if (true) {
 
@@ -108,6 +113,21 @@ const MemoryList = ({ navigation }) => {
     'emo14',
   ];
 
+  const filterMemories = (term) => {
+    const lowerCaseTerm = term.toLowerCase();
+
+    const memoriesWithIndexAndSpace = memories.map(memory => {
+      const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
+      const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
+      const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm; // Verifica si es una coincidencia exacta
+      const followsSpaceInTitle = memory.title.toLowerCase().startsWith(`${lowerCaseTerm} `, titleIndex); // Verifica si un espacio sigue al término de búsqueda en el título
+    });
+
+  const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
+
+  // const inputWidth = isKeyboardOpen || searchTerm !== '' ? '80%' : '100%';
+
+  /////////////////
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -122,7 +142,20 @@ const MemoryList = ({ navigation }) => {
       </Animatable.View>
     </TouchableOpacity>
   )}
-  </View>
+  <Animatable.View 
+    style={[styles.inputContainer, { paddingLeft: isKeyboardOpen || searchTerm !== '' ? 50 : 10, width:'100%'}]} // 50 debe ser el ancho del icono más algún espacio extra
+    transition="paddingLeft"
+    duration={700}
+  >
+    <TextInput
+      style={styles.input}
+      onChangeText={handleSearch}
+      value={searchTerm}
+      placeholder="Buscar memorias..."
+      onSubmitEditing={() => handleSearch(searchTerm)}
+    />
+  </Animatable.View>
+</View>
 
 
       <FlatList
@@ -175,8 +208,21 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     zIndex: 10,
-    paddingLeft: 10,
+    paddingLeft: 10, // Añadir un poco de espacio a la derecha del ícono si es necesario
   },
+  inputContainer: {
+    
+
+    position: 'absolute',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'gray',
+    borderRadius: 10,
+    // flex: 1,
+    // width: 900,
+  },
+
 });
 
 export default MemoryList;

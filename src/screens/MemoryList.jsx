@@ -81,6 +81,36 @@ const MemoryList = ({ navigation }) => {
     return songs.find(song => song.id === songId);
   };
 
+  // Añadir listeners para el teclado
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardOpen(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardOpen(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  const handleSearch = (term) => {
+    // Implementar lógica de búsqueda aquí si es necesario
+    setSearchTerm(term);
+  };
+  // Manejadores de eventos para el TextInput y los botones
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    Keyboard.dismiss();
+  };
+
+
+  // const inputAnimatedStyle = useAnimatedStyle(() => {
+  //   return {
+  //     flex: isKeyboardOpen || searchTerm !== '' ? 0.8 : 1, // O ajusta estos valores como sea necesario
+  //   };
+  // });
 
   // control de lista vacia
   // if (true) {
@@ -114,12 +144,12 @@ const MemoryList = ({ navigation }) => {
     'emo14',
   ];
 
-  const filterMemories = (term) => {
-    return memories.filter(memory =>
-      memory.title.toLowerCase().includes(term.toLowerCase()) ||
-      memory.description.toLowerCase().includes(term.toLowerCase())
-    );
-  };
+  // const filterMemories = (term) => {
+  //   return memories.filter(memory =>
+  //     memory.title.toLowerCase().includes(term.toLowerCase()) ||
+  //     memory.description.toLowerCase().includes(term.toLowerCase())
+  //   );
+  // };
 
 
   const filterMemories = (term) => {
@@ -143,25 +173,34 @@ const MemoryList = ({ navigation }) => {
     return memoriesWithIndexAndSpace
       .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
       .sort((a, b) => {
-          // Primero verificar coincidencias exactas
-          if (a.isExactMatch && !b.isExactMatch) return -1;
-          if (!a.isExactMatch && b.isExactMatch) return 1;
+        // Primero verificar coincidencias exactas
+        if (a.isExactMatch && !b.isExactMatch) return -1;
+        if (!a.isExactMatch && b.isExactMatch) return 1;
+
+        // Luego por la presencia del término en el título
+        if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
+        if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
+
+        // Si ambos tienen el término en el título en la misma posición
+        if (a.titleIndex === b.titleIndex) {
+          // Dar prioridad si el término es seguido por un espacio en el título
+          if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
+          if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
 
           // Si ambos siguen un espacio, ordenar alfabéticamente
           if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
             return a.title.localeCompare(b.title);
           }
         }
-
         // Continuar ordenando por la posición del término
         if (a.titleIndex !== b.titleIndex) {
           return a.titleIndex - b.titleIndex;
         }
-
         // Por último, ordenar alfabéticamente si todas las otras condiciones son iguales
         return a.title.localeCompare(b.title);
       });
   };
+
 
   const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
 
@@ -248,7 +287,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     zIndex: 10,
-    paddingLeft: 10, // Añadir un poco de espacio a la derecha del ícono si es necesario
+    paddingLeft: 10,
   },
   inputContainer: {
     

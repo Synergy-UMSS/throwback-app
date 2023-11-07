@@ -9,6 +9,7 @@ import { usePlayerStore } from '../store/playerStore';
 import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // obtener el color de la memoria basado en la emocion
 function getColorForEmotion(emotion) {
@@ -190,10 +191,10 @@ const CrearMemoria = ({ navigation }) => {
           />
         )}
         
-      <Text style={styles.label}>Imagen:</Text> 
-            <Pressable style={styles.button} onPress={() => {/* implementar luego, por ahora que solo se vea el boton xd */}}>
-              <Text style={styles.buttonText}>Seleccionar</Text>
-            </Pressable>
+        <Text style={styles.label}>Imagen:</Text>
+          <Pressable style={styles.iconButton} onPress={() => {/* implementar luego, por ahora que solo se vea el boton xd */}}>
+          <Ionicons name="image-outline" size={40} color="black" />
+        </Pressable>
 
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected}/>
@@ -283,10 +284,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignSelf: 'center',
   },
-  buttonText: {           //para el estilo del boton
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+  iconButton: {
+    marginTop: 10,
+    alignSelf: 'center',
+    padding: 10,
   },
 });
 

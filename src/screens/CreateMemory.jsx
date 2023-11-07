@@ -189,6 +189,11 @@ const CrearMemoria = ({ navigation }) => {
             maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
           />
         )}
+        
+      <Text style={styles.label}>Imagen:</Text> 
+            <Pressable style={styles.button} onPress={() => {/* implementar luego, por ahora que solo se vea el boton xd */}}>
+              <Text style={styles.buttonText}>Seleccionar</Text>
+            </Pressable>
 
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected}/>
@@ -277,6 +282,11 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: 'black',
     alignSelf: 'center',
+  },
+  buttonText: {           //para el estilo del boton
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

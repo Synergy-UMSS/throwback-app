@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
+import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
@@ -70,7 +70,7 @@ const CrearMemoria = ({ navigation }) => {
     setDescription(sanitizedText);
   };
   //para las iamgenes 
-  const [imageUri, setImageUri] = useState(''); // para almacenar el URI local de la imagen seleccionada
+  const [imageUri, setImageUri] = useState(null); // para almacenar el URI local de la imagen seleccionada
 
   const selectImage = () => {
     const options = {
@@ -276,6 +276,13 @@ const CrearMemoria = ({ navigation }) => {
          <Ionicons name="image-outline" size={40} color="black" />
         </Pressable>
 
+         {/* Aquí se muestra la vista previa de la imagen */}
+      {imageUri && (
+        <View style={styles.previewContainer}>
+          <Image source={{ uri: imageUri }} style={styles.previewImage} />
+        </View>
+      )}
+
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected}/>
         
@@ -369,6 +376,19 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 10,
   },
+
+  previewContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  previewImage: {
+    width: 200, // Establece el ancho de tu vista previa
+    height: 200, // Establece el alto de tu vista previa
+    backgroundColor: '#ccc', // Un color de fondo en caso de que la imagen no cargue
+  },
+
 });
 
 export default CrearMemoria;

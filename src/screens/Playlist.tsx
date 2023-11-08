@@ -10,6 +10,9 @@ import { useRoute } from '@react-navigation/native';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 import { useSearchStore } from '../store/searchStore';
+import MiniPlayer from '../components/MiniPlayer';
+import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
+import ConnectionGral from '../components/ConnectionGral';
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
@@ -17,7 +20,8 @@ const Playlist = ({ navigation }) => {
 	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
-
+	const {isConnected} = useConnectionGlobal();
+	
 	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
 
 	useEffect(() => {
@@ -179,6 +183,8 @@ const Playlist = ({ navigation }) => {
 					</View>
 				</View>
 			)}
+			<ConnectionGral />
+			<MiniPlayer navigation={navigation} style={style.miniPlayer} />
 		</SafeAreaView>
 	);
 };
@@ -211,7 +217,7 @@ const style = StyleSheet.create({
 		borderRadius: 15,
 	},
 	scrollStyle: {
-		marginBottom: 50,
+		marginBottom: 90,
 	},
 	textTitle: {
 		alignItems: 'center',
@@ -222,7 +228,6 @@ const style = StyleSheet.create({
 		color: 'black',
 		fontSize: 20,
 		fontWeight: '400',
-		textTransform: 'uppercase',
 	},
 	mainContainer: {
 		backgroundColor: 'pink',
@@ -264,12 +269,12 @@ const style = StyleSheet.create({
 		position: 'absolute',
 		paddingBottom: 10,
 		zIndex: 1,
-		bottom: 50,
+		bottom: 110,
 		left: 0,
 		right: 0,
 	},
 	successMessageContainer: {
-		backgroundColor: '#ffffff80', // Color de fondo del mensaje de éxito
+		backgroundColor: '#ffffff90', // Color de fondo del mensaje de éxito
 		height: 30,
 		alignItems: 'center',
 		justifyContent: 'center',

@@ -12,6 +12,8 @@ import EmotionPicker from '../components/EmotionPicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
 import { PermissionsAndroid, Platform } from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
 
 // obtener el color de la memoria basado en la emocion
 function getColorForEmotion(emotion) {
@@ -75,13 +77,15 @@ const CrearMemoria = ({ navigation }) => {
       noData: true,
     };
 
-    ImagePicker.showImagePicker(options, response => {
+    launchImageLibrary(options, (response) => {    //cambio necesario
       if (response.didCancel) {
         console.log('El usuario canceló la selección de la imagen');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-      } else {
-        setImageUri(response.uri);
+      } else if (response.assets && response.assets.length > 0) {
+        // Tomamos la primera imagen seleccionada
+        const source = { uri: response.assets[0].uri };
+        setImageUri(source.uri);
       }
     });
   };

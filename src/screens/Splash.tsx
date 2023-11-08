@@ -1,41 +1,47 @@
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
-import {View, Image, StyleSheet} from 'react-native'; // Importa Image y StyleSheet
-import {RootStackParamList} from '../utils/types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { RootStackParamList } from '../utils/types';
+import FastImage from 'react-native-fast-image';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
-const Splash = ({navigation}: SplashProps) => {
+const Splash = ({ navigation }: SplashProps) => {
+  const titleOpacity = useRef(0).current;
+
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('Home');
-    }, 2000);
+    }, 3000);
   }, [navigation]);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    gifContainer: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    gif: {
+      width: 200,
+      height: 200,
+    },
+  });
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo-no-background.png')} style={styles.logo} />
+      <View style={styles.gifContainer}>
+        <FastImage
+          source={require('../assets/logo/pollito.gif')}
+          style={styles.gif}
+          resizeMode={FastImage.resizeMode.contain}
+        />
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  background: {
-    backgroundColor: '#E4E6DC',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-  },
-  logo: {
-    width: 200,
-    height: 169,
-  },
-});
 
 export default Splash;

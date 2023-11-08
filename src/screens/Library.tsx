@@ -73,7 +73,7 @@ const Library = () => {
   //CREATE
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
-      setError('El nombre de la playlist no puede estar vacío.');
+      setError('El nombre de la lista no puede estar vacío.');
     } else {
       setError('');
       const colorIndex = playlists.length % colorSequence.length;
@@ -185,7 +185,7 @@ const Library = () => {
 
   const handleUpdatePlaylist = () => {
     if (editPlaylistName.trim() === '') {
-      setError('El nombre de la playlist no puede estar vacío.');
+      setError('El nombre de la lista no puede estar vacío.');
     } else {
       setError('');
       let playlistRef = firestore()
@@ -222,7 +222,7 @@ const Library = () => {
     // Muestra un cuadro de diálogo de confirmación
     Alert.alert(
       "Confirmar Eliminación",
-      `¿Estás seguro de que deseas eliminar la playlist "${playlistName}"?`,
+      `¿Estás seguro de que deseas eliminar la lista "${playlistName}"?`,
       [
         {
           text: "Cancelar",
@@ -274,7 +274,7 @@ const Library = () => {
       {playlists.length === 0 ? (
         <View style={styles.content}>
           <Text style={[styles.message, { color: 'black' }]}>
-            Aún no tienes ninguna playlist, presiona "+" para crear una.
+            Aún no tienes ninguna lista de reproducción, presiona "+" para crear una.
           </Text>
         </View>
       ) : (
@@ -309,7 +309,7 @@ const Library = () => {
                       >
                         {playlist}
                       </Text>
-                      <Text style={styles.playlistLabel}>Playlist</Text>
+                      <Text style={styles.playlistLabel}>Lista de reproducción</Text>
                     </View>
                     <Menu style={styles.menuContainer}>
                       <MenuTrigger>
@@ -341,18 +341,21 @@ const Library = () => {
         <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
           <View style={styles.customModalContent}>
           <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-              Dale un nombre a tu playlist
+              Dale un nombre a tu lista
             </Text>
             <View style={[styles.inputContainer, {marginBottom: 20}]}>
-              <TextInput
-                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-                value={playlistName}
-                onChangeText={text => {
+            <TextInput
+              style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+              value={playlistName}
+              onChangeText={text => {
+                if (text.length <= MAX_NAME_LENGTH) {
                   setPlaylistName(text);
                   setError('');
-                }}
-                placeholderTextColor={modalTextColor}
-              />
+                }
+              }}
+              maxLength={MAX_NAME_LENGTH}
+              placeholderTextColor={modalTextColor}
+            />
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
             <View style={styles.buttonGroup}>
@@ -375,16 +378,19 @@ const Library = () => {
       <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
       <View style={styles.customModalContent}>
         <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-          Edita el nombre de tu playlist
+          Edita el nombre de tu lista
         </Text>
         <View style={styles.inputContainer}>
-          <TextInput
+        <TextInput
             style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
             value={editPlaylistName}
             onChangeText={text => {
-              setEditPlaylistName(text);
-              setError('');
+              if (text.length <= MAX_NAME_LENGTH) {
+                setEditPlaylistName(text);
+                setError('');
+              }
             }}
+            maxLength={MAX_NAME_LENGTH}
             placeholderTextColor={modalTextColor}
           />
         </View>

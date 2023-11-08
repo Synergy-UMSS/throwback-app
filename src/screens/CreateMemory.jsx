@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 // obtener el color de la memoria basado en la emocion
 function getColorForEmotion(emotion) {
@@ -150,6 +151,44 @@ const CrearMemoria = ({ navigation }) => {
       ],
       { cancelable: false }
     );
+
+  // función para solicitar permisos en tiempo de ejecución
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        ]);
+        if (
+          granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted['android.permission.READ_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted['android.permission.WRITE_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED
+        ) {
+          console.log('You can use the camera and photos');
+          return true;
+        } else {
+          console.log('Camera permission denied');
+          return false;
+        }
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handlePressImagePicker = async () => {
+    const hasPermissions = await requestCameraPermission();
+    if (hasPermissions) {
+      selectImage();
+    } else {
+      Alert.alert('Permisos Requeridos', 'Se necesitan permisos de cámara y almacenamiento para esta funcionalidad.'); //mensajito para el permiso
+    }
+  };
+//hasta aqui los permisos
   };
 
 
@@ -228,9 +267,9 @@ const CrearMemoria = ({ navigation }) => {
           />
         )}
         
-        <Text style={styles.label}>Imagen:</Text>
-          <Pressable style={styles.iconButton} onPress={() => {selectImage}}>
-          <Ionicons name="image-outline" size={40} color="black" />
+        <Text style={styles.label}>Imagen:</Text> 
+        <Pressable style={styles.iconButton} onPress={selectImage}>
+         <Ionicons name="image-outline" size={40} color="black" />
         </Pressable>
 
         <RequiredField style={styles.label}>Emoción:</RequiredField>

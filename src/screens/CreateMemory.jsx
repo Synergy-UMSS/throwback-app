@@ -10,6 +10,7 @@ import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ImagePicker from 'react-native-image-picker';
 
 // obtener el color de la memoria basado en la emocion
 function getColorForEmotion(emotion) {
@@ -65,7 +66,42 @@ const CrearMemoria = ({ navigation }) => {
     const sanitizedText = newText.replace(/(\r\n|\n|\r)/g, '');
     setDescription(sanitizedText);
   };
+  //para las iamgenes 
+  const [imageUri, setImageUri] = useState(''); // para almacenar el URI local de la imagen seleccionada
 
+  const selectImage = () => {
+    const options = {
+      noData: true,
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      if (response.didCancel) {
+        console.log('El usuario canceló la selección de la imagen');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        setImageUri(response.uri);
+      }
+    });
+  };
+
+  //para subir la imagen a Firebase Storage y obtener la URL
+  const uploadImageAndGetURL = async (localUri) => {
+    const filename = localUri.substring(localUri.lastIndexOf('/') + 1);
+    const uploadUri = Platform.OS === 'ios' ? localUri.replace('file://', '') : localUri;
+    const storageRef = storage().ref(`images/${filename}`);
+    const task = storageRef.putFile(uploadUri);
+
+    try {
+      await task;
+      const url = await storageRef.getDownloadURL();
+      return url;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+  //hasta aqui para seleccionar la imagen
   const onSubmit = async (data) => {
     if (isCreatingMemory) {
       return;
@@ -79,7 +115,8 @@ const CrearMemoria = ({ navigation }) => {
       emotion: selectedEmotion,
       createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
-      song: parseInt(currentSong.id) //debe ser un entero
+      song: parseInt(currentSong.id), //debe ser un entero
+      imageURL: imageUrl, 
     };
 
     try {

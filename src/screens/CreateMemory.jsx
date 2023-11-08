@@ -229,7 +229,7 @@ const CrearMemoria = ({ navigation }) => {
         )}
         
         <Text style={styles.label}>Imagen:</Text>
-          <Pressable style={styles.iconButton} onPress={() => {/* implementar luego, por ahora que solo se vea el boton xd */}}>
+          <Pressable style={styles.iconButton} onPress={() => {selectImage}}>
           <Ionicons name="image-outline" size={40} color="black" />
         </Pressable>
 

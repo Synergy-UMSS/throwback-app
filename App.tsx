@@ -77,8 +77,8 @@ function MemoryNavigator() {
             fontFamily: 'arial-bold',
             marginLeft: 0,
           },
-          headerShown: true,
-          cardStyle: {backgroundColor: '#e4e6dc'},
+          headerShown: false,
+          cardStyle: {backgroundColor: '#fcf4e7'},
         }}
       />
       <Stack.Screen name="Reproductor" component={Reproductor} />
@@ -103,13 +103,13 @@ const App = () => {
         screenOptions={({route}) => ({
           tabBarBackground: () => (
             <LinearGradient
-              colors={['rgba(120, 116, 116, 0.0)', 'rgba(38, 38, 38, 0.9)']}
+              colors={['rgba(120, 116, 116, 0.8)', 'rgba(38, 38, 38, 1)']}
               style={{
                 position: 'absolute',
                 left: 0,
                 right: 0,
                 bottom: -1,
-                height: 60,
+                height: 51,
               }}
             />
           ),

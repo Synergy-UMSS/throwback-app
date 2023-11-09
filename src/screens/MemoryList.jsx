@@ -16,7 +16,8 @@ import * as Animatable from 'react-native-animatable';
 import MiniPlayer from '../components/MiniPlayer';
 import EmotionWithMemory from '../components/EmotionWithMemory';
 import Emocion from '../components/Emotion';
-
+import header from '../assets/header/image.png';
+import ImageFullWidth from '../components/ImageFullWidth';
 
 const MemoryList = ({ navigation }) => {
 
@@ -178,8 +179,9 @@ const MemoryList = ({ navigation }) => {
         ListHeaderComponent={
           <>
           <View>
-          <Emocion nombre="emo5" />
-          <Emocion nombre="emo5" />
+          {/* <Emocion nombre="emo5" />
+          <Emocion nombre="emo5" /> */}
+          <ImageFullWidth source={header} />
           </View>
           </>
         }
@@ -260,6 +262,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 10,
     height: 60,
+    backgroundColor: '#fcf4e7',
+    marginBottom:15,
   },
   iconContainer: {
     justifyContent: 'center',

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import storage from '@react-native-firebase/storage';
 import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
@@ -13,6 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
 
 
 // obtener el color de la memoria basado en la emocion
@@ -77,13 +79,13 @@ const CrearMemoria = ({ navigation }) => {
       noData: true,
     };
 
-    launchImageLibrary(options, (response) => {    //cambio necesario
+    launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('El usuario canceló la selección de la imagen');
+        setImageUri(null);
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.assets && response.assets.length > 0) {
-        // Tomamos la primera imagen seleccionada
         const source = { uri: response.assets[0].uri };
         setImageUri(source.uri);
       }
@@ -113,7 +115,7 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     setIsCreatingMemory(true);
-
+    const uploadedImageUrl = await uploadImageAndGetURL(imageUri).catch(console.error);
     const memoria = {
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
@@ -121,7 +123,7 @@ const CrearMemoria = ({ navigation }) => {
       createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
       song: parseInt(currentSong.id), //debe ser un entero
-      imageURL: imageUrl, 
+      imageURL: uploadedImageUrl, 
     };
 
     try {

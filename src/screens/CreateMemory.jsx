@@ -94,6 +94,10 @@ const CrearMemoria = ({ navigation }) => {
 
   //para subir la imagen a Firebase Storage y obtener la URL
   const uploadImageAndGetURL = async (localUri) => {
+    if (!localUri) {
+      console.error('No se proporcionó URI para la imagen Dx');
+      return null; 
+    }
     const filename = localUri.substring(localUri.lastIndexOf('/') + 1);
     const uploadUri = Platform.OS === 'ios' ? localUri.replace('file://', '') : localUri;
     const storageRef = storage().ref(`images/${filename}`);

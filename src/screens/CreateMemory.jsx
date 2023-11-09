@@ -119,7 +119,11 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     setIsCreatingMemory(true);
-    const uploadedImageUrl = await uploadImageAndGetURL(imageUri).catch(console.error);
+    const uploadedImageUrl = await uploadImageAndGetURL(imageUri);
+      if (!uploadedImageUrl) {
+      console.error('No se pudo obtener la URL de la imagen cargada');
+      return;
+    }
     const memoria = {
       title: data.tituloMemoria,
       description: data.descripcionMemoria,

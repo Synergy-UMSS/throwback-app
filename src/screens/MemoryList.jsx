@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, FlatList, Text, StyleSheet } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import MiniPlayer from '../components/MiniPlayer';
 import EmotionWithMemory from '../components/EmotionWithMemory';
@@ -15,6 +15,8 @@ import * as Animatable from 'react-native-animatable';
 
 // NEW 
 import { TextInput } from 'react-native';
+
+import Emocion from '../components/Emotion';
 
 const MemoryList = ({ navigation }) => {
 
@@ -165,8 +167,8 @@ const MemoryList = ({ navigation }) => {
         ...memory,
         titleIndex,
         descriptionIndex,
-        isExactMatch, // Agrega esta propiedad para cada memoria
-        followsSpaceInTitle // Agrega esta propiedad para verificar el espacio después del término
+        isExactMatch, 
+        followsSpaceInTitle 
       };
     });
 
@@ -201,51 +203,80 @@ const MemoryList = ({ navigation }) => {
       });
   };
 
-
   const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
 
+  // const renderSearchBar = () => (
+  //   <View style={styles.searchContainer}>
+  //     {(isKeyboardOpen || searchTerm !== '') && (
+  //       <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
+  //         <Animatable.View
+  //           animation="slideInLeft"
+  //           duration={700}
+  //           style={styles.iconAnimationContainer}
+  //         >
+  //           <MaterialIcons name="arrow-back" size={30} color="gray" />
+  //         </Animatable.View>
+  //       </TouchableOpacity>
+  //     )}
+  //     <Animatable.View 
+  //       style={[styles.inputContainer, { paddingLeft: isKeyboardOpen || searchTerm !== '' ? 50 : 10, width:'100%'}]} // 50 debe ser el ancho del icono más algún espacio extra
+  //       transition="paddingLeft"
+  //       duration={700}
+  //     >
+  //       <TextInput
+  //         style={styles.input}
+  //         onChangeText={handleSearch}
+  //         value={searchTerm}
+  //         placeholder="Buscar memorias..."
+  //         onSubmitEditing={() => handleSearch(searchTerm)}
+  //       />
+  //     </Animatable.View>
+  //   </View>
+  // );
   // const inputWidth = isKeyboardOpen || searchTerm !== '' ? '80%' : '100%';
 
-  /////////////////
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-  {(isKeyboardOpen || searchTerm !== '') && (
-    <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
-      <Animatable.View
-        animation="slideInLeft"
-        duration={700}
-        style={styles.iconAnimationContainer}
-      >
-        <MaterialIcons name="arrow-back" size={30} color="gray" />
-      </Animatable.View>
-    </TouchableOpacity>
-  )}
-  <Animatable.View 
-    style={[styles.inputContainer, { paddingLeft: isKeyboardOpen || searchTerm !== '' ? 50 : 10, width:'100%'}]} // 50 debe ser el ancho del icono más algún espacio extra
-    transition="paddingLeft"
-    duration={700}
-  >
-    <TextInput
-      style={styles.input}
-      onChangeText={handleSearch}
-      value={searchTerm}
-      placeholder="Buscar memorias..."
-      onSubmitEditing={() => handleSearch(searchTerm)}
-    />
-  </Animatable.View>
-</View>
-
-
+  
+      {/* Asumiendo que necesitas ScrollView para otros props o comportamientos */}
       <FlatList
         data={filteredMemories}
         keyExtractor={(item, index) =>
           item.id ? item.id.toString() : index.toString()
         }
+        ListHeaderComponent={
+          <>
+            <View style={styles.searchContainer}>
+              {(isKeyboardOpen || searchTerm !== '') && (
+                <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
+                  <Animatable.View
+                    animation="slideInLeft"
+                    duration={700}
+                    style={styles.iconAnimationContainer}
+                  >
+                    <MaterialIcons name="arrow-back" size={30} color="gray" />
+                  </Animatable.View>
+                </TouchableOpacity>
+              )}
+              <Animatable.View 
+                style={[styles.inputContainer, { paddingLeft: isKeyboardOpen || searchTerm !== '' ? 50 : 10, width:'100%'}]}
+                transition="paddingLeft"
+                duration={700}
+              >
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleSearch}
+                  value={searchTerm}
+                  placeholder="Buscar memorias..."
+                  onSubmitEditing={() => handleSearch(searchTerm)}
+                />
+              </Animatable.View>
+            </View>
+          </>
+        }
+        stickyHeaderIndices={[0]}
         renderItem={({ item, index }) => {
           const songForMemory = findSongById(item.song);
-          // console.log('songformemory');
-          // console.log(songForMemory);
           return (
             <EmotionWithMemory
               memoria={item}
@@ -259,11 +290,13 @@ const MemoryList = ({ navigation }) => {
         }}
         contentContainerStyle={{ paddingBottom: 22 }}
       />
+  
       <View style={styles.miniPlayerContainer}>
         <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
       </View>
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
@@ -287,7 +320,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     zIndex: 10,
-    paddingLeft: 10,
+    paddingLeft: 10, 
   },
   inputContainer: {
     

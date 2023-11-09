@@ -110,7 +110,7 @@ const MemoryList = ({ navigation }) => {
 
   // const inputAnimatedStyle = useAnimatedStyle(() => {
   //   return {
-  //     flex: isKeyboardOpen || searchTerm !== '' ? 0.8 : 1, // O ajusta estos valores como sea necesario
+  //     flex: isKeyboardOpen || searchTerm !== '' ? 0.8 : 1, 
   //   };
   // });
 
@@ -160,8 +160,8 @@ const MemoryList = ({ navigation }) => {
     const memoriesWithIndexAndSpace = memories.map(memory => {
       const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
       const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
-      const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm; // Verifica si es una coincidencia exacta
-      const followsSpaceInTitle = memory.title.toLowerCase().startsWith(`${lowerCaseTerm} `, titleIndex); // Verifica si un espacio sigue al término de búsqueda en el título
+      const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm; 
+      const followsSpaceInTitle = memory.title.toLowerCase().startsWith(`${lowerCaseTerm} `, titleIndex); 
 
       return {
         ...memory,
@@ -178,17 +178,14 @@ const MemoryList = ({ navigation }) => {
         // Primero verificar coincidencias exactas
         if (a.isExactMatch && !b.isExactMatch) return -1;
         if (!a.isExactMatch && b.isExactMatch) return 1;
-
         // Luego por la presencia del término en el título
         if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
         if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
-
         // Si ambos tienen el término en el título en la misma posición
         if (a.titleIndex === b.titleIndex) {
           // Dar prioridad si el término es seguido por un espacio en el título
           if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
           if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
-
           // Si ambos siguen un espacio, ordenar alfabéticamente
           if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
             return a.title.localeCompare(b.title);
@@ -202,6 +199,7 @@ const MemoryList = ({ navigation }) => {
         return a.title.localeCompare(b.title);
       });
   };
+
 
   const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
 
@@ -235,18 +233,36 @@ const MemoryList = ({ navigation }) => {
   // );
   // const inputWidth = isKeyboardOpen || searchTerm !== '' ? '80%' : '100%';
 
+  ///////////////// borrar
+
+  const dataWithSearch = [
+    { type: 'search' },
+    ...filteredMemories.map(memory => ({ type: 'memory', data: memory })),
+  ];
+
   return (
     <View style={styles.container}>
-  
-      {/* Asumiendo que necesitas ScrollView para otros props o comportamientos */}
       <FlatList
-        data={filteredMemories}
+        data={dataWithSearch}
         keyExtractor={(item, index) =>
           item.id ? item.id.toString() : index.toString()
         }
         ListHeaderComponent={
           <>
-            <View style={styles.searchContainer}>
+          <View>
+          <Emocion nombre="emo5" />
+          </View>
+          </>
+        }
+        
+        stickyHeaderIndices={[1]}
+        renderItem={({ item, index }) => {
+          if (item.type === 'search') {
+            // Renderiza la barra de búsqueda si el ítem es del tipo 'search'
+            return (
+              <View style={styles.searchContainer}>
+                 {/* <>
+            <View style={styles.searchContainer}> */}
               {(isKeyboardOpen || searchTerm !== '') && (
                 <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
                   <Animatable.View
@@ -271,22 +287,22 @@ const MemoryList = ({ navigation }) => {
                   onSubmitEditing={() => handleSearch(searchTerm)}
                 />
               </Animatable.View>
-            </View>
-          </>
-        }
-        stickyHeaderIndices={[0]}
-        renderItem={({ item, index }) => {
-          const songForMemory = findSongById(item.song);
-          return (
-            <EmotionWithMemory
-              memoria={item}
-              song={songForMemory}
-              onPress={id => abrirDetalles(id, item, songForMemory, index)}
-              index={index}
-              alignment={index % 2 === 0 ? 'right' : 'left'}
-              emotion={listaEmociones[index % listaEmociones.length]}
-            />
-          );
+            
+              </View>
+            );
+          } else if (item.type === 'memory') {
+            const songForMemory = findSongById(item.data.song);
+            return (
+              <EmotionWithMemory
+                memoria={item.data}
+                song={songForMemory}
+                onPress={id => abrirDetalles(id, item.data, songForMemory, index)}
+                index={index - 1} 
+                alignment={index % 2 === 0 ? 'right' : 'left'}
+                emotion={listaEmociones[(index - 1) % listaEmociones.length]}
+              />
+            );
+          }
         }}
         contentContainerStyle={{ paddingBottom: 22 }}
       />
@@ -320,7 +336,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     zIndex: 10,
-    paddingLeft: 10, 
+    paddingLeft: 10,
   },
   inputContainer: {
     

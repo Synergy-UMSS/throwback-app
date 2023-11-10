@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Connection from '../components/Connection';
-import TrackPlayer, { Event, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
+import TrackPlayer, { Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import { useSearchStore } from '../store/searchStore';
 import { usePlayerStore } from '../store/playerStore';
@@ -144,7 +144,7 @@ const Player = ({ navigation, route }) => {
       return 'repeat-off';
     };
     if(repeatMode == 'track'){
-      return 'repeat-once';
+      return 'repeat';
     };
     if(repeatMode == 'repeat'){
       return 'repeat';
@@ -153,12 +153,11 @@ const Player = ({ navigation, route }) => {
 
   const changeRepeatMode = () => {
     if(repeatMode == 'off'){
+      TrackPlayer.setRepeatMode(RepeatMode.Track);
       setRepeatMode('track');
     };
     if(repeatMode == 'track'){
-      setRepeatMode('repeat');
-    };
-    if(repeatMode == 'repeat'){
+      TrackPlayer.setRepeatMode(RepeatMode.Off);
       setRepeatMode('off');
     };
   };
@@ -176,8 +175,6 @@ const Player = ({ navigation, route }) => {
       const idNumerico = parseInt(currentSong.id);
       console.log(idNumerico);
       const track = await TrackPlayer.getTrack(idNumerico);
-
-      console.log('banderitaaaa', track);
       if (track !== null) {
         const { title, artwork, artist } = track;
         setTrackTitle(title);
@@ -263,7 +260,7 @@ const Player = ({ navigation, route }) => {
         </View>
 
         <View style={[style.songMainControl, { left: 45 }]}>
-          <TouchableOpacity onPress={() => playTrack(playState)}>
+          <TouchableOpacity>
             <Ionicons name={playState !== State.Playing ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
@@ -279,8 +276,8 @@ const Player = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
         <View style={[style.songMainControl, { right: 45 }]}>
-          <TouchableOpacity onPress={() => skipTo(currentSong.id)}>
-            <MaterialCommunityIcons name="" size={25} color={colorSec[currentSong.id % 3]} />
+          <TouchableOpacity onPress={changeRepeatMode}>
+            <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
 

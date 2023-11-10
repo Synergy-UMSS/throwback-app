@@ -63,7 +63,7 @@ const SearchBar = ({comeNav, navigation}) => {
           padding: 10,
           height: 50,
         }}>
-        {(!comeNav &&  (isKeyboardOpen || busqueda !== '')) && (
+        {(!comeNav && (isKeyboardOpen || busqueda !== '')) && (
           <TouchableOpacity
             onPress={() => {
               handleBack();

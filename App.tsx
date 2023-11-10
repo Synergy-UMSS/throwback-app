@@ -92,11 +92,9 @@ function MemoryNavigator() {
           headerTintColor: 'black',
         }}
       />
-  
     </Stack.Navigator>
   );
 }
-
 
 const App = () => {
   function Movible() {
@@ -246,7 +244,6 @@ const App = () => {
               name="Playlist"
               component={Playlist}
               options={{headerShown: false}}
-              key={Math.random().toString()}
             />
           </Stack.Navigator>
         </NavigationContainer>

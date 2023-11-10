@@ -45,7 +45,7 @@ const SearchSelect = ({navigation}) => {
 	}, []);
 
   const {clearRecentSearches, recentSearches, showHistory, currentSearch, updateRecentSearches, showHistoryTrue, showHistoryFalse} =
-    useSearchStore();
+  useSearchStore();
 
   const clearSearches = () => {
     clearRecentSearches();

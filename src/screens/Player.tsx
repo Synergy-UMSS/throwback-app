@@ -120,8 +120,14 @@ const Player = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    playTrack();
-  }, [isConnected]);
+    const fetchDataAndInitializePlayer = async () => {
+      await fetchSongs();
+      await setPlayer();
+      setPlayerInitialized(true);
+    };
+
+    fetchDataAndInitializePlayer();
+  }, []);
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
@@ -201,14 +207,18 @@ const Player = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    changeValuesTrack();
-    console.log('currentSong', currentSong);
-  }, [currentSong, playlistFlow]);
+    const changeAndPlayTrack = async () => {
+      await changeValuesTrack();
+      if (isConnected) {
+        setIsPlaying(true);
+        await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
+      }
+    };
 
-  useEffect(() => {
-    setIsPlaying(true);
-  }, [isPlaying]);
-
+    if (currentSong) {
+      changeAndPlayTrack();
+    }
+  }, [currentSong, isConnected]);
   return (
     <SafeAreaView style={{
       flex: 1,

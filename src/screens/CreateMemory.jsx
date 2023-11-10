@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
   },
 
   previewImage: { //para la preisualizacion
+    borderRadius: 20,
     width: 250, 
     height: 250, 
     backgroundColor: '#ccc', // Un color de fondo en caso de que la imagen no cargue

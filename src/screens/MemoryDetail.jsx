@@ -112,14 +112,16 @@ const MemoryDetail = ({ route, navigation }) => {
             </>
           ) : null
         }
-        <Text style={styles.tsong}>Imagen:</Text>
-        {memorie.imageURL ? (
+        
+        {memorie.imageURL && 
+        <>
+          <Text style={styles.tsong}>Imagen:</Text>
           <View style={styles.imageContainer}>
             <Image source={{ uri: memorie.imageURL }} style={styles.image} />
           </View>
-        ) : (
-          <Text>No hay imagen disponible</Text> // O puedes quitar este Text si prefieres no mostrar nada
-        )}
+        </>
+        }
+
         <Text style={styles.tsong}>
           {"Canción vinculada al recuerdo:"}
         </Text>

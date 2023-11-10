@@ -394,9 +394,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+
   previewImage: { //para la preisualizacion
-    width: 200, 
-    height: 200, 
+    width: 250, 
+    height: 250, 
     backgroundColor: '#ccc', // Un color de fondo en caso de que la imagen no cargue
   },
 

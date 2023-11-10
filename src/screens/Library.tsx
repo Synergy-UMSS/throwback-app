@@ -7,7 +7,6 @@ import {
   TextInput,
   Modal,
   ScrollView,
-  Image,
   Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -29,75 +28,48 @@ const Library = () => {
   const [showModal, setShowModal] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [playlists, setPlaylists] = useState<string[]>([]);
-  const [colorIndex, setColorIndex] = useState(0);
-  const modalBackgroundColor = '#ffffff'; 
-  const modalTextColor = '#000000';
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedPlaylistName, setSelectedPlaylistName] = useState('');
   const [editPlaylistName, setEditPlaylistName] = useState('');
-  const [playlistColors, setPlaylistColors] = useState<{ [key: string]: string }>(
-    {},
-  );
   const [error, setError] = useState('');
-  const colorSequence = [
-    '#FBBAA4',
-    '#F0CC8B',
-    '#F6EA7E',
-    '#BFEAAF',
-    '#9DE0D2',
-    '#B6BFD4',
-    '#C7A9D5',
-    '#FFC1D8',
-  ];
-  
-  const getColorForPlaylist = (index: number): string => {
-    return colorSequence[index % colorSequence.length];
-  };
-  
-  const images = [
-    require('../assets/playlist/1.png'),
-    require('../assets/playlist/2.png'),
-    require('../assets/playlist/3.png'),
-    require('../assets/playlist/4.png'),
-  ];
   const navigation = useNavigation();
   const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
+
+  const modalBackgroundColor = '#ffffff';
+  const modalTextColor = '#000000';
+
+  const MAX_NAME_LENGTH = 50;
 
   const handlePressMore = () => {
     setShowModal(true);
   };
 
-  
-  const MAX_NAME_LENGTH = 50;
 
   //CREATE
+ 
   const handleCreatePlaylist = (name: string) => {
     if (name.trim() === '') {
       setError('El nombre de la lista no puede estar vacío.');
     } else {
       setError('');
-      const colorIndex = playlists.length % colorSequence.length;
-      const color = colorSequence[colorIndex]; 
       const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
-        id: '', 
+        id: '',
         name: name,
         createDate: timestamp,
         songs: [],
-        color: color, 
       };
-  
+
       firestore()
         .collection('playlists')
         .add(playlistData)
         .then(docRef => {
-          const playlistId = docRef.id; 
+          const playlistId = docRef.id;
           docRef.update({ id: playlistId }).then(() => {
             console.log('Se ha creado la playlist:', name, 'con ID:', playlistId);
             const updatedPlaylists = [name, ...playlists];
             setPlaylists(updatedPlaylists);
-            setPlaylistColors({ ...playlistColors, [name]: color }); 
             setPlaylistName('');
             setShowModal(false);
           });
@@ -107,31 +79,20 @@ const Library = () => {
         });
     }
   };
-  
-  
-
-  const handleSearch = () => {
-    // Posible lógica para el Search
-  };
 
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
-      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+      .orderBy('createDate', 'desc')
       .onSnapshot(querySnapshot => {
         const playlistsData: string[] = [];
-        const colorsData: { [key: string]: string } = {};
-        let colorIndex = 0;
         querySnapshot.forEach(doc => {
-          const { name, createDate, color } = doc.data();
+          const { name } = doc.data();
           playlistsData.push(name);
-          colorsData[name] = color || colorSequence[colorIndex % colorSequence.length];
-          colorIndex++;
         });
         setPlaylists(playlistsData);
-        setPlaylistColors(colorsData);
       });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -167,10 +128,8 @@ const Library = () => {
         querySnapshot.forEach((doc, index) => {
           const { name, createDate, color } = doc.data();
           playlistsData.push(name);
-          colorsData[name] = color || colorSequence[index % colorSequence.length];
         });
         setPlaylists(playlistsData);
-        setPlaylistColors(colorsData);
       });
   
     return () => unsubscribe();
@@ -178,12 +137,13 @@ const Library = () => {
 
 
   //EDIT 
-  const handleEditPlaylist = (playlistName, color) => {
+  const handleEditPlaylist = (playlistName) => {
     setSelectedPlaylistName(playlistName);
-    setEditPlaylistName(playlistName); 
+    setEditPlaylistName(playlistName);
     setShowEditModal(true);
   };
 
+  
   const handleUpdatePlaylist = () => {
     if (editPlaylistName.trim() === '') {
       setError('El nombre de la lista no puede estar vacío.');
@@ -192,27 +152,26 @@ const Library = () => {
       let playlistRef = firestore()
         .collection('playlists')
         .where('name', '==', selectedPlaylistName);
-      // solo una playlist debería coincidir con el nombre
       playlistRef = playlistRef.limit(1);
       playlistRef.get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
           doc.ref.update({ name: editPlaylistName });
         });
       });
-  
+
       const updatedPlaylists = playlists.map(playlist => {
         if (playlist === selectedPlaylistName) {
           return editPlaylistName;
         }
         return playlist;
       });
-  
+
       setPlaylists(updatedPlaylists);
       setSelectedPlaylistName(editPlaylistName);
       setShowEditModal(false);
     }
   };
-  
+
   const handleCloseModal = () => {
     setShowModal(false);
     setError('');
@@ -220,7 +179,6 @@ const Library = () => {
 
   //DELETE
   const handleDeletePlaylist = async (playlistName) => {
-    // Muestra un cuadro de diálogo de confirmación
     Alert.alert(
       "Confirmar Eliminación",
       `¿Estás seguro de que deseas eliminar la lista "${playlistName}"?`,
@@ -240,28 +198,24 @@ const Library = () => {
                 .collection('playlists')
                 .where('name', '==', playlistName)
                 .get();
-  
+
               if (!playlistRef.empty) {
                 const playlistDoc = playlistRef.docs[0];
                 await firestore().collection('playlists').doc(playlistDoc.id).delete();
-  
-                // Actualiza la lista de playlists después de eliminar
+
                 const updatedPlaylists = playlists.filter((name) => name !== playlistName);
                 setPlaylists(updatedPlaylists);
               } else {
                 console.error(`No se encontró ninguna playlist con el nombre "${playlistName}"`);
-                // Puedes mostrar un mensaje de error al usuario aquí si lo prefieres
               }
             } catch (error) {
               console.error('Error al eliminar la playlist:', error);
-              // Puedes mostrar un mensaje de error al usuario aquí si lo prefieres
             }
           },
         },
       ]
     );
   };
-  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -274,30 +228,16 @@ const Library = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-      <FavoritePlaylist handlePlayListView={handlePlayListView}
-       colorSequence={colorSequence}
-       styles={styles} />
+        <FavoritePlaylist handlePlayListView={handlePlayListView} styles={styles} />
         {playlists.map((playlist, index) => {
-          const color = playlistColors[playlist] || getColorForPlaylist(index);
-          const imageIndex = index % images.length;
           return (
             <TouchableOpacity
               key={index}
               onPress={() => handlePlayListView(playlist)}
               style={[styles.playlistContainer]}
             >
-              <View
-                style={[
-                  styles.playlistBackground,
-                  { backgroundColor: `${color}B3` },
-                ]}
-              />
               <View style={styles.playlistBox}>
                 <View style={styles.playlistContent}>
-                  <Image
-                    source={images[imageIndex]}
-                    style={styles.playlistImage}
-                  />
                   <View style={[styles.playlistText, { width: 200 }]}>
                     <Text
                       style={styles.playlistName}
@@ -337,22 +277,22 @@ const Library = () => {
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
           <View style={styles.customModalContent}>
-          <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
+            <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Dale un nombre a tu lista
             </Text>
             <View style={[styles.inputContainer, {marginBottom: 20}]}>
-            <TextInput
-              style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-              value={playlistName}
-              onChangeText={text => {
-                if (text.length <= MAX_NAME_LENGTH) {
-                  setPlaylistName(text);
-                  setError('');
-                }
-              }}
-              maxLength={MAX_NAME_LENGTH}
-              placeholderTextColor={modalTextColor}
-            />
+              <TextInput
+                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+                value={playlistName}
+                onChangeText={text => {
+                  if (text.length <= MAX_NAME_LENGTH) {
+                    setPlaylistName(text);
+                    setError('');
+                  }
+                }}
+                maxLength={MAX_NAME_LENGTH}
+                placeholderTextColor={modalTextColor}
+              />
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
             <View style={styles.buttonGroup}>
@@ -372,44 +312,44 @@ const Library = () => {
       </Modal>
       
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
-      <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
-      <View style={styles.customModalContent}>
-        <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-          Edita el nombre de tu lista
-        </Text>
-        <View style={styles.inputContainer}>
-        <TextInput
-            style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-            value={editPlaylistName}
-            onChangeText={text => {
-              if (text.length <= MAX_NAME_LENGTH) {
-                setEditPlaylistName(text);
-                setError('');
-              }
-            }}
-            maxLength={MAX_NAME_LENGTH}
-            placeholderTextColor={modalTextColor}
-          />
-        </View>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity
-              style={styles.createButton}
-              onPress={() => handleUpdatePlaylist(selectedPlaylistName)}>
-              <Text style={styles.buttonText}>Actualizar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                setShowEditModal(false);
-                setError('');
-              }}>
-              <Text style={styles.buttonText}>Cerrar</Text>
-            </TouchableOpacity>
+        <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
+          <View style={styles.customModalContent}>
+            <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
+              Edita el nombre de tu lista
+            </Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+                value={editPlaylistName}
+                onChangeText={text => {
+                  if (text.length <= MAX_NAME_LENGTH) {
+                    setEditPlaylistName(text);
+                    setError('');
+                  }
+                }}
+                maxLength={MAX_NAME_LENGTH}
+                placeholderTextColor={modalTextColor}
+              />
+            </View>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.createButton}
+                onPress={() => handleUpdatePlaylist(selectedPlaylistName)}>
+                <Text style={styles.buttonText}>Actualizar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => {
+                  setShowEditModal(false);
+                  setError('');
+                }}>
+                <Text style={styles.buttonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
       <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
     </View>
   );

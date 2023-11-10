@@ -3,13 +3,11 @@ import { TouchableOpacity, Text, StyleSheet, View, Image } from 'react-native';
 
 interface FavoritePlaylistProps {
   handlePlayListView: (playlistName: string) => void;
-  colorSequence: string[];
   styles: any; 
 }
 
 const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({
   handlePlayListView,
-  colorSequence,
   styles,
 }) => {
   const favoritePlaylistName = 'Mis Favoritos';

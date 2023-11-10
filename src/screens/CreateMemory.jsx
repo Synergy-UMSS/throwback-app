@@ -282,8 +282,8 @@ const CrearMemoria = ({ navigation }) => {
         )}
         
         <Text style={styles.label}>Imagen:</Text> 
-        <Pressable style={styles.iconButton} onPress={selectImage}>
-         <Ionicons name="image-outline" size={40} color="black" />
+        <Pressable style={styles.button} onPress={selectImage}>
+          <Text style={styles.buttonText}>Añadir</Text>
         </Pressable>
 
          {/* Aquí se muestra la vista previa de la imagen */}
@@ -381,10 +381,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     alignSelf: 'center',
   },
-  iconButton: {
-    marginTop: 10,
-    alignSelf: 'center',
-    padding: 10,
+  
+  buttonText: {   //para el boton de añadir
+  color: 'white', 
+  fontSize: 16, 
+  fontWeight: 'bold', 
   },
 
   previewContainer: {
@@ -393,9 +394,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  previewImage: {
-    width: 200, // Establece el ancho de tu vista previa
-    height: 200, // Establece el alto de tu vista previa
+  previewImage: { //para la preisualizacion
+    width: 200, 
+    height: 200, 
     backgroundColor: '#ccc', // Un color de fondo en caso de que la imagen no cargue
   },
 

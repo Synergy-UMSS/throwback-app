@@ -23,6 +23,7 @@ import {
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MiniPlayer from '../components/MiniPlayer';
+import FavoritePlaylist from '../components/FavoritePlaylist';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -271,72 +272,68 @@ const Library = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {playlists.length === 0 ? (
-        <View style={styles.content}>
-          <Text style={[styles.message, { color: 'black' }]}>
-            Aún no tienes ninguna lista de reproducción, presiona "+" para crear una.
-          </Text>
-        </View>
-      ) : (
-      
-<ScrollView contentContainerStyle={styles.scrollContent}>
-{playlists.map((playlist, index) => {
-  const color = playlistColors[playlist] || getColorForPlaylist(index);
-  const imageIndex = index % images.length;
-  return (
-      <TouchableOpacity
-        key={index}
-        onPress={() => handlePlayListView(playlist)}
-        style={[styles.playlistContainer]}
-      >
-        <View
-          style={[
-            styles.playlistBackground,
-            { backgroundColor: `${color}B3` },
-                  ]}
-                />
-                <View style={styles.playlistBox}>
-                  <View style={styles.playlistContent}>
-                    <Image
-                      source={images[imageIndex]}
-                      style={styles.playlistImage}
-                    />
-                    <View style={[styles.playlistText, { width: 200 }]}>
-                      <Text
-                        style={styles.playlistName}
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
-                      >
-                        {playlist}
-                      </Text>
-                      <Text style={styles.playlistLabel}>Lista de reproducción</Text>
-                    </View>
-                    <Menu style={styles.menuContainer}>
-                      <MenuTrigger>
-                        <Icon
-                          name="more-vert"
-                          size={24}
-                          color="black"
-                          style={styles.menuIcon}
-                        />
-                      </MenuTrigger>
-                      <MenuOptions customStyles={optionsStyles}>
-                        <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
-                          <Text style={styles.optionText}>Editar</Text>
-                        </MenuOption>
-                        <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
-                          <Text style={styles.optionText}>Eliminar</Text>
-                        </MenuOption>
-                      </MenuOptions>
-                    </Menu>
+
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <FavoritePlaylist handlePlayListView={handlePlayListView}
+       colorSequence={colorSequence}
+       styles={styles} />
+        {playlists.map((playlist, index) => {
+          const color = playlistColors[playlist] || getColorForPlaylist(index);
+          const imageIndex = index % images.length;
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handlePlayListView(playlist)}
+              style={[styles.playlistContainer]}
+            >
+              <View
+                style={[
+                  styles.playlistBackground,
+                  { backgroundColor: `${color}B3` },
+                ]}
+              />
+              <View style={styles.playlistBox}>
+                <View style={styles.playlistContent}>
+                  <Image
+                    source={images[imageIndex]}
+                    style={styles.playlistImage}
+                  />
+                  <View style={[styles.playlistText, { width: 200 }]}>
+                    <Text
+                      style={styles.playlistName}
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                    >
+                      {playlist}
+                    </Text>
+                    <Text style={styles.playlistLabel}>Lista de reproducción</Text>
                   </View>
+                  <Menu style={styles.menuContainer}>
+                    <MenuTrigger>
+                      <Icon
+                        name="more-vert"
+                        size={24}
+                        color="black"
+                        style={styles.menuIcon}
+                      />
+                    </MenuTrigger>
+                    <MenuOptions customStyles={optionsStyles}>
+                      <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
+                        <Text style={styles.optionText}>Editar</Text>
+                      </MenuOption>
+                      <MenuOption
+                        onSelect={handleDeletePlaylist.bind(this, playlist)}
+                      >
+                        <Text style={styles.optionText}>Eliminar</Text>
+                      </MenuOption>
+                    </MenuOptions>
+                  </Menu>
                 </View>
-              </TouchableOpacity>
-            );
-          })}
-          <Text>{'\n\n'}</Text>
-        </ScrollView>
-      )}
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
           <View style={styles.customModalContent}>
@@ -601,5 +598,6 @@ const optionsStyles = {
     borderBottomColor: '#cccccc',
     borderBottomWidth: 1,
   }
+  
 };
 export default Library;

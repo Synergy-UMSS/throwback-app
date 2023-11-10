@@ -280,18 +280,21 @@ const CrearMemoria = ({ navigation }) => {
             maximumDate={new Date()} // Establece la fecha máxima como la fecha actual
           />
         )}
-        
+
         <Text style={styles.label}>Imagen:</Text> 
+        {/* Condición para mostrar el botón solo si imageUri es null */}
+        {!imageUri && (
         <Pressable style={styles.button} onPress={selectImage}>
           <Text style={styles.buttonText}>Añadir</Text>
         </Pressable>
-
-         {/* Aquí se muestra la vista previa de la imagen */}
+        )}
+        
+        {/* previsualizar la imagen */}
       {imageUri && (
         <View style={styles.previewContainer}>
           <Image source={{ uri: imageUri }} style={styles.previewImage} />
         </View>
-      )}
+        )}
 
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected}/>

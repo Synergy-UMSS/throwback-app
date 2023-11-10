@@ -17,7 +17,7 @@ const ImageFullWidth = ({ source }) => {
 const styles = StyleSheet.create({
   imagen: {
     width: screenWidth,
-    height: screenWidth * 0.47,
+    height: screenWidth * 0.42,
     resizeMode: 'contain',
     // backgroundColor:'red',
   },

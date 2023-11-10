@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Keyboard,
   TextInput,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,13 +17,13 @@ import * as Animatable from 'react-native-animatable';
 import MiniPlayer from '../components/MiniPlayer';
 import EmotionWithMemory from '../components/EmotionWithMemory';
 import Emocion from '../components/Emotion';
-import header from '../assets/header/image.png';
+import header from '../assets/header/image1.png';
 import ImageFullWidth from '../components/ImageFullWidth';
-
 const MemoryList = ({ navigation }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
 
   const abrirDetalles = (id, item, songForMemory, index) => {
     emotionWrapp = listaEmociones[index % listaEmociones.length];
@@ -92,10 +93,25 @@ const MemoryList = ({ navigation }) => {
       keyboardDidHideListener.remove();
     };
   }, []);
+  // const handleSearch = (term) => {
+  //   setSearchTerm(term);
+  // };
   const handleSearch = (term) => {
     setSearchTerm(term);
+    // if (term !== '') {
+    //   setIsSearchBarOpen(true);
+    // }
   };
-  const handleClearSearch = () => {
+  
+
+  const wait = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  };
+
+
+  const handleClearSearch = async () => { // Asegúrate de que la función sea asíncrona
+    
+    // await wait(5000);
     setSearchTerm('');
     Keyboard.dismiss();
   };
@@ -169,7 +185,9 @@ const MemoryList = ({ navigation }) => {
     ...filteredMemories.map(memory => ({ type: 'memory', data: memory })),
   ];
 
+  
   return (
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
     <View style={styles.container}>
       <FlatList
         data={dataWithSearch}
@@ -194,7 +212,7 @@ const MemoryList = ({ navigation }) => {
                 <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
                   <Animatable.View
                     animation="slideInLeft"
-                    duration={700}
+                    duration={300}
                     style={styles.iconAnimationContainer}
                   >
                     <MaterialIcons name="arrow-back" size={30} color="gray" />
@@ -204,9 +222,9 @@ const MemoryList = ({ navigation }) => {
               <Animatable.View 
                 style={[styles.inputContainer, { paddingLeft: isKeyboardOpen || searchTerm !== '' ? 50 : 10, width:'100%'}]}
                 transition="paddingLeft"
-                duration={700}
+                duration={300}
               >
-
+                <MaterialIcons name="search" size={25} color="gray" style={styles.iconLupa} />
                 <TextInput
                   style={styles.input}
                   onChangeText={handleSearch}
@@ -214,10 +232,7 @@ const MemoryList = ({ navigation }) => {
                   placeholder="Buscar memorias..."
                   onSubmitEditing={() => handleSearch(searchTerm)}
                 />
-
-
               </Animatable.View>
-            
               </View>
             );
           } else if (item.type === 'memory') {
@@ -236,16 +251,20 @@ const MemoryList = ({ navigation }) => {
         }}
         contentContainerStyle={{ paddingBottom: 22 }}
       />
-  
       <View style={styles.miniPlayerContainer}>
         <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
       </View>
     </View>
+    //{/* </TouchableWithoutFeedback> */}
   );
   
 };
 
 const styles = StyleSheet.create({
+  iconLupa: {
+    marginRight: -38,
+    marginLeft: 15, // Espacio entre el ícono y el texto
+  },
   container: {
     flex: 1,
     padding: 0,
@@ -264,6 +283,7 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: '#fcf4e7',
     marginBottom:15,
+    // backgroundColor:'yellow',
   },
   iconContainer: {
     justifyContent: 'center',
@@ -279,12 +299,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     // flex: 1,
     // width: 900,
-    
   },
   input: {
     flex: 1,
-    paddingHorizontal: 15,
-    borderWidth: 1,
+    paddingHorizontal: 45,
+    borderWidth: 1.5,
     borderColor: 'gray',
     borderRadius: 10,
     // backgroundColor: 'rgba(0, 0, 0, 0.9)',    

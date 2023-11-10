@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Connection from '../components/Connection';
-import TrackPlayer, { Event, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
+import TrackPlayer, { Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import { useSearchStore } from '../store/searchStore';
 import { usePlayerStore } from '../store/playerStore';
@@ -18,6 +19,12 @@ let color: string[] = [
   '#96ead280',
   '#FFC1D860',
 ];
+let colorSec: string[] = [
+  '#64556B',
+  '#4B7569',
+  '#80616C',
+];
+
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
 
@@ -32,6 +39,7 @@ const Player = ({ navigation, route }) => {
   const { setCurrentSong, currentSong } = usePlayerStore();
   const playState: State = usePlaybackState();
   const sliderWork = useProgress();
+  const [repeatMode, setRepeatMode] = useState('off');
   const [trackTitle, setTrackTitle] = useState();
   const [trackArtist, setTrackArtist] = useState();
   const [trackArtwork, setTrackArtwork] = useState();
@@ -127,7 +135,7 @@ const Player = ({ navigation, route }) => {
       sliderWork.position = 0;
       if (event.nextTrack !== null) {
         const idNumerico = parseInt(currentSong.id);
-        const track = await TrackPlayer.getTrack(parseInt(idNumerico));
+        const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));  //cambiara, para el azar no
         const { title, artwork, artist } = track;
         setTrackTitle(title);
         setTrackArtist(artist);
@@ -137,14 +145,42 @@ const Player = ({ navigation, route }) => {
     }
   });
 
+  const repeatIcon = () => {
+    if(repeatMode == 'off'){
+      return 'repeat-off';
+    };
+    if(repeatMode == 'track'){
+      return 'repeat';
+    };
+    if(repeatMode == 'repeat'){
+      return 'repeat';
+    };
+  };
+
+  const changeRepeatMode = () => {
+    if(repeatMode == 'off'){
+      TrackPlayer.setRepeatMode(RepeatMode.Track);
+      setRepeatMode('track');
+    };
+    if(repeatMode == 'track'){
+      TrackPlayer.setRepeatMode(RepeatMode.Off);
+      setRepeatMode('off');
+    };
+  };
+
+  const skipTo = async trackId => {
+    await TrackPlayer.skipToNext();
+  };
+
+  const previousTo = async trackId => {
+    await TrackPlayer.skipToPrevious();
+  }
   const changeValuesTrack = async () => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
       const idNumerico = parseInt(currentSong.id);
       console.log(idNumerico);
       const track = await TrackPlayer.getTrack(idNumerico);
-
-      console.log('banderitaaaa', track);
       if (track !== null) {
         const { title, artwork, artist } = track;
         setTrackTitle(title);
@@ -190,7 +226,7 @@ const Player = ({ navigation, route }) => {
       justifyContent: 'center',
     }}>
       <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="white" />
+        <Ionicons style={{ color: colorSec[currentSong.id % 3] }} name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
 
       <View style={style.container}>
@@ -212,10 +248,10 @@ const Player = ({ navigation, route }) => {
 
         <View>
           <View style={style.songDurationMain}>
-            <Text>
+            <Text style={style.songTimer}>
               {new Date(sliderWork.position * 1000).toLocaleTimeString().substring(3, 8)}
             </Text>
-            <Text>
+            <Text style={style.songTimer}>
               {new Date(sliderWork.duration * 1000).toLocaleTimeString().substring(3, 8)}
             </Text>
           </View>
@@ -224,18 +260,34 @@ const Player = ({ navigation, route }) => {
             value={sliderWork.position}
             minimumValue={0}
             maximumValue={sliderWork.duration}
-            thumbTintColor='pink'
-            minimumTrackTintColor='white'
-            maximumTrackTintColor='#FFFFFF80'
+            thumbTintColor= 'white'
+            minimumTrackTintColor={colorSec[currentSong.id % 3]}
+            maximumTrackTintColor={colorSec[currentSong.id % 3]}
             onSlidingComplete={isConnected ? async time => {
               await TrackPlayer.seekTo(time);
             } : undefined}
           />
         </View>
 
+        <View style={[style.songMainControl, { left: 45 }]}>
+          <TouchableOpacity>
+            <Ionicons name={playState !== State.Playing ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
+        </View>
         <View style={style.songControl}>
+          <TouchableOpacity onPress={() => previousTo()}>
+            <Ionicons name="play-skip-back-outline" size={35} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => playTrack(playState)}>
-            <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
+            <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={50} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => skipTo(currentSong.id)}>
+            <Ionicons name="play-skip-forward-outline" size={35} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
+        </View>
+        <View style={[style.songMainControl, { right: 45 }]}>
+          <TouchableOpacity onPress={changeRepeatMode}>
+            <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
 
@@ -298,6 +350,9 @@ const style = StyleSheet.create({
     height: 30,
     flexDirection: 'row',
   },
+  songTimer: {
+    color: '#3D3939',
+  },
   songDurationMain: {
     fontFamily: 'Quicksand-VariableFont',
     width: 300,
@@ -306,11 +361,18 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  songMainControl: {
+    position: 'absolute',
+    paddingBottom: 10,
+    zIndex: 1,
+    bottom: 80,
+  },
   songControl: {
-    width: 50,
-    height: 40,
+    width: '60%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
   },
   flechita: {
     justifyContent: 'flex-start',

@@ -48,6 +48,7 @@ const Player = ({ navigation, route }) => {
   const { isPaused, setIsPaused } = useControlPlayer();
   const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
   const [heartLikes, setHeartLikes] = useState({});
+  const [heartUpdate, setHeartUpdate] = useState(false);
   const [messageA, setMessageA] = useState('');
 
   const setPlayer = async () => {
@@ -165,6 +166,7 @@ const Player = ({ navigation, route }) => {
           })
             .then(() => {
               console.log('Dato cambiado con éxito');
+              setHeartUpdate(!heartUpdate);
               setHeartLikes((prevHeartLikes) => ({
                 ...prevHeartLikes,
                 [song.id]: !heartLikes[song.id],

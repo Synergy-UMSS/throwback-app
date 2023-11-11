@@ -293,16 +293,18 @@ const CrearMemoria = ({ navigation }) => {
 
         {/* previsualizar la imagen con boton de cierre */}
         {imageUri && (
-          <View style={styles.previewContainer}>
-            <Image source={{ uri: imageUri }} style={styles.previewImage} />
-            <Pressable
-              style={styles.closeButton}
-              onPress={() => {
-                // para la eliminacion de la vista previa con el botoncito
-                setImageUri(null);
-              }}>
-              <Ionicons name="close-circle-outline" size={28} color="black" />
-            </Pressable>
+          <View style={styles.containerImage}>
+            <View style={styles.previewContainer}>
+              <Image source={{ uri: imageUri }} style={styles.previewImage} />
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => {
+                  // para la eliminacion de la vista previa con el botoncito
+                  setImageUri(null);
+                }}>
+                <Ionicons name="close-circle-outline" size={28} color="black" />
+              </Pressable>
+            </View>
           </View>
         )}
 
@@ -400,13 +402,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  containerImage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   previewContainer: {
-    //position: 'relative',
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
     marginBottom: 3,
+    width: 250,
+    height: 250,
   },
 
   previewImage: { //para la previsualizacion
@@ -415,10 +424,11 @@ const styles = StyleSheet.create({
     height: 250,
     backgroundColor: '#ccc', // Un color de fondo en caso de que la imagen no cargue
   },
+
   closeButton: {
     position: 'absolute',
-    top: 11,
-    right: 65,
+    top: 8,
+    right: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.3)', // semitransparente :o
     borderRadius: 12,
     padding: 3,

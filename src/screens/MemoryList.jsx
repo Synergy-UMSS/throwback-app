@@ -129,27 +129,21 @@ const MemoryList = ({ navigation }) => {
     Keyboard.dismiss();
   };
 
-
+  // Lista de emociones
   const listaEmociones = [
-    'emo1',
-    'emo2',
-    'emo3',
-    'emo4',
-    'emo5',
-    'emo6',
-    'emo7',
-    'emo8',
-    'emo9',
-    'emo10',
-    'emo11',
-    'emo12',
-    'emo13',
-    'emo14',
+    'emo1', 'emo2', 'emo3',
+    'emo4', 'emo5', 'emo6',
+    'emo7', 'emo8', 'emo9',
+    'emo10','emo11','emo12',
+    'emo13','emo14',
   ];
 
+  // Función para filtrar recuerdos basados en el término de búsqueda
   const filterMemories = (term) => {
+    // Convertir el término de búsqueda a minúsculas
     const lowerCaseTerm = term.toLowerCase();
 
+    // Mapear los recuerdos y agregar información de búsqueda
     const memoriesWithIndexAndSpace = memories.map(memory => {
       const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
       const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
@@ -158,7 +152,7 @@ const MemoryList = ({ navigation }) => {
         `${lowerCaseTerm} `,
         titleIndex
       );
-    
+
       return {
         ...memory,
         titleIndex,
@@ -167,32 +161,33 @@ const MemoryList = ({ navigation }) => {
         followsSpaceInTitle
       };
     });
-    
 
+    // Filtrar y ordenar los recuerdos en función de los resultados de búsqueda
     return memoriesWithIndexAndSpace
-    .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
-    .sort((a, b) => {
-      if (a.isExactMatch && !b.isExactMatch) return -1;
-      if (!a.isExactMatch && b.isExactMatch) return 1;
-      if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
-      if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
-      if (a.titleIndex === b.titleIndex) {
-        if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
-        if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
-        if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
-          return a.title.localeCompare(b.title);
+      .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
+      .sort((a, b) => {
+        if (a.isExactMatch && !b.isExactMatch) return -1;
+        if (!a.isExactMatch && b.isExactMatch) return 1;
+        if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
+        if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
+        if (a.titleIndex === b.titleIndex) {
+          if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
+          if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
+          if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
+            return a.title.localeCompare(b.title);
+          }
         }
-      }
-      if (a.titleIndex !== b.titleIndex) {
-        return a.titleIndex - b.titleIndex;
-      }
-      return a.title.localeCompare(b.title);
-    });
-
+        if (a.titleIndex !== b.titleIndex) {
+          return a.titleIndex - b.titleIndex;
+        }
+        return a.title.localeCompare(b.title);
+      });
   };
 
+  // Filtrar los recuerdos en función del término de búsqueda actual
   const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
 
+  // Estructura de datos que incluye el tipo de elemento (búsqueda o recuerdo) y los datos correspondientes
   const dataWithSearch = [
     { type: 'search' },
     ...filteredMemories.map(memory => ({ type: 'memory', data: memory })),

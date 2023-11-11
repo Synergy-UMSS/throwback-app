@@ -103,7 +103,8 @@ const App = () => {
         screenOptions={({route}) => ({
           tabBarBackground: () => (
             <LinearGradient
-              colors={['rgba(120, 116, 116, 0.8)', 'rgba(38, 38, 38, 1)']}
+              // colors={['rgba(120, 116, 116, 0.1)', 'rgba(38, 38, 38, 1)']}
+              colors={['rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']}
               style={{
                 position: 'absolute',
                 left: 0,
@@ -115,7 +116,6 @@ const App = () => {
           ),
           tabBarActiveTintColor: '#ffffff',
           // tabBarInactiveTintColor: '#e4e6dc',
-
           tabBarInactiveTintColor: '#CECFC8',
           tabBarStyle: {
             backgroundColor: 'transparent',
@@ -141,7 +141,7 @@ const App = () => {
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({color, size}) => (
-              <Icon name="home" color={color} size={size + 8} />
+              <Icon name="home" color={color} size={size} />
             ),
             headerShown: false,
           }}
@@ -153,7 +153,7 @@ const App = () => {
           options={{
             tabBarLabel: 'Buscar',
             tabBarIcon: ({color, size}) => (
-              <FontAwesomeIcon name="search" color={color} size={size} />
+              <FontAwesomeIcon name="search" color={color} size={size-3} />
             ),
             headerShown: false,
           }}
@@ -165,7 +165,7 @@ const App = () => {
             tabBarLabel: 'Tu Biblioteca',
             tabBarIcon: ({color, size}) => (
               <View style={{ borderRadius: 7 / 2, overflow: 'hidden' }}>
-              <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size, height: size }} />
+              <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size-4, height: size-4 }} />
             </View>
             ),
             headerShown: false,

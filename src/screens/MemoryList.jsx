@@ -25,7 +25,7 @@ import firestore from '@react-native-firebase/firestore';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-
+import TermsList from '../components/TermsList';
 
 
 const MemoryList = ({ navigation }) => {
@@ -215,7 +215,10 @@ const MemoryList = ({ navigation }) => {
         renderItem={({ item, index }) => {
           if (item.type === 'search') {
             return (
+              <>
+              <TermsList/>
               <View style={styles.searchContainer}>
+                
               {(isKeyboardOpen || searchTerm !== '') && (
                 <TouchableOpacity onPress={handleClearSearch} style={styles.iconContainer}>
                   <Animatable.View
@@ -242,6 +245,7 @@ const MemoryList = ({ navigation }) => {
                 />
               </Animatable.View>
               </View>
+              </>
             );
           } else if (item.type === 'memory') {
             const songForMemory = findSongById(item.data.song);

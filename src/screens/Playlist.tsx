@@ -84,6 +84,10 @@ const Playlist = ({ navigation }) => {
 		navigation.navigate('SearchSelect');
 	};
 
+	const goToPlayer = () => {
+		navigation.navigate('Player', {undefined, playlistFlow: false})
+	};
+
 	const imagePlaylist = {
 		display: 'flex',
 		backgroundColor: 'white',
@@ -165,6 +169,11 @@ const Playlist = ({ navigation }) => {
 					</Text>
 				</View>
 				<View style={style.mainContainer}>
+					<View>
+						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
+							<Ionicons name='play-circle-outline' size={50} color='black'/>
+						</TouchableOpacity>
+					</View>
 					<View style={style.container}>
 						<TouchableOpacity style={style.add} onPress={goToSearchSelect}>
 							<Octicons name='diff-added' size={40} color='black' />
@@ -183,7 +192,6 @@ const Playlist = ({ navigation }) => {
 					</View>
 				</View>
 			)}
-			<ConnectionGral />
 			<MiniPlayer navigation={navigation} style={style.miniPlayer} />
 		</SafeAreaView>
 	);
@@ -202,7 +210,7 @@ const style = StyleSheet.create({
 		backgroundColor: 'pink',
 		alignContent: 'center',
 		alignItems: 'center',
-		paddingTop: 40,
+		paddingTop: 20,
 	},
 	containerimgs: {
 		display: 'flex',
@@ -285,4 +293,8 @@ const style = StyleSheet.create({
 		color: 'black', // Color del texto del mensaje de éxito
 		textAlign: 'center',
 	},
+	buttonPlay: {
+		justifyContent: 'center',
+		textAlign: 'center',
+	}
 });

@@ -291,10 +291,18 @@ const CrearMemoria = ({ navigation }) => {
           </Pressable>
         )}
 
-        {/* previsualizar la imagen */}
+        {/* previsualizar la imagen con boton de cierre */}
         {imageUri && (
           <View style={styles.previewContainer}>
             <Image source={{ uri: imageUri }} style={styles.previewImage} />
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => {
+                // para la eliminacion de la vista previa con el botoncito
+                setImageUri(null);
+              }}>
+              <Ionicons name="close-circle-outline" size={28} color="black" />
+            </Pressable>
           </View>
         )}
 
@@ -394,19 +402,27 @@ const styles = StyleSheet.create({
   },
 
   previewContainer: {
+    //position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 3,
   },
 
-  previewImage: { //para la preisualizacion
+  previewImage: { //para la previsualizacion
     borderRadius: 20,
     width: 250,
     height: 250,
     backgroundColor: '#ccc', // Un color de fondo en caso de que la imagen no cargue
   },
-
+  closeButton: {
+    position: 'absolute',
+    top: 11,
+    right: 65,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)', // semitransparente :o
+    borderRadius: 12,
+    padding: 3,
+  },
 });
 
 export default CrearMemoria;

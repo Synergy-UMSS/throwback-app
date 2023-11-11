@@ -188,6 +188,14 @@ const App = () => {
             headerShown: false,
           }}
         />
+        <Tab.Screen
+          name="PlaylistFav"
+          component={PlaylistFav}
+          options={{
+            tabBarButton: (props) => null,
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     );
   }

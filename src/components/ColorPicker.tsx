@@ -11,20 +11,20 @@ interface ColorIcons {
 }
 
 const ColorPickers: React.FC<ColorPickersProps> = ({ onSelectColor }) => {
-  const [selectedColor, setSelectedColor] = useState<string>('red');
+  const [selectedColor, setSelectedColor] = useState<string>('#FBBAA4');
 
-  const colorIcons: ColorIcons = {
-    red: require('../assets/colors/red.png'),
-    orange: require('../assets/colors/orange.png'),
-    yellow: require('../assets/colors/yellow.png'),
-    menta: require('../assets/colors/menta.png'),
-    purple: require('../assets/colors/purple.png'),
-    pink: require('../assets/colors/pink.png'),
-    cyan: require('../assets/colors/cian.png'),
-    defaultColor: 'red',
+  const colorImages: ColorIcons = {
+    '#FBBAA4': require('../assets/colors/red.png'),
+    '#F0CC8B': require('../assets/colors/orange.png'),
+    '#F6EA7E': require('../assets/colors/yellow.png'),
+    '#CDF4C9': require('../assets/colors/menta.png'),
+    '#C7A9D5': require('../assets/colors/purple.png'),
+    '#FFC1D8': require('../assets/colors/pink.png'),
+    '#9DE0D2': require('../assets/colors/cian.png'),
+    defaultColor: '#FBBAA4',
   };
 
-  const colors = ["red", "orange", "yellow", "menta", "purple", "pink", "cyan"];
+  const colors = ["#FBBAA4", "#F0CC8B", "#F6EA7E", "#CDF4C9", "#C7A9D5", "#FFC1D8", "#9DE0D2"];
 
   return (
     <View style={styles.colorPickerContainer}>
@@ -48,7 +48,7 @@ const ColorPickers: React.FC<ColorPickersProps> = ({ onSelectColor }) => {
           }}
         >
           <Image
-            source={colorIcons[color]}
+            source={colorImages[color]}
             style={styles.colorImage}
           />
         </TouchableOpacity>
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   colorPickerContainer: {
     flexDirection: 'row',
     marginTop: 10,
+    marginBottom: 20, // Ajusta este valor según tus preferencias
   },
   colorPicker: {
     width: 30,

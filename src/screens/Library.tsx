@@ -23,6 +23,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MiniPlayer from '../components/MiniPlayer';
 import FavoritePlaylist from '../components/FavoritePlaylist';
+import ColorPicker from '../components/ColorPicker';
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -35,16 +36,21 @@ const Library = () => {
   const [error, setError] = useState('');
   const navigation = useNavigation();
   const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
+  const [selectedColor, setSelectedColor] = useState('red'); 
 
   const modalBackgroundColor = '#ffffff';
   const modalTextColor = '#000000';
 
   const MAX_NAME_LENGTH = 50;
 
+  const handleColorSelection = (selectedColor: string) => {
+    setSelectedColor(selectedColor);
+  };
+
+
   const handlePressMore = () => {
     setShowModal(true);
   };
-
 
   //CREATE
  
@@ -59,8 +65,9 @@ const Library = () => {
         name: name,
         createDate: timestamp,
         songs: [],
+        color: selectedColor, // Asegúrate de asignar el color seleccionado
       };
-
+      
       firestore()
         .collection('playlists')
         .add(playlistData)
@@ -280,21 +287,24 @@ const Library = () => {
             <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Dale un nombre a tu lista
             </Text>
-            <View style={[styles.inputContainer, {marginBottom: 20}]}>
-              <TextInput
-                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-                value={playlistName}
-                onChangeText={text => {
-                  if (text.length <= MAX_NAME_LENGTH) {
-                    setPlaylistName(text);
-                    setError('');
-                  }
-                }}
-                maxLength={MAX_NAME_LENGTH}
-                placeholderTextColor={modalTextColor}
-              />
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
-            </View>
+            <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+          value={playlistName}
+          onChangeText={(text) => {
+            if (text.length <= MAX_NAME_LENGTH) {
+              setPlaylistName(text);
+              setError('');
+            }
+          }}
+          maxLength={MAX_NAME_LENGTH}
+          placeholderTextColor={modalTextColor}
+        />
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+     </View>
+
+<ColorPicker onSelectColor={(selectedColor) => handleColorSelection(selectedColor)} />
+  
             <View style={styles.buttonGroup}>
               <TouchableOpacity
                 style={styles.createButton}

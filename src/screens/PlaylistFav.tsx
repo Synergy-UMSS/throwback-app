@@ -7,23 +7,23 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
-import { usePlaylistStore } from '../store/playlistStore';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 import { useSearchStore } from '../store/searchStore';
 import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import ConnectionGral from '../components/ConnectionGral';
+import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
 const PlaylistFav = ({ navigation }) => {
 	const ruta = useRoute();
-	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
+	const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
 
 	useEffect(() => {
 		const unsubscribe = firestore()
 			.collection('playlist_fav')
-			.doc(currentPlaylist.id)
+			.doc(currentPlaylistfav.id)
 			.onSnapshot(
 				doc => {
 					const playlistData = doc.data();
@@ -36,7 +36,7 @@ const PlaylistFav = ({ navigation }) => {
 			);
 
 		return () => unsubscribe();
-	}, [currentPlaylist.id]);
+	}, [currentPlaylistfav.id]);
 
 	let cond = localSongsAdded.length > 3;
 
@@ -47,7 +47,7 @@ const PlaylistFav = ({ navigation }) => {
 					<SongSuggestion
 						key={index}
 						songData={song}
-						screenSelected='playlist'
+						screenSelected='playlistfav'
 					/>
 				))}
 			</View>

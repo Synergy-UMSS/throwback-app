@@ -14,7 +14,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
-import { usePlaylistStore } from '../store/playlistStore';
+import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
 let color: string[] = [
   '#C7A9D560',
@@ -46,7 +46,7 @@ const Player = ({ navigation, route }) => {
   const { isPlaying, setIsPlaying } = useContext(MusicPlayerContext);
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
-  const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+  const {currentPlaylistfav, setCurrentPlaylistfav} = usePlaylistFavGlobal();
   const [heartLike, setHeartLike] = useState(false);
 
   const setPlayer = async () => {
@@ -159,7 +159,7 @@ const Player = ({ navigation, route }) => {
   };
 
   const addSongPlaylistFav = async (song) => {
-    const docRef = firestore().collection('playlist_fav').doc(currentPlaylist.id);
+    const docRef = firestore().collection('playlist_fav').doc(currentPlaylistfav.id);
     docRef.get().then((doc) => {
       if (doc.exists) {
         const data = doc.data();
@@ -240,6 +240,7 @@ const Player = ({ navigation, route }) => {
       console.log('Error en changeValuesTrack:', e);
     }
   };
+  
 
   useEffect(() => {
     const changeAndPlayTrack = async () => {

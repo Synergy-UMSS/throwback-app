@@ -46,8 +46,9 @@ const Player = ({ navigation, route }) => {
   const { isPlaying, setIsPlaying } = useContext(MusicPlayerContext);
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
-  const {currentPlaylistfav, setCurrentPlaylistfav} = usePlaylistFavGlobal();
+  const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
   const [heartLikes, setHeartLikes] = useState({});
+  const [messageA, setMessageA] = useState('');
 
   const setPlayer = async () => {
     try {
@@ -137,13 +138,13 @@ const Player = ({ navigation, route }) => {
   });
 
   const repeatIcon = () => {
-    if(repeatMode == 'off'){
+    if (repeatMode == 'off') {
       return 'repeat-off';
     };
-    if(repeatMode == 'track'){
+    if (repeatMode == 'track') {
       return 'repeat';
     };
-    if(repeatMode == 'repeat'){
+    if (repeatMode == 'repeat') {
       return 'repeat';
     };
   };
@@ -154,24 +155,25 @@ const Player = ({ navigation, route }) => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs_fav)) {
-          if(heartLikes[song.id]){
+          if (heartLikes[song.id]) {
             data.songs_fav = data.songs_fav.filter((favSong) => favSong.id !== song.id);
-          }else{
-            data.songs_fav.push(song);                    
+          } else {
+            data.songs_fav.push(song);
           }
-    docRef.update({
+          docRef.update({
             songs_fav: data.songs_fav
-    })
-      .then(() => {
-        console.log('Dato cambiado con éxito');
-        setHeartLikes((prevHeartLikes) => ({
-          ...prevHeartLikes,
-          [song.id]: !heartLikes[song.id],
-        }));
-      })
-      .catch((error) => {
-        console.error('Error al actualizar el documento:', error);
-      });
+          })
+            .then(() => {
+              console.log('Dato cambiado con éxito');
+              setHeartLikes((prevHeartLikes) => ({
+                ...prevHeartLikes,
+                [song.id]: !heartLikes[song.id],
+              }));
+              setMessageA(heartLikes[song.id] ? 'Canción removida de lista de favoritos.' : 'Canción agregada a lista de favoritos.');
+            })
+            .catch((error) => {
+              console.error('Error al actualizar el documento:', error);
+            });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -179,14 +181,21 @@ const Player = ({ navigation, route }) => {
         console.error('No se encontró el documento');
       }
     });
-  }; 
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setMessageA('');
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [messageA]);
 
   const changeRepeatMode = () => {
-    if(repeatMode == 'off'){
+    if (repeatMode == 'off') {
       TrackPlayer.setRepeatMode(RepeatMode.Track);
       setRepeatMode('track');
     };
-    if(repeatMode == 'track'){
+    if (repeatMode == 'track') {
       TrackPlayer.setRepeatMode(RepeatMode.Off);
       setRepeatMode('off');
     };
@@ -231,8 +240,8 @@ const Player = ({ navigation, route }) => {
 
   useEffect(() => {
     const updatedHeartLikes = {};
-    if(currentPlaylistfav && currentPlaylistfav.songs_fav){
-      currentPlaylistfav.songs_fav.forEach((favSong) => { 
+    if (currentPlaylistfav && currentPlaylistfav.songs_fav) {
+      currentPlaylistfav.songs_fav.forEach((favSong) => {
         updatedHeartLikes[favSong.id] = true;
       });
     };
@@ -293,7 +302,7 @@ const Player = ({ navigation, route }) => {
             value={sliderWork.position}
             minimumValue={0}
             maximumValue={sliderWork.duration}
-            thumbTintColor= 'white'
+            thumbTintColor='white'
             minimumTrackTintColor={colorSec[currentSong.id % 3]}
             maximumTrackTintColor={colorSec[currentSong.id % 3]}
             onSlidingComplete={isConnected ? async time => {
@@ -312,17 +321,23 @@ const Player = ({ navigation, route }) => {
             <Ionicons name="play-skip-forward-outline" size={35} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
-        <View style={[style.songMainControl, { left: 45 }]}>
-          <TouchableOpacity onPress={() => addSongPlaylistFav(currentSong)}>
-            <Ionicons name={heartLikes[currentSong.id]? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
-          </TouchableOpacity>
-        </View>
-        <View style={[style.songMainControl, { right: 45 }]}>
-          <TouchableOpacity onPress={changeRepeatMode}>
-            <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
-          </TouchableOpacity>
+        <View style={style.songMainControl}>
+          <View style={{ left: -125 }}>
+            <TouchableOpacity onPress={() => addSongPlaylistFav(currentSong)}>
+              <Ionicons name={heartLikes[currentSong.id] ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ right: -125 }}>
+            <TouchableOpacity onPress={changeRepeatMode}>
+              <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
+            </TouchableOpacity>
+          </View>
         </View>
 
+        {messageA &&
+          <View style={style.messageHeart}>
+            <Text style={{ color: 'white', textAlign:'center' }}>{messageA}</Text>
+          </View>}
         <Connection />
       </View>
     </SafeAreaView>
@@ -393,11 +408,18 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  songMainControl: {
+  messageHeart: {
     position: 'absolute',
-    paddingBottom: 10,
-    zIndex: 1,
-    bottom: 80,
+    backgroundColor: '#505050',
+    justifyContent:'center',
+    height: 40,
+    width: '100%',
+    bottom: 0,
+  },
+  songMainControl: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    top: 0,
   },
   songControl: {
     width: '60%',

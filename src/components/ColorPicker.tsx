@@ -11,7 +11,7 @@ interface ColorIcons {
 }
 
 const ColorPickers: React.FC<ColorPickersProps> = ({ onSelectColor }) => {
-  const [selectedColor, setSelectedColor] = useState<string>('red'); // Estado para el color seleccionado
+  const [selectedColor, setSelectedColor] = useState<string>('red');
 
   const colorIcons: ColorIcons = {
     red: require('../assets/colors/red.png'),
@@ -34,7 +34,12 @@ const ColorPickers: React.FC<ColorPickersProps> = ({ onSelectColor }) => {
           style={[
             styles.colorPicker,
             {
-              backgroundColor: color === selectedColor ? 'lightgray' : 'transparent', // Resalta el color seleccionado
+              borderColor: color === selectedColor ? 'black' : 'transparent',
+              borderWidth: color === selectedColor ? 1 : 0,
+              shadowColor: 'rgba(0, 0, 0, 0.1)',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: color === selectedColor ? 1 : 0,
+              shadowRadius: 4,
             },
           ]}
           onPress={() => {
@@ -61,6 +66,8 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     marginHorizontal: 5,
+    borderRadius: 15,
+    overflow: 'hidden',
   },
   colorImage: {
     flex: 1,

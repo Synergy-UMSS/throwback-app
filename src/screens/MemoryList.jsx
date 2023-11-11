@@ -50,6 +50,7 @@ const MemoryList = ({ navigation }) => {
   // Estados para almacenar datos
   const [memories, setMemories] = useState([]);
   const [songs, setSongs] = useState([]);
+  const [selectedEmotion, setSelectedEmotion] = useState('Todo');
 
   // Efecto para cargar recuerdos desde Firestore
   useEffect(() => {
@@ -139,53 +140,125 @@ const MemoryList = ({ navigation }) => {
   ];
 
   // Función para filtrar recuerdos basados en el término de búsqueda
+  // const filterMemories = (term) => {
+  //   // Convertir el término de búsqueda a minúsculas
+  //   const lowerCaseTerm = term.toLowerCase();
+
+  //   // Mapear los recuerdos y agregar información de búsqueda
+  //   const memoriesWithIndexAndSpace = memories.map(memory => {
+  //     const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
+  //     const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
+  //     const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm;
+  //     const followsSpaceInTitle = memory.title.toLowerCase().startsWith(
+  //       `${lowerCaseTerm} `,
+  //       titleIndex
+  //     );
+
+  //     return {
+  //       ...memory,
+  //       titleIndex,
+  //       descriptionIndex,
+  //       isExactMatch,
+  //       followsSpaceInTitle
+  //     };
+  //   });
+
+  //   // Filtrar y ordenar los recuerdos en función de los resultados de búsqueda
+  //   return memoriesWithIndexAndSpace
+  //     .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
+  //     .sort((a, b) => {
+  //       if (a.isExactMatch && !b.isExactMatch) return -1;
+  //       if (!a.isExactMatch && b.isExactMatch) return 1;
+  //       if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
+  //       if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
+  //       if (a.titleIndex === b.titleIndex) {
+  //         if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
+  //         if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
+  //         if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
+  //           return a.title.localeCompare(b.title);
+  //         }
+  //       }
+  //       if (a.titleIndex !== b.titleIndex) {
+  //         return a.titleIndex - b.titleIndex;
+  //       }
+  //       return a.title.localeCompare(b.title);
+  //     });
+  // };
+
   const filterMemories = (term) => {
     // Convertir el término de búsqueda a minúsculas
     const lowerCaseTerm = term.toLowerCase();
 
     // Mapear los recuerdos y agregar información de búsqueda
     const memoriesWithIndexAndSpace = memories.map(memory => {
-      const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
-      const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
-      const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm;
-      const followsSpaceInTitle = memory.title.toLowerCase().startsWith(
-        `${lowerCaseTerm} `,
-        titleIndex
-      );
+        const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
+        const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
+        const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm;
+        const followsSpaceInTitle = memory.title.toLowerCase().startsWith(
+            `${lowerCaseTerm} `,
+            titleIndex
+        );
 
-      return {
-        ...memory,
-        titleIndex,
-        descriptionIndex,
-        isExactMatch,
-        followsSpaceInTitle
-      };
+        return {
+            ...memory,
+            titleIndex,
+            descriptionIndex,
+            isExactMatch,
+            followsSpaceInTitle
+        };
     });
 
-    // Filtrar y ordenar los recuerdos en función de los resultados de búsqueda
-    return memoriesWithIndexAndSpace
-      .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
-      .sort((a, b) => {
+    // Filtrar basado en el término de búsqueda
+    // let filteredBySearch = memoriesWithIndexAndSpace
+    //     .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1);
+
+    // // Filtro adicional por emoción
+    // let finalFilteredMemories;
+    // if (selectedEmotion === 'todo') {
+    //     finalFilteredMemories = filteredBySearch;
+    // } else {
+    //     finalFilteredMemories = filteredBySearch
+    //         .filter(memory => memory.emotion === selectedEmotion);
+    // }
+    let filteredBySearch = lowerCaseTerm 
+        ? memoriesWithIndexAndSpace.filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
+        : memoriesWithIndexAndSpace;
+
+    // Filtro adicional por emoción
+    let finalFilteredMemories = selectedEmotion === 'Todo'
+        ? filteredBySearch
+        : filteredBySearch.filter(memory => memory.emotion === selectedEmotion);
+
+        if (selectedEmotion === 'Todo' && !lowerCaseTerm) {
+          // Ordenar por fecha de creación si la emoción es "todo" y no hay término de búsqueda
+          finalFilteredMemories.sort((a, b) => new Date(b.memoryDate) - new Date(a.memoryDate));
+      } else {
+    // Ordenamiento final
+    finalFilteredMemories.sort((a, b) => {
         if (a.isExactMatch && !b.isExactMatch) return -1;
         if (!a.isExactMatch && b.isExactMatch) return 1;
         if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
         if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
         if (a.titleIndex === b.titleIndex) {
-          if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
-          if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
-          if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
-            return a.title.localeCompare(b.title);
-          }
+            if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
+            if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
+            if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
+                return a.title.localeCompare(b.title);
+            }
         }
         if (a.titleIndex !== b.titleIndex) {
-          return a.titleIndex - b.titleIndex;
+            return a.titleIndex - b.titleIndex;
         }
         return a.title.localeCompare(b.title);
-      });
-  };
+    });
+  }
+  return finalFilteredMemories;
+};
+
 
   // Filtrar los recuerdos en función del término de búsqueda actual
-  const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
+  // const filteredMemories = searchTerm.length > 0 ? filterMemories(searchTerm) : memories;
+  const filteredMemories = filterMemories(searchTerm);
 
   // Estructura de datos que incluye el tipo de elemento (búsqueda o recuerdo) y los datos correspondientes
   const dataWithSearch = [
@@ -193,7 +266,10 @@ const MemoryList = ({ navigation }) => {
     ...filteredMemories.map(memory => ({ type: 'memory', data: memory })),
   ];
 
-  
+  const handleTermSelect = (selectedTerm) => {
+    console.log('Selected Term:', selectedTerm);
+    setSelectedEmotion(selectedTerm);
+  };
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
     <View style={styles.container}>
@@ -216,7 +292,7 @@ const MemoryList = ({ navigation }) => {
           if (item.type === 'search') {
             return (
               <>
-              <TermsList/>
+              <TermsList onTermSelect={handleTermSelect} />
               <View style={styles.searchContainer}>
                 
               {(isKeyboardOpen || searchTerm !== '') && (

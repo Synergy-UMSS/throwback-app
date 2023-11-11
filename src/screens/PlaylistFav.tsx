@@ -3,19 +3,15 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import firestore from '@react-native-firebase/firestore';
-import { useRoute } from '@react-navigation/native';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
-import { useSearchStore } from '../store/searchStore';
 import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import ConnectionGral from '../components/ConnectionGral';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
 const PlaylistFav = ({ navigation }) => {
-	const ruta = useRoute();
 	const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
@@ -36,8 +32,6 @@ const PlaylistFav = ({ navigation }) => {
 			);
 		return () => unsubscribe();
 	}, [currentPlaylistfav.id]);
-
-	let cond = localSongsAdded.length > 3;
 
 	const displaySongsInPlayLists = () => {
 		return (
@@ -61,8 +55,8 @@ const PlaylistFav = ({ navigation }) => {
 		display: 'flex',
 		backgroundColor: 'white',
 		margin: 2,
-		width: cond ? 90 : 190,
-		height: cond ? 110 : 230,
+		width: 190,
+		height: 230,
 	}
 
 	return (
@@ -84,7 +78,7 @@ const PlaylistFav = ({ navigation }) => {
 				<View style={style.mainContainer}>
 					<View>
 						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
-							<Ionicons name='play-circle-outline' size={50} color='black'/>
+							<Ionicons name='play-circle-outline' size={50}  color='#2F3243'/>
 						</TouchableOpacity>
 					</View>
 					{displaySongsInPlayLists()}
@@ -123,7 +117,7 @@ const style = StyleSheet.create({
 		flexWrap: 'wrap',
 		width: 200,
 		height: 240,
-		backgroundColor: '#B6BFD4',
+		backgroundColor: 'white',
 		alignContent: 'center',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -204,5 +198,5 @@ const style = StyleSheet.create({
 		alignItems: 'center',
 		marginTop:0,
 		paddingTop: 0,
-	}
+	},
 });

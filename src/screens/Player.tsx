@@ -48,6 +48,8 @@ const Player = ({ navigation, route }) => {
   const { isPaused, setIsPaused } = useControlPlayer();
   const {currentPlaylistfav, setCurrentPlaylistfav} = usePlaylistFavGlobal();
   const [heartLike, setHeartLike] = useState(false);
+  const [playlistFav, setPlaylistFav] =  useState([]);
+  const [heartLikes, setHeartLikes] = useState({});
 
   const setPlayer = async () => {
     try {
@@ -120,16 +122,6 @@ const Player = ({ navigation, route }) => {
     fetchDataAndInitializePlayer();
   }, []);
 
-  useEffect(() => {
-    const fetchDataAndInitializePlayer = async () => {
-      await fetchSongs();
-      await setPlayer();
-      setPlayerInitialized(true);
-    };
-
-    fetchDataAndInitializePlayer();
-  }, []);
-
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
       //solucion a bug del bug Dx para que no se guarde la anterior duracion de la cancion
@@ -164,21 +156,20 @@ const Player = ({ navigation, route }) => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs_fav)) {
-          if(heartLike){
-            data.songs_fav.pop();
+          if(heartLikes[song.id]){
+            data.songs_fav = data.songs_fav.filter((favSong) => favSong.id !== song.id);
           }else{
-            data.songs_fav.push(song);
+            data.songs_fav.push(song);                    
           }
     docRef.update({
             songs_fav: data.songs_fav
     })
       .then(() => {
         console.log('Dato cambiado con éxito');
-        if(heartLike){
-          setHeartLike(false);
-        }else{
-          setHeartLike(true);
-        }
+        setHeartLikes((prevHeartLikes) => ({
+          ...prevHeartLikes,
+          [song.id]: !heartLikes[song.id],
+        }));
       })
       .catch((error) => {
         console.error('Error al actualizar el documento:', error);
@@ -240,7 +231,18 @@ const Player = ({ navigation, route }) => {
       console.log('Error en changeValuesTrack:', e);
     }
   };
-  
+
+  useEffect(() => {
+    const updatedHeartLikes = {};
+    console.log(currentPlaylistfav);
+    if(currentPlaylistfav && currentPlaylistfav.songs_fav){
+      currentPlaylistfav.songs_fav.forEach((favSong) => { 
+        updatedHeartLikes[favSong.id] = true;
+      });
+    }
+    console.log(currentPlaylistfav.songs_fav);
+    setHeartLikes(updatedHeartLikes);
+  }, [currentPlaylistfav]);
 
   useEffect(() => {
     const changeAndPlayTrack = async () => {
@@ -317,7 +319,7 @@ const Player = ({ navigation, route }) => {
         </View>
         <View style={[style.songMainControl, { left: 45 }]}>
           <TouchableOpacity onPress={() => addSongPlaylistFav(currentSong)}>
-            <Ionicons name={heartLike? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
+            <Ionicons name={heartLikes[currentSong.id]? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
         <View style={[style.songMainControl, { right: 45 }]}>

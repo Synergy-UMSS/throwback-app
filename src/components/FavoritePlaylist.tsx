@@ -14,6 +14,7 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
   const navigation = useNavigation();
   const favoritePlaylistName = 'Mis Favoritos';
   const {currentPlaylistfav, setCurrentPlaylistfav} = usePlaylistFavGlobal();
+  
   const handlePlayListView2 = async () => {
     try {
       const playlistRef = await firestore()
@@ -23,9 +24,15 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
-        {/*setCurrentPlaylistfav({ id: playlistId, name: 'favs' });*/}
+        const playlistData = playlistDoc.data();
+        setCurrentPlaylistfav({
+           id: playlistId, 
+           name: 'favs', 
+           songs_fav: playlistData.songs_fav,
+        });
+        console.log('thats', currentPlaylistfav);
         navigation.navigate('PlaylistFav');
-        console.log(currentPlaylistfav);
+        
       } else {
         console.error(
           `No se encontró ninguna playlist con el nombre ${playlistName}`,

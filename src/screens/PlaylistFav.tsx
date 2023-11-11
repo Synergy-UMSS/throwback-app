@@ -34,7 +34,6 @@ const PlaylistFav = ({ navigation }) => {
 					console.error('Error al obtener el documento:', error);
 				}
 			);
-
 		return () => unsubscribe();
 	}, [currentPlaylistfav.id]);
 

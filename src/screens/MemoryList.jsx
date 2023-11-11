@@ -31,73 +31,73 @@ import * as Animatable from 'react-native-animatable';
 const MemoryList = ({ navigation }) => {
 
   // Estados
-const [searchTerm, setSearchTerm] = useState('');
-const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
 
-// Función para abrir detalles
-const abrirDetalles = (id, item, songForMemory, index) => {
-  emotionWrapp = listaEmociones[index % listaEmociones.length];
-  navigation.navigate('MemoryDetail', {
-    memoriaId: id,
-    memorie: item,
-    song: songForMemory,
-    index: index,
-    emotion: emotionWrapp,
-  });
-};
+  // Función para abrir detalles
+  const abrirDetalles = (id, item, songForMemory, index) => {
+    emotionWrapp = listaEmociones[index % listaEmociones.length];
+    navigation.navigate('MemoryDetail', {
+      memoriaId: id,
+      memorie: item,
+      song: songForMemory,
+      index: index,
+      emotion: emotionWrapp,
+    });
+  };
 
-// Estados para almacenar datos
-const [memories, setMemories] = useState([]);
-const [songs, setSongs] = useState([]);
+  // Estados para almacenar datos
+  const [memories, setMemories] = useState([]);
+  const [songs, setSongs] = useState([]);
 
-// Efecto para cargar recuerdos desde Firestore
-useEffect(() => {
-  const unsubscribeMemories = firestore()
-    .collection('memories')
-    .orderBy('createDate', 'desc')
-    .onSnapshot(
-      querySnapshot => {
-        const memoryData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setMemories(memoryData);
-        // console.log('>>>>>> Memories');
-      },
-      error => {
-        console.log(error);
-      },
-    );
-  return () => unsubscribeMemories();
-}, []);
+  // Efecto para cargar recuerdos desde Firestore
+  useEffect(() => {
+    const unsubscribeMemories = firestore()
+      .collection('memories')
+      .orderBy('createDate', 'desc')
+      .onSnapshot(
+        querySnapshot => {
+          const memoryData = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setMemories(memoryData);
+          // console.log('>>>>>> Memories');
+        },
+        error => {
+          console.log(error);
+        },
+      );
+    return () => unsubscribeMemories();
+  }, []);
 
-// Efecto para cargar canciones desde Firestore
-useEffect(() => {
-  const unsubscribeSongs = firestore()
-    .collection('songs')
-    .onSnapshot(
-      querySnapshot => {
-        const songData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setSongs(songData);
-        // console.log('>>>>>> Songs');
-      },
-      error => {
-        console.log(error);
-      },
-    );
-  return () => unsubscribeSongs();
-}, []);
+  // Efecto para cargar canciones desde Firestore
+  useEffect(() => {
+    const unsubscribeSongs = firestore()
+      .collection('songs')
+      .onSnapshot(
+        querySnapshot => {
+          const songData = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setSongs(songData);
+          // console.log('>>>>>> Songs');
+        },
+        error => {
+          console.log(error);
+        },
+      );
+    return () => unsubscribeSongs();
+  }, []);
 
-// Función para encontrar una canción por su ID
-const findSongById = songId => {
-  return songs.find(song => song.id === songId);
-};
+  // Función para encontrar una canción por su ID
+  const findSongById = songId => {
+    return songs.find(song => song.id === songId);
+  };
 
-
+  // Efectos para detectar el teclado y su estado
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
       setIsKeyboardOpen(true);
@@ -111,25 +111,20 @@ const findSongById = songId => {
       keyboardDidHideListener.remove();
     };
   }, []);
-  // const handleSearch = (term) => {
-  //   setSearchTerm(term);
-  // };
+
+  // Función para manejar la búsqueda
   const handleSearch = (term) => {
     setSearchTerm(term);
-    // if (term !== '') {
-    //   setIsSearchBarOpen(true);
-    // }
   };
-  
 
+  // Función para esperar una cantidad de milisegundos
   const wait = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
   };
 
-
-  const handleClearSearch = async () => { // Asegúrate de que la función sea asíncrona
-    
-    // await wait(5000);
+  // Función para limpiar la búsqueda y ocultar el teclado
+  const handleClearSearch = async () => {
+    // Puedes usar wait() aquí si deseas una pausa antes de limpiar la búsqueda
     setSearchTerm('');
     Keyboard.dismiss();
   };

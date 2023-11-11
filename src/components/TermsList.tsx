@@ -4,7 +4,17 @@ import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
 const TermsList = () => {
   const [selectedTerm, setSelectedTerm] = useState(null);
 
-  const terms = ['Todo', 'Bedroom', 'Bsdjix', 'Bedsidjs', 'Bsijsd', 'Living Room', 'Bathroom', 'Kitchen', 'Guest Room'];
+  const termsWithColors = {
+    Todo: { backgroundColor: 'blue', color: 'white' },
+    Bedroom: { backgroundColor: 'red', color: 'white' },
+    Bsdjix: { backgroundColor: 'green', color: 'white' },
+    Bedsidjs: { backgroundColor: 'orange', color: 'white' },
+    Bsijsd: { backgroundColor: 'purple', color: 'white' },
+    'Living Room': { backgroundColor: 'yellow', color: 'black' },
+    Bathroom: { backgroundColor: 'pink', color: 'white' },
+    Kitchen: { backgroundColor: 'brown', color: 'white' },
+    'Guest Room': { backgroundColor: 'grey', color: 'white' },
+  };
 
   return (
     <ScrollView
@@ -12,19 +22,21 @@ const TermsList = () => {
       contentContainerStyle={styles.scrollViewContainer}
       showsHorizontalScrollIndicator={false}
     >
-      {terms.map((term) => (
+      {Object.keys(termsWithColors).map((term) => (
         <TouchableOpacity
           key={term}
           style={[
             styles.term,
-            term === selectedTerm && styles.selectedTerm,
+            selectedTerm === term && { ...styles.selectedTerm, ...termsWithColors[term] },
           ]}
           onPress={() => setSelectedTerm(term)}
         >
-          <Text style={[
-            styles.text,
-            term === selectedTerm && styles.selectedText,
-          ]}>
+          <Text
+            style={[
+              styles.text,
+              selectedTerm === term && { ...styles.selectedText, color: termsWithColors[term].color },
+            ]}
+          >
             {term}
           </Text>
         </TouchableOpacity>
@@ -36,36 +48,30 @@ const TermsList = () => {
 const styles = StyleSheet.create({
   scrollViewContainer: {
     alignItems: 'center',
-    paddingTop: 10, // Agrega un poco de padding vertical para mejor estética
+    paddingTop: 12,
     paddingBottom: 5,
     marginHorizontal: 10,
-    // backgroundColor:'red',
-    },
+    backgroundColor: '#fcf4e7',
+  },
   term: {
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderRadius: 10,
-    paddingHorizontal: 6,
+    borderColor: 'gray',
+    paddingHorizontal: 10,
     paddingVertical: 2,
-    color:'gray',
-    // backgroundColor:'red',
-    marginHorizontal: 5, // Esto separará los términos horizontalmente
-    // padding: 8, // Padding para que el toque sea más fácil
+    marginHorizontal: 5,
   },
   selectedTerm: {
-    // paddingHorizontal:10,
-    // paddingVertical:2,
-    // Estilos adicionales para el término seleccionado
-    backgroundColor: '#000000', // Cambia esto a cualquier color de fondo que desees
-    // borderRadius: 15, // Esto redondeará las esquinas
+    paddingHorizontal: 20,
+    paddingVertical: 0,
   },
   text: {
-    fontSize: 15, // Tamaño inicial del texto
-    color: 'gray', // Color inicial del texto
-    // Agrega otros estilos para el texto si es necesario
+    fontSize: 15,
+    color: 'gray',
   },
   selectedText: {
-    fontWeight: 'bold', // Esto hará que el texto sea negrita
-    fontSize: 20, // Esto aumentará el tamaño del texto
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 

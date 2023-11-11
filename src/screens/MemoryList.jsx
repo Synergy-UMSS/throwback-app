@@ -1,3 +1,4 @@
+// React y componentes de React Native
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -10,75 +11,92 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
+// Importaciones de recursos (como imágenes)
+import header from '../assets/header/image1.png';
+import ImageFullWidth from '../components/ImageFullWidth';
+
+// Importaciones de tus componentes personalizados
+import MiniPlayer from '../components/MiniPlayer';
+import EmotionWithMemory from '../components/EmotionWithMemory';
+import Emocion from '../components/Emotion';
+
+// Importaciones de módulos externos
 import firestore from '@react-native-firebase/firestore';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-import MiniPlayer from '../components/MiniPlayer';
-import EmotionWithMemory from '../components/EmotionWithMemory';
-import Emocion from '../components/Emotion';
-import header from '../assets/header/image1.png';
-import ImageFullWidth from '../components/ImageFullWidth';
+
+
+
 const MemoryList = ({ navigation }) => {
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  // Estados
+const [searchTerm, setSearchTerm] = useState('');
+const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
 
-  const abrirDetalles = (id, item, songForMemory, index) => {
-    emotionWrapp = listaEmociones[index % listaEmociones.length];
-    navigation.navigate('MemoryDetail', {
-      memoriaId: id,
-      memorie: item,
-      song: songForMemory,
-      index: index,
-      emotion: emotionWrapp,
-    });
-  };
-  const [memories, setMemories] = useState([]);
-  const [songs, setSongs] = useState([]);
+// Función para abrir detalles
+const abrirDetalles = (id, item, songForMemory, index) => {
+  emotionWrapp = listaEmociones[index % listaEmociones.length];
+  navigation.navigate('MemoryDetail', {
+    memoriaId: id,
+    memorie: item,
+    song: songForMemory,
+    index: index,
+    emotion: emotionWrapp,
+  });
+};
 
-  useEffect(() => {
-    const unsubscribeMemories = firestore()
-      .collection('memories')
-      .orderBy('createDate', 'desc')
-      .onSnapshot(
-        querySnapshot => {
-          const memoryData = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setMemories(memoryData);
-          console.log('>>>>>> Memories');
-        },
-        error => {
-          console.log(error);
-        },
-      );
-    return () => unsubscribeMemories();
-  }, []);
-  useEffect(() => {
-    const unsubscribeSongs = firestore()
-      .collection('songs')
-      .onSnapshot(
-        querySnapshot => {
-          const songData = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setSongs(songData);
-          console.log('>>>>>> Songs');
-        },
-        error => {
-          console.log(error);
-        },
-      );
-    return () => unsubscribeSongs();
-  }, []);
+// Estados para almacenar datos
+const [memories, setMemories] = useState([]);
+const [songs, setSongs] = useState([]);
 
-  const findSongById = songId => {
-    return songs.find(song => song.id === songId);
-  };
+// Efecto para cargar recuerdos desde Firestore
+useEffect(() => {
+  const unsubscribeMemories = firestore()
+    .collection('memories')
+    .orderBy('createDate', 'desc')
+    .onSnapshot(
+      querySnapshot => {
+        const memoryData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setMemories(memoryData);
+        // console.log('>>>>>> Memories');
+      },
+      error => {
+        console.log(error);
+      },
+    );
+  return () => unsubscribeMemories();
+}, []);
+
+// Efecto para cargar canciones desde Firestore
+useEffect(() => {
+  const unsubscribeSongs = firestore()
+    .collection('songs')
+    .onSnapshot(
+      querySnapshot => {
+        const songData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setSongs(songData);
+        // console.log('>>>>>> Songs');
+      },
+      error => {
+        console.log(error);
+      },
+    );
+  return () => unsubscribeSongs();
+}, []);
+
+// Función para encontrar una canción por su ID
+const findSongById = songId => {
+  return songs.find(song => song.id === songId);
+};
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {

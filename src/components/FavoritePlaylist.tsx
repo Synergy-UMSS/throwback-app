@@ -30,7 +30,6 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
            name: 'favs', 
            songs_fav: playlistData.songs_fav,
         });
-        console.log('thats', currentPlaylistfav);
         navigation.navigate('PlaylistFav');
         
       } else {

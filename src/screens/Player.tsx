@@ -47,8 +47,6 @@ const Player = ({ navigation, route }) => {
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
   const {currentPlaylistfav, setCurrentPlaylistfav} = usePlaylistFavGlobal();
-  const [heartLike, setHeartLike] = useState(false);
-  const [playlistFav, setPlaylistFav] =  useState([]);
   const [heartLikes, setHeartLikes] = useState({});
 
   const setPlayer = async () => {
@@ -205,7 +203,6 @@ const Player = ({ navigation, route }) => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
       const idNumerico = parseInt(currentSong.id);
-      console.log(idNumerico);
       const track = await TrackPlayer.getTrack(idNumerico);
       if (track !== null) {
         const { title, artwork, artist } = track;
@@ -234,13 +231,11 @@ const Player = ({ navigation, route }) => {
 
   useEffect(() => {
     const updatedHeartLikes = {};
-    console.log(currentPlaylistfav);
     if(currentPlaylistfav && currentPlaylistfav.songs_fav){
       currentPlaylistfav.songs_fav.forEach((favSong) => { 
         updatedHeartLikes[favSong.id] = true;
       });
-    }
-    console.log(currentPlaylistfav.songs_fav);
+    };
     setHeartLikes(updatedHeartLikes);
   }, [currentPlaylistfav]);
 

@@ -1,5 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Image } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import { usePlaylistStore } from '../store/playlistStore';
+import { useNavigation } from '@react-navigation/native';
 
 interface FavoritePlaylistProps {
   handlePlayListView: (playlistName: string) => void;
@@ -7,16 +10,34 @@ interface FavoritePlaylistProps {
   styles: any; 
 }
 
-const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({
-  handlePlayListView,
-  colorSequence,
-  styles,
-}) => {
+const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, colorSequence, styles,}) => {
+  const navigation = useNavigation();
   const favoritePlaylistName = 'Mis Favoritos';
-
+  const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+  const handlePlayListView2 = async () => {
+    try {
+      const playlistRef = await firestore()
+        .collection('playlist_fav')
+        .where('name', '==', 'favs')
+        .get();
+      if (!playlistRef.empty) {
+        const playlistDoc = playlistRef.docs[0];
+        const playlistId = playlistDoc.id;
+        setCurrentPlaylist({ id: playlistId, name: 'favs' });
+        navigation.navigate('PlaylistFav');
+        console.log(currentPlaylist);
+      } else {
+        console.error(
+          `No se encontró ninguna playlist con el nombre ${playlistName}`,
+        );
+      }
+    } catch (error) {
+      console.error('Error al obtener la playlist:', error);
+    }
+  };
   return (
     <TouchableOpacity
-      onPress={() => handlePlayListView(favoritePlaylistName)}
+      onPress={() => handlePlayListView2() }
       style={[styles.playlistContainer, { marginBottom: 10 }]}
     >
       <View
@@ -44,4 +65,4 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({
 };
 
 export default FavoritePlaylist;
-;
+

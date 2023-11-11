@@ -14,45 +14,20 @@ import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import ConnectionGral from '../components/ConnectionGral';
 
-const Playlist = ({ navigation }) => {
+const PlaylistFav = ({ navigation }) => {
 	const ruta = useRoute();
-	const { playlistName, playlistId } = ruta.params;
 	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
-	const {isConnected} = useConnectionGlobal();
-	
-	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
-
-	useEffect(() => {
-		const unsubscribeFocus = navigation.addListener('focus', () => {
-			showHistoryTrue();
-		});
-		return () => {
-			unsubscribeFocus();
-		};
-	}, [navigation]);
-
-	useEffect(() => {
-		if (isAdded) {
-			const timeout = setTimeout(() => {
-				setIsAdded(false);
-			}, 1000); // Cambia 3000 a la cantidad de milisegundos que desees (por ejemplo, 3000 para 3 segundos).
-
-			return () => {
-				clearTimeout(timeout);
-			};
-		}
-	}, [isAdded]);
 
 	useEffect(() => {
 		const unsubscribe = firestore()
-			.collection('playlists')
+			.collection('playlist_fav')
 			.doc(currentPlaylist.id)
 			.onSnapshot(
 				doc => {
 					const playlistData = doc.data();
-					const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
+					const songsData = playlistData.songs_fav || []; // Si songs no está definido, se establece como un arreglo vacío
 					setLocalSongsAdded(songsData);
 				},
 				error => {
@@ -63,7 +38,6 @@ const Playlist = ({ navigation }) => {
 		return () => unsubscribe();
 	}, [currentPlaylist.id]);
 
-	let imgs;
 	let cond = localSongsAdded.length > 3;
 
 	const displaySongsInPlayLists = () => {
@@ -79,10 +53,6 @@ const Playlist = ({ navigation }) => {
 			</View>
 		)
 	};
-	const goToSearchSelect = () => {
-		setIsAdded(false);
-		navigation.navigate('SearchSelect');
-	};
 
 	const goToPlayer = () => {
 		navigation.navigate('Player', {undefined, playlistFlow: false})
@@ -94,64 +64,8 @@ const Playlist = ({ navigation }) => {
 		margin: 2,
 		width: cond ? 90 : 190,
 		height: cond ? 110 : 230,
-	};
-	if (cond) {
-		imgs = (
-			<>
-				{localSongsAdded[0].artwork ? (
-					typeof localSongsAdded[0].artwork === 'number' ? (
-						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[1].artwork ? (
-					typeof localSongsAdded[1].artwork === 'number' ? (
-						<Image source={localSongsAdded[1].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[1].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[2].artwork ? (
-					typeof localSongsAdded[2].artwork === 'number' ? (
-						<Image source={localSongsAdded[2].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[2].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[3].artwork ? (
-					typeof localSongsAdded[3].artwork === 'number' ? (
-						<Image source={localSongsAdded[3].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[3].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-			</>
-		);
-
-	} else {
-		if (localSongsAdded.length > 0) {
-			imgs = localSongsAdded[0].artwork ? (
-				typeof localSongsAdded[0].artwork === 'number' ? (
-					<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-				) : (
-					<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-				)
-			) : (
-				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-			)
-		} else {
-			imgs = <Image source={require('../assets/logo.png')} style={imagePlaylist} />
-		}
 	}
+
 	return (
 		<SafeAreaView style={style.MainMainContainer}>
 			<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
@@ -160,12 +74,12 @@ const Playlist = ({ navigation }) => {
 			<ScrollView style={style.scrollStyle}>
 				<View style={style.portada}>
 					<View style={style.containerimgs}>
-						{imgs}
+						<Image source={require('../assets/playlist/heart.png')} style={imagePlaylist} />
 					</View>
 				</View>
 				<View style={style.textTitle}>
 					<Text style={style.mtext}>
-						{playlistName !== null && playlistName !== undefined ? playlistName : currentPlaylist.name}
+						Tus favoritos
 					</Text>
 				</View>
 				<View style={style.mainContainer}>
@@ -173,14 +87,6 @@ const Playlist = ({ navigation }) => {
 						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
 							<Ionicons name='play-circle-outline' size={50} color='black'/>
 						</TouchableOpacity>
-					</View>
-					<View style={style.container}>
-						<TouchableOpacity style={style.add} onPress={goToSearchSelect}>
-							<Octicons name='diff-added' size={40} color='black' />
-						</TouchableOpacity>
-						<View style={style.textContainer}>
-							<Text style={style.texts}>Agregar una canción</Text>
-						</View>
 					</View>
 					{displaySongsInPlayLists()}
 				</View>
@@ -197,17 +103,17 @@ const Playlist = ({ navigation }) => {
 	);
 };
 
-export default Playlist;
+export default PlaylistFav;
 
 const style = StyleSheet.create({
 	MainMainContainer: {
 		flex: 1,
-		backgroundColor: 'pink',
+		backgroundColor: '#B6BFD4',
 		paddingBottom: 10,
 	},
 	portada: {
 		/*flex: 1,*/
-		backgroundColor: 'pink',
+		backgroundColor: '#B6BFD4',
 		alignContent: 'center',
 		alignItems: 'center',
 		paddingTop: 20,
@@ -218,7 +124,7 @@ const style = StyleSheet.create({
 		flexWrap: 'wrap',
 		width: 200,
 		height: 240,
-		backgroundColor: 'white',
+		backgroundColor: '#B6BFD4',
 		alignContent: 'center',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -238,7 +144,7 @@ const style = StyleSheet.create({
 		fontWeight: '400',
 	},
 	mainContainer: {
-		backgroundColor: 'pink',
+		backgroundColor: '#B6BFD4',
 	
 	},
 	container: {

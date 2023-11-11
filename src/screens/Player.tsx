@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
+import firestore from '@react-native-firebase/firestore';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,6 +14,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
+import { usePlaylistStore } from '../store/playlistStore';
 
 let color: string[] = [
   '#C7A9D560',
@@ -25,9 +27,7 @@ let colorSec: string[] = [
   '#80616C',
 ];
 
-
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
-
 const tracks = [];
 
 const Player = ({ navigation, route }) => {
@@ -46,6 +46,8 @@ const Player = ({ navigation, route }) => {
   const { isPlaying, setIsPlaying } = useContext(MusicPlayerContext);
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
+  const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+  const [heartLike, setHeartLike] = useState(false);
 
   const setPlayer = async () => {
     try {
@@ -113,7 +115,6 @@ const Player = ({ navigation, route }) => {
     const fetchDataAndInitializePlayer = async () => {
       await fetchSongs();
       await setPlayer();
-      console.log('Player initialized:', playerInitialized);
       setPlayerInitialized(true);
     };
     fetchDataAndInitializePlayer();
@@ -156,6 +157,40 @@ const Player = ({ navigation, route }) => {
       return 'repeat';
     };
   };
+
+  const addSongPlaylistFav = async (song) => {
+    const docRef = firestore().collection('playlist_fav').doc(currentPlaylist.id);
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (Array.isArray(data.songs_fav)) {
+          if(heartLike){
+            data.songs_fav.pop();
+          }else{
+            data.songs_fav.push(song);
+          }
+    docRef.update({
+            songs_fav: data.songs_fav
+    })
+      .then(() => {
+        console.log('Dato cambiado con éxito');
+        if(heartLike){
+          setHeartLike(false);
+        }else{
+          setHeartLike(true);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al actualizar el documento:', error);
+      });
+        } else {
+          console.error('El campo songs no es un arreglo o no existe');
+        }
+      } else {
+        console.error('No se encontró el documento');
+      }
+    });
+  }; 
 
   const changeRepeatMode = () => {
     if(repeatMode == 'off'){
@@ -268,12 +303,6 @@ const Player = ({ navigation, route }) => {
             } : undefined}
           />
         </View>
-
-        <View style={[style.songMainControl, { left: 45 }]}>
-          <TouchableOpacity>
-            <Ionicons name={playState !== State.Playing ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
-          </TouchableOpacity>
-        </View>
         <View style={style.songControl}>
           <TouchableOpacity onPress={() => previousTo()}>
             <Ionicons name="play-skip-back-outline" size={35} color={colorSec[currentSong.id % 3]} />
@@ -283,6 +312,11 @@ const Player = ({ navigation, route }) => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => skipTo(currentSong.id)}>
             <Ionicons name="play-skip-forward-outline" size={35} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
+        </View>
+        <View style={[style.songMainControl, { left: 45 }]}>
+          <TouchableOpacity onPress={() => addSongPlaylistFav(currentSong)}>
+            <Ionicons name={heartLike? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
         <View style={[style.songMainControl, { right: 45 }]}>

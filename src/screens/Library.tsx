@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   TouchableOpacity,
   TextInput,
@@ -18,7 +19,7 @@ import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger
+  MenuTrigger,
 } from 'react-native-popup-menu';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MiniPlayer from '../components/MiniPlayer';
@@ -65,7 +66,7 @@ const Library = () => {
         name: name,
         createDate: timestamp,
         songs: [],
-        color: selectedColor, // Asegúrate de asignar el color seleccionado
+        color: selectedColor,
       };
       
       firestore()
@@ -77,7 +78,7 @@ const Library = () => {
             console.log('Se ha creado la playlist:', name, 'con ID:', playlistId);
             const updatedPlaylists = [name, ...playlists];
             setPlaylists(updatedPlaylists);
-            setPlaylistName('');
+            resetModal(); 
             setShowModal(false);
           });
         })
@@ -86,7 +87,7 @@ const Library = () => {
         });
     }
   };
-
+  
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
@@ -179,11 +180,16 @@ const Library = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const resetModal = () => {
+    setPlaylistName('');
     setError('');
   };
-
+  
+  const handleCloseModal = () => {
+    setShowModal(false);
+    resetModal(); 
+  };
+  
   //DELETE
   const handleDeletePlaylist = async (playlistName) => {
     Alert.alert(
@@ -244,6 +250,10 @@ const Library = () => {
               style={[styles.playlistContainer]}
             >
               <View style={styles.playlistBox}>
+              <Image
+                  source={require('../assets/playlist/nota.png')} 
+                  style={styles.playlistImage}
+                />
                 <View style={styles.playlistContent}>
                   <View style={[styles.playlistText, { width: 200 }]}>
                     <Text
@@ -476,6 +486,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'left',
   },
+  playlistImage: {
+    width: 40,  
+    height: 40, 
+    marginRight: 10, 
+    resizeMode: 'cover', 
+  },  
   playlistContainer: {
     marginVertical: 10,
     marginHorizontal: 10,
@@ -512,19 +528,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  playlistText: {
+  playlistText: { 
+    flex: 1, 
     marginLeft: 10,
-    width: 200, 
-  },
-  playlistImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    marginLeft: -10,
   },
   menuContainer: {
-    position: 'absolute',
-    right: -30,
+    marginLeft: 'auto', 
+    paddingRight: 30,    
+    position: 'relative', 
+    left: -10, 
   },
   optionText: {
     color: '#000000', 
@@ -533,15 +545,15 @@ const styles = StyleSheet.create({
 });
 const optionsStyles = {
   optionsContainer: {
-    marginTop: 10,
-    marginLeft: 0,
     width: 130,
-    // elevation: 0,
+    marginLeft: 0,
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',
     backgroundColor: 'white',
     padding: 5,
+    position: 'absolute' as 'absolute', // Ajusta el tipo de posición
+    left: -10,
   },
   optionWrapper: {
     margin: 5,

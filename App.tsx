@@ -78,7 +78,7 @@ function MemoryNavigator() {
             marginLeft: 0,
           },
           headerShown: false,
-          cardStyle: {backgroundColor: '#fcf4e7'},
+          cardStyle: {backgroundColor: '#e4e6dc'},
         }}
       />
       <Stack.Screen name="Reproductor" component={Reproductor} />

@@ -1,10 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect }  from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet, Dimensions, View } from 'react-native';
 
 const TermsList = ({ onTermSelect }) => {
-  const [selectedTerm, setSelectedTerm] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState('Todo');
   const scrollViewRef = useRef(null);
   const termRefs = useRef({});
+//   React.useEffect(() => {
+//     onTermSelect('Todo');
+//   }, [onTermSelect]);
 
   const termsWithColors = {
     Todo: { backgroundColor: 'gray', color: 'white' },
@@ -34,7 +37,8 @@ const TermsList = ({ onTermSelect }) => {
     emo6: { name: 'Indeciso', backgroundColor:  '#B6BFD4', textColor: 'black' },
     emo9: { name: 'Juguetón', backgroundColor:  '#F6EA7E', textColor: 'black' },
   };
-  
+
+
   const handleTermPress = (term) => {
     setSelectedTerm(term);
     onTermSelect(term);
@@ -91,7 +95,8 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 5,
     marginHorizontal: 10,
-    backgroundColor: '#fcf4e7',
+    // backgroundColor: '#fcf4e7',
+    backgroundColor: '#e4e6dc',
   },
   term: {
     borderWidth: 1.5,

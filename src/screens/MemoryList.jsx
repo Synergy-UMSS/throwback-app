@@ -1,5 +1,5 @@
 // React y componentes de React Native
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -35,6 +35,7 @@ const MemoryList = ({ navigation }) => {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
 
+  
   // Función para abrir detalles
   const abrirDetalles = (id, item, songForMemory, index) => {
     emotionWrapp = listaEmociones[index % listaEmociones.length];
@@ -51,7 +52,7 @@ const MemoryList = ({ navigation }) => {
   const [memories, setMemories] = useState([]);
   const [songs, setSongs] = useState([]);
   const [selectedEmotion, setSelectedEmotion] = useState('Todo');
-
+  
   // Efecto para cargar recuerdos desde Firestore
   useEffect(() => {
     const unsubscribeMemories = firestore()
@@ -266,10 +267,11 @@ const MemoryList = ({ navigation }) => {
     ...filteredMemories.map(memory => ({ type: 'memory', data: memory })),
   ];
 
-  const handleTermSelect = (selectedTerm) => {
-    console.log('Selected Term:', selectedTerm);
+  const handleTermSelect = useCallback((selectedTerm) => {
+    // console.log('Selected Term:', selectedTerm);
     setSelectedEmotion(selectedTerm);
-  };
+  }, []); 
+
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
     <View style={styles.container}>
@@ -369,7 +371,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: 10,
     height: 60,
-    backgroundColor: '#fcf4e7',
+    // backgroundColor: '#fcf4e7',
+    backgroundColor: '#e4e6dc',
     marginBottom:15,
     // backgroundColor:'yellow',
   },

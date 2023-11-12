@@ -6,7 +6,6 @@ import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
 interface FavoritePlaylistProps {
   handlePlayListView: (playlistName: string) => void;
-  colorSequence: string[];
   styles: any; 
 }
 

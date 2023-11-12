@@ -67,6 +67,26 @@ const CrearMemoria = ({ navigation }) => {
     setShowName(true);
   };
 
+  // para la alertita de eliminar
+  const confirmImageRemoval = () => {
+    Alert.alert(
+      "Alerta", 
+      "¿Deseas eliminar esta imagen?", 
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancelado"),
+          style: "cancel",
+        },
+        {
+          text: "Aceptar",
+          onPress: () => setImageUri(null), 
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const handleDescriptionChange = (newText) => {
     const sanitizedText = newText.replace(/(\r\n|\n|\r)/g, '');
     setDescription(sanitizedText);
@@ -205,6 +225,9 @@ const CrearMemoria = ({ navigation }) => {
       }
     };
     //hasta aqui los permisos
+
+
+
   };
 
 
@@ -298,10 +321,8 @@ const CrearMemoria = ({ navigation }) => {
               <Image source={{ uri: imageUri }} style={styles.previewImage} />
               <Pressable
                 style={styles.closeButton}
-                onPress={() => {
-                  // para la eliminacion de la vista previa con el botoncito
-                  setImageUri(null);
-                }}>
+                onPress={confirmImageRemoval}  //alertita
+              >
                 <Ionicons name="close-circle-outline" size={28} color="black" />
               </Pressable>
             </View>

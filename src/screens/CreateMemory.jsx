@@ -70,8 +70,8 @@ const CrearMemoria = ({ navigation }) => {
   // para la alertita de eliminar
   const confirmImageRemoval = () => {
     Alert.alert(
-      "Alerta", 
-      "¿Deseas eliminar esta imagen?", 
+      "Confirmación", 
+      "¿Estás seguro de que deseas eliminar esta imagen?", 
       [
         {
           text: "Cancelar",

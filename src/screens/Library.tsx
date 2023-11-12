@@ -41,12 +41,15 @@ const Library = () => {
 
   const modalBackgroundColor = '#ffffff';
   const modalTextColor = '#000000';
+  const [modalColor, setModalColor] = useState('#FBBAA4');
 
   const MAX_NAME_LENGTH = 50;
 
   const handleColorSelection = (selectedColor: string) => {
     setSelectedColor(selectedColor);
+    setModalColor(selectedColor);
   };
+  
 
 
   const handlePressMore = () => {
@@ -292,7 +295,7 @@ const Library = () => {
         })}
       </ScrollView>
       <Modal visible={showModal} animationType="slide" transparent={true}>
-        <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
+      <View style={[styles.modalContainer, { backgroundColor: modalColor }]}>
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Dale un nombre a tu lista
@@ -314,7 +317,6 @@ const Library = () => {
      </View>
 
 <ColorPicker onSelectColor={(selectedColor) => handleColorSelection(selectedColor)} />
-  
             <View style={styles.buttonGroup}>
               <TouchableOpacity
                 style={styles.createButton}
@@ -332,7 +334,7 @@ const Library = () => {
       </Modal>
       
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
-        <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
+      <View style={[styles.modalContainer, { backgroundColor: modalColor }]}>
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
               Edita el nombre de tu lista

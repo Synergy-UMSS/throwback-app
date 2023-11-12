@@ -11,6 +11,7 @@ import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
 import Playlist from './src/screens/Playlist';
+import PlaylistFav from './src/screens/PlaylistFav';
 import Library from './src/screens/Library';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -187,6 +188,14 @@ const App = () => {
             headerShown: false,
           }}
         />
+        <Tab.Screen
+          name="PlaylistFav"
+          component={PlaylistFav}
+          options={{
+            tabBarButton: (props) => null,
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     );
   }
@@ -243,6 +252,11 @@ const App = () => {
             <Stack.Screen
               name="Playlist"
               component={Playlist}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="PlaylistFav"
+              component={PlaylistFav}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

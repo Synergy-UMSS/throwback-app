@@ -185,6 +185,9 @@ const SongSuggestion = ({songData, screenSelected}) => {
             </MenuOptions>
           </Menu>
         )}
+        {screenSelected === 'playlistfav' && (
+          <></>
+        )}
       </View>
       {screenSelected === 'search' && (
         <Modal visible={showOptions} animationType="slide" transparent={true}>

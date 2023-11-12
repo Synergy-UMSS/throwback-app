@@ -3,68 +3,35 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
 import SongSuggestion from '../components/SongSuggestion';
 import firestore from '@react-native-firebase/firestore';
-import { useRoute } from '@react-navigation/native';
-import { usePlaylistStore } from '../store/playlistStore';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
-import { useSearchStore } from '../store/searchStore';
 import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import ConnectionGral from '../components/ConnectionGral';
+import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
-const Playlist = ({ navigation }) => {
-	const ruta = useRoute();
-	const { playlistName, playlistId } = ruta.params;
-	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
+const PlaylistFav = ({ navigation }) => {
+	const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
-	const {isConnected} = useConnectionGlobal();
-	
-	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
-
-	useEffect(() => {
-		const unsubscribeFocus = navigation.addListener('focus', () => {
-			showHistoryTrue();
-		});
-		return () => {
-			unsubscribeFocus();
-		};
-	}, [navigation]);
-
-	useEffect(() => {
-		if (isAdded) {
-			const timeout = setTimeout(() => {
-				setIsAdded(false);
-			}, 1000); // Cambia 3000 a la cantidad de milisegundos que desees (por ejemplo, 3000 para 3 segundos).
-
-			return () => {
-				clearTimeout(timeout);
-			};
-		}
-	}, [isAdded]);
 
 	useEffect(() => {
 		const unsubscribe = firestore()
-			.collection('playlists')
-			.doc(currentPlaylist.id)
+			.collection('playlist_fav')
+			.doc(currentPlaylistfav.id)
 			.onSnapshot(
 				doc => {
 					const playlistData = doc.data();
-					const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
+					const songsData = playlistData.songs_fav || []; // Si songs no está definido, se establece como un arreglo vacío
 					setLocalSongsAdded(songsData);
 				},
 				error => {
 					console.error('Error al obtener el documento:', error);
 				}
 			);
-
 		return () => unsubscribe();
-	}, [currentPlaylist.id]);
-
-	let imgs;
-	let cond = localSongsAdded.length > 3;
+	}, [currentPlaylistfav.id]);
 
 	const displaySongsInPlayLists = () => {
 		return (
@@ -73,15 +40,11 @@ const Playlist = ({ navigation }) => {
 					<SongSuggestion
 						key={index}
 						songData={song}
-						screenSelected='playlist'
+						screenSelected='playlistfav'
 					/>
 				))}
 			</View>
 		)
-	};
-	const goToSearchSelect = () => {
-		setIsAdded(false);
-		navigation.navigate('SearchSelect');
 	};
 
 	const goToPlayer = () => {
@@ -92,66 +55,10 @@ const Playlist = ({ navigation }) => {
 		display: 'flex',
 		backgroundColor: 'white',
 		margin: 2,
-		width: cond ? 90 : 190,
-		height: cond ? 110 : 230,
-	};
-	if (cond) {
-		imgs = (
-			<>
-				{localSongsAdded[0].artwork ? (
-					typeof localSongsAdded[0].artwork === 'number' ? (
-						<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[1].artwork ? (
-					typeof localSongsAdded[1].artwork === 'number' ? (
-						<Image source={localSongsAdded[1].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[1].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[2].artwork ? (
-					typeof localSongsAdded[2].artwork === 'number' ? (
-						<Image source={localSongsAdded[2].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[2].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-				{localSongsAdded[3].artwork ? (
-					typeof localSongsAdded[3].artwork === 'number' ? (
-						<Image source={localSongsAdded[3].artwork} style={imagePlaylist} />
-					) : (
-						<Image source={{ uri: localSongsAdded[3].artwork }} style={imagePlaylist} />
-					)
-				) : (
-					<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-				)}
-			</>
-		);
-
-	} else {
-		if (localSongsAdded.length > 0) {
-			imgs = localSongsAdded[0].artwork ? (
-				typeof localSongsAdded[0].artwork === 'number' ? (
-					<Image source={localSongsAdded[0].artwork} style={imagePlaylist} />
-				) : (
-					<Image source={{ uri: localSongsAdded[0].artwork }} style={imagePlaylist} />
-				)
-			) : (
-				<Image source={require('../assets/logo.png')} style={imagePlaylist} />
-			)
-		} else {
-			imgs = <Image source={require('../assets/logo.png')} style={imagePlaylist} />
-		}
+		width: 190,
+		height: 230,
 	}
+
 	return (
 		<SafeAreaView style={style.MainMainContainer}>
 			<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
@@ -160,27 +67,19 @@ const Playlist = ({ navigation }) => {
 			<ScrollView style={style.scrollStyle}>
 				<View style={style.portada}>
 					<View style={style.containerimgs}>
-						{imgs}
+						<Image source={require('../assets/playlist/heart.png')} style={imagePlaylist} />
 					</View>
 				</View>
 				<View style={style.textTitle}>
 					<Text style={style.mtext}>
-						{playlistName !== null && playlistName !== undefined ? playlistName : currentPlaylist.name}
+						Tus favoritos
 					</Text>
 				</View>
 				<View style={style.mainContainer}>
 					<View>
 						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
-							<Ionicons name='play-circle-outline' size={50} color='black'/>
+							<Ionicons name='play-circle-outline' size={50}  color='#2F3243'/>
 						</TouchableOpacity>
-					</View>
-					<View style={style.container}>
-						<TouchableOpacity style={style.add} onPress={goToSearchSelect}>
-							<Octicons name='diff-added' size={40} color='black' />
-						</TouchableOpacity>
-						<View style={style.textContainer}>
-							<Text style={style.texts}>Agregar una canción</Text>
-						</View>
 					</View>
 					{displaySongsInPlayLists()}
 				</View>
@@ -197,17 +96,17 @@ const Playlist = ({ navigation }) => {
 	);
 };
 
-export default Playlist;
+export default PlaylistFav;
 
 const style = StyleSheet.create({
 	MainMainContainer: {
 		flex: 1,
-		backgroundColor: 'pink',
+		backgroundColor: '#B6BFD4',
 		paddingBottom: 10,
 	},
 	portada: {
 		/*flex: 1,*/
-		backgroundColor: 'pink',
+		backgroundColor: '#B6BFD4',
 		alignContent: 'center',
 		alignItems: 'center',
 		paddingTop: 20,
@@ -238,7 +137,7 @@ const style = StyleSheet.create({
 		fontWeight: '400',
 	},
 	mainContainer: {
-		backgroundColor: 'pink',
+		backgroundColor: '#B6BFD4',
 	
 	},
 	container: {
@@ -299,5 +198,5 @@ const style = StyleSheet.create({
 		alignItems: 'center',
 		marginTop:0,
 		paddingTop: 0,
-	}
+	},
 });

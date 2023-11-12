@@ -111,7 +111,11 @@ const CrearMemoria = ({ navigation }) => {
         if (/\.(jpg|jpeg|png)$/i.test(source.uri)) {
           setImageUri(source.uri);
         } else {
-          Alert.alert('Alerta', 'El formato del archivo seleccionado no es compatible.');
+          Alert.alert('Alerta', 'El formato del archivo seleccionado no es compatible.',
+          [
+            { text: 'Aceptar' } 
+          ]
+        );
         }
       }
     });

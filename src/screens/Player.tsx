@@ -128,24 +128,19 @@ const Player = ({ navigation, route }) => {
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
-      //solucion a bug del bug Dx para que no se guarde la anterior duracion de la cancion
       sliderWork.position = 0;
-      setIndexCurrent(indexCurrent + 1);
+      
       console.log(currentPlaylist.songs_p);
       console.log("llegue acaaa", indexCurrent);
       if (indexCurrent < currentPlaylist.songs_p.length) {
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist, duration } = track;
-        setTimeout(() => {
-          setTrackTitle(title);
-          setTrackArtist(artist);
-          setTrackArtwork(artwork);
-          setCurrentSong(track);
-        }, 100);
-        // Agregar un retraso antes de pasar a la siguiente canción
-        setTimeout(() => {
-          TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
-        }, duration * 1000); // duración de la canción en milisegundos
+        
+        setTrackTitle(title);
+        setTrackArtist(artist);
+        setTrackArtwork(artwork);
+        console.log('hasta aca bien?');
+        await setCurrentSong(track);
       } else {
         if (event.nextTrack !== null) {
           const idNumerico = parseInt(currentSong.id);
@@ -246,6 +241,8 @@ const Player = ({ navigation, route }) => {
           if (currentSong !== lastSong) {
             await TrackPlayer.skip(currentSong.id);
             console.log('llego');
+            
+        setIndexCurrent(indexCurrent + 1);
           };
           if (!isPaused) {
             await TrackPlayer.play();

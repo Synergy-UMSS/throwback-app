@@ -18,6 +18,23 @@ const TermsList = ({ onTermSelect }) => {
     emo9: { backgroundColor: 'grey', color: 'white' },
   };
 
+  const emotions = {
+    Todo: { name: 'Todo', backgroundColor: 'black', textColor: 'white' },
+    emo1: { name: 'Feliz', backgroundColor: '#F6EA7E', textColor: 'black' },
+    emo13: { name: 'Triste', backgroundColor:  '#9DE0D2', textColor: 'black' },
+    emo4: { name: 'Cariñoso', backgroundColor:  '#FFC1D8', textColor: 'black' },
+    emo12: { name: 'Alegre', backgroundColor:  '#F0CC8B', textColor: 'black' },
+    emo8: { name: 'Enamorado', backgroundColor:  '#FBBAA4', textColor: 'black' },
+    emo10: { name: 'Relajado', backgroundColor:  '#9DE0D2', textColor: 'black' },
+    emo7: { name: 'Agradecido', backgroundColor:  '#FFC1D8', textColor: 'black' },
+    emo2: { name: 'Enojado',backgroundColor: '#FBBAA4', textColor: 'black' },
+    emo3: { name: 'Frustrado', backgroundColor: '#C7A9D5', textColor: 'black' },
+    emo11: { name: 'Confundido', backgroundColor:  '#B6BFD4', textColor: 'black' },
+    emo5: { name: 'No emotivo', backgroundColor:  '#F0CC8B', textColor: 'black' },
+    emo6: { name: 'Indeciso', backgroundColor:  '#B6BFD4', textColor: 'black' },
+    emo9: { name: 'Juguetón', backgroundColor:  '#F6EA7E', textColor: 'black' },
+  };
+  
   const handleTermPress = (term) => {
     setSelectedTerm(term);
     onTermSelect(term);
@@ -44,23 +61,23 @@ const TermsList = ({ onTermSelect }) => {
       contentContainerStyle={styles.scrollViewContainer}
       showsHorizontalScrollIndicator={false}
     >
-      {Object.keys(termsWithColors).map((term) => (
+      {Object.entries(emotions).map(([termKey, { name, backgroundColor, textColor }]) => (
         <TouchableOpacity
-          key={term}
-          ref={el => (termRefs.current[term] = el)}
+          key={termKey}
+          ref={el => (termRefs.current[termKey] = el)}
           style={[
             styles.term,
-            selectedTerm === term && { ...styles.selectedTerm, ...termsWithColors[term] },
+            selectedTerm === termKey && { backgroundColor, borderColor: backgroundColor, paddingHorizontal: 20,},
           ]}
-          onPress={() => handleTermPress(term)}
+          onPress={() => handleTermPress(termKey)}
         >
           <Text
             style={[
               styles.text,
-              selectedTerm === term && { ...styles.selectedText, color: termsWithColors[term].color },
+              selectedTerm === termKey && { color: textColor, fontWeight: 'bold' },
             ]}
           >
-            {term}
+            {name}
           </Text>
         </TouchableOpacity>
       ))}

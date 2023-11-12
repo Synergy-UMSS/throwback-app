@@ -16,8 +16,11 @@ const ImageFullWidth = ({ source }) => {
 };
 const styles = StyleSheet.create({
   imagen: {
+    marginTop: 10,
     width: screenWidth,
-    height: screenWidth * 0.42,
+    height: screenWidth * 0.3,
+    marginTop:20,
+    marginBottom:10,
     resizeMode: 'contain',
     // backgroundColor:'red',
   },

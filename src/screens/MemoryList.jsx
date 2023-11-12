@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 // Importaciones de recursos (como imágenes)
-import header from '../assets/header/image1.png';
+import header from '../assets/header/e6.png';
 import ImageFullWidth from '../components/ImageFullWidth';
 
 // Importaciones de tus componentes personalizados

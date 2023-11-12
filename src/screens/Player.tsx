@@ -15,6 +15,7 @@ import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
+import { usePlaylistStore } from '../store/playlistStore';
 
 let color: string[] = [
   '#C7A9D560',
@@ -47,9 +48,12 @@ const Player = ({ navigation, route }) => {
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
   const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
+  const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
   const [heartLikes, setHeartLikes] = useState({});
   const [heartUpdate, setHeartUpdate] = useState(false);
   const [messageA, setMessageA] = useState('');
+  const [indexSongsp, setIndexSongsp] = useState({});
+  const [indexCurrent, setIndexCurrent] = useState(0);
 
   const setPlayer = async () => {
     try {
@@ -126,14 +130,32 @@ const Player = ({ navigation, route }) => {
     if (event.type === Event.PlaybackTrackChanged) {
       //solucion a bug del bug Dx para que no se guarde la anterior duracion de la cancion
       sliderWork.position = 0;
-      if (event.nextTrack !== null) {
-        const idNumerico = parseInt(currentSong.id);
-        const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));  //cambiara, para el azar no
-        const { title, artwork, artist } = track;
-        setTrackTitle(title);
-        setTrackArtist(artist);
-        setTrackArtwork(artwork);
-        await setCurrentSong(track);
+      setIndexCurrent(indexCurrent + 1);
+      console.log(currentPlaylist.songs_p);
+      console.log("llegue acaaa", indexCurrent);
+      if (indexCurrent < currentPlaylist.songs_p.length) {
+        const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
+        const { title, artwork, artist, duration } = track;
+        setTimeout(() => {
+          setTrackTitle(title);
+          setTrackArtist(artist);
+          setTrackArtwork(artwork);
+          setCurrentSong(track);
+        }, 100);
+        // Agregar un retraso antes de pasar a la siguiente canción
+        setTimeout(() => {
+          TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+        }, duration * 1000); // duración de la canción en milisegundos
+      } else {
+        if (event.nextTrack !== null) {
+          const idNumerico = parseInt(currentSong.id);
+          const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));  //cambiara, para el azar no
+          const { title, artwork, artist } = track;
+          setTrackTitle(title);
+          setTrackArtist(artist);
+          setTrackArtwork(artwork);
+          await setCurrentSong(track);
+        }
       }
     }
   });
@@ -338,7 +360,7 @@ const Player = ({ navigation, route }) => {
 
         {messageA &&
           <View style={style.messageHeart}>
-            <Text style={{ color: 'white', textAlign:'center' }}>{messageA}</Text>
+            <Text style={{ color: 'white', textAlign: 'center' }}>{messageA}</Text>
           </View>}
         <Connection />
       </View>
@@ -413,7 +435,7 @@ const style = StyleSheet.create({
   messageHeart: {
     position: 'absolute',
     backgroundColor: '#505050',
-    justifyContent:'center',
+    justifyContent: 'center',
     height: 40,
     width: '100%',
     bottom: 0,

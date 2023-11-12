@@ -181,10 +181,10 @@ const Library = () => {
   const handleEditPlaylist = (playlistName) => {
     setSelectedPlaylistName(playlistName);
     setEditPlaylistName(playlistName);
+    setSelectedColor(getColorByPlaylistName(playlistName)); 
     setShowEditModal(true);
   };
 
-// EDIT
 const handleUpdatePlaylist = () => {
   if (editPlaylistName.trim() === '') {
     setError('El nombre de la lista no puede estar vacío.');
@@ -249,13 +249,19 @@ const handleUpdatePlaylist = () => {
                 .collection('playlists')
                 .where('name', '==', playlistName)
                 .get();
-
+  
               if (!playlistRef.empty) {
                 const playlistDoc = playlistRef.docs[0];
+                const deletedColor = colors[playlistName];
                 await firestore().collection('playlists').doc(playlistDoc.id).delete();
-
+  
                 const updatedPlaylists = playlists.filter((name) => name !== playlistName);
                 setPlaylists(updatedPlaylists);
+  
+                // Eliminar color asociado
+                const updatedColors = { ...colors };
+                delete updatedColors[playlistName];
+                setColors(updatedColors);
               } else {
                 console.error(`No se encontró ninguna playlist con el nombre "${playlistName}"`);
               }
@@ -267,6 +273,7 @@ const handleUpdatePlaylist = () => {
       ]
     );
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -287,44 +294,53 @@ const handleUpdatePlaylist = () => {
             onPress={() => handlePlayListView(playlist)}
             style={[
               styles.playlistContainer,
-              { backgroundColor: `${getColorByPlaylistName(playlist)}85`, },
-              
+              {
+                backgroundColor: `${getColorByPlaylistName(playlist)}85`,
+                overflow: 'visible', 
+              },
             ]}
           >
+            <View
+                style={[
+                  styles.playlistBackground,
+                  {
+                    backgroundColor: `${getColorByPlaylistName(playlist)}85`,
+                    top: -7, 
+                  },
+                ]}
+              />
                   
               <View style={styles.playlistBox}>
               <Image
-                  source={require('../assets/playlist/notita.png')} 
-                  style={styles.playlistImage}
-                />
-                <View style={styles.playlistContent}>
-                  <View style={[styles.playlistText, { width: 200 }]}>
-                    <Text
-                      style={styles.playlistName}
-                      numberOfLines={2}
-                      ellipsizeMode="tail"
-                    >
-                      {playlist}
-                    </Text>
-                    <Text style={styles.playlistLabel}>Lista de reproducción</Text>
-                  </View>
-                  <Menu style={styles.menuContainer}>
-                    <MenuTrigger>
-                      <Icon
-                        name="more-vert"
-                        size={24}
-                        color="black"
-                        style={styles.menuIcon}
-                      />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={optionsStyles}>
-                      <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
-                        <Text style={styles.optionText}>Editar</Text>
-                      </MenuOption>
-                      <MenuOption
-                        onSelect={handleDeletePlaylist.bind(this, playlist)}
-                      >
-                        <Text style={styles.optionText}>Eliminar</Text>
+          source={require('../assets/playlist/notita.png')}
+          style={styles.playlistImage}
+        />
+        <View style={styles.playlistContent}>
+          <View style={[styles.playlistText, { width: 200 }]}>
+            <Text
+              style={styles.playlistName}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {playlist}
+            </Text>
+            <Text style={styles.playlistLabel}>Lista de reproducción</Text>
+          </View>
+          <Menu style={styles.menuContainer}>
+            <MenuTrigger>
+              <Icon
+                name="more-vert"
+                size={24}
+                color="black"
+                style={styles.menuIcon}
+              />
+            </MenuTrigger>
+            <MenuOptions customStyles={optionsStyles}>
+              <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
+                <Text style={styles.optionText}>Editar</Text>
+              </MenuOption>
+              <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
+                <Text style={styles.optionText}>Eliminar</Text>
                       </MenuOption>
                     </MenuOptions>
                   </Menu>
@@ -468,7 +484,7 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 15,
     alignItems: 'center',
   },
   modalTitle: {
@@ -490,14 +506,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   createButton: {
-    backgroundColor: '#FA8071',
+    backgroundColor: '#4ADCC8',
     flex: 1,
     padding: 15,
     borderRadius: 10,
     marginRight: 5,
   },
   closeButton: {
-    backgroundColor: '#4ADCC8',
+    backgroundColor: '#FA8071',
     flex: 1,
     padding: 15,
     borderRadius: 10,
@@ -509,8 +525,7 @@ const styles = StyleSheet.create({
   },
   playlistBox: {
     backgroundColor: 'transparent',
-    //borderWidth: 2,
-    borderColor: 'rgba(0, 0, 0, 0.8)',
+    borderWidth: 1,
     padding: 20,
     borderRadius: 15,
     flexDirection: 'row',
@@ -538,18 +553,17 @@ const styles = StyleSheet.create({
   playlistContainer: {
     marginVertical: 10,
     marginHorizontal: 10,
-    position: 'relative',
     borderRadius: 15,
   },
   playlistBackground: {
     position: 'absolute',
-    top: -5,
-    left: -5,
-    right: -5,
-    bottom: -5,
+    top: -10, 
+    left: -10, 
+    right: -10, 
+    bottom: -10, 
     zIndex: -1,
-    borderRadius: 15,
-    opacity: 0.7,
+    borderRadius: 15, 
+    opacity: 0.9,
   },
   errorText: {
     color: 'red',
@@ -580,7 +594,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto', 
     paddingRight: 30,    
     position: 'relative', 
-    left: -10, 
+    left: -15, 
   },
   optionText: {
     color: '#000000', 

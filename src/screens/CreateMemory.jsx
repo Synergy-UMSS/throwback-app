@@ -70,8 +70,8 @@ const CrearMemoria = ({ navigation }) => {
   // para la alertita de eliminar
   const confirmImageRemoval = () => {
     Alert.alert(
-      "Confirmación", 
-      "¿Estás seguro de que deseas eliminar esta imagen?", 
+      "Confirmación",
+      "¿Estás seguro de que deseas eliminar esta imagen?",
       [
         {
           text: "Cancelar",
@@ -80,7 +80,7 @@ const CrearMemoria = ({ navigation }) => {
         },
         {
           text: "Aceptar",
-          onPress: () => setImageUri(null), 
+          onPress: () => setImageUri(null),
         },
       ],
       { cancelable: false }
@@ -106,16 +106,26 @@ const CrearMemoria = ({ navigation }) => {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.assets && response.assets.length > 0) {
         const source = { uri: response.assets[0].uri };
-  
+        const fileSize = response.assets[0].fileSize;  //para el tamaño del archivo
+
+
+
         // Verificar si la extensión es jpg, jpeg o png
         if (/\.(jpg|jpeg|png)$/i.test(source.uri)) {
-          setImageUri(source.uri);
+          // Verificar si el archivo es mayor de 7 MB
+          if (fileSize <= 7 * 1024 * 1024) { // 7 MB 
+            setImageUri(source.uri);
+          } else {
+            Alert.alert(
+              'Alerta',
+              'El archivo seleccionado supera el tamaño máximo permitido.',
+              [{ text: 'Aceptar' }]
+            );
+          }
         } else {
           Alert.alert('Alerta', 'El formato del archivo seleccionado no es compatible.',
-          [
-            { text: 'Aceptar' } 
-          ]
-        );
+            [{ text: 'Aceptar' }]
+          );
         }
       }
     });

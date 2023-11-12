@@ -102,12 +102,17 @@ const CrearMemoria = ({ navigation }) => {
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('El usuario canceló la selección de la imagen');
-        setImageUri(null);
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.assets && response.assets.length > 0) {
         const source = { uri: response.assets[0].uri };
-        setImageUri(source.uri);
+  
+        // Verificar si la extensión es jpg, jpeg o png
+        if (/\.(jpg|jpeg|png)$/i.test(source.uri)) {
+          setImageUri(source.uri);
+        } else {
+          Alert.alert('Alerta', 'El formato del archivo seleccionado no es compatible.');
+        }
       }
     });
   };

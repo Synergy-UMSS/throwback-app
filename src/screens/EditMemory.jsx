@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
-import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
+import DateTimePicker from '@react-native-community/datetimepicker';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import { usePlayerStore } from '../store/playerStore';
@@ -10,10 +10,6 @@ import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
 
-// obtener el color de la memoria basado en la emocion
-function getColorForEmotion(emotion) {
-  return emociones[emotion] || "#000000";
-}
 const emociones = {
   emo1: "#F6EA7E",       
   emo2: "#FBBAA4",  
@@ -30,7 +26,11 @@ const emociones = {
   emo13: "#9DE0D2",
   emo14: "#C7A9D5",  
 };
-// aclarar un color hexadecimal
+
+function getColorForEmotion(emotion) {
+  return emociones[emotion] || "#000000";
+}
+
 function aclararColor(hex, porcentaje=0.5) {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
@@ -40,7 +40,8 @@ function aclararColor(hex, porcentaje=0.5) {
   b = Math.floor(b + (255 - b) * porcentaje);
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
-const CrearMemoria = ({ navigation }) => {
+
+const EditMemory = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -52,7 +53,6 @@ const CrearMemoria = ({ navigation }) => {
 
   const [isCreatingMemory, setIsCreatingMemory] = useState(false);
   const cooldownTime = 5000;
-
 
   const handleEmotionSelected = (emotion) => {
     setSelectedEmotion(emotion);
@@ -78,7 +78,7 @@ const CrearMemoria = ({ navigation }) => {
       emotion: selectedEmotion,
       createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
-      song: parseInt(currentSong.id) //debe ser un entero
+      song: parseInt(currentSong.id)
     };
 
     try {
@@ -89,7 +89,7 @@ const CrearMemoria = ({ navigation }) => {
       console.error('Error al guardar la memoria: ', error);
     } finally {
       setTimeout(() => {
-        setIsCreatingMemory(false); // Habilita la creación de memoria después del tiempo de cooldown
+        setIsCreatingMemory(false);
       }, cooldownTime);
     }
   };
@@ -106,7 +106,7 @@ const CrearMemoria = ({ navigation }) => {
         {
           text: 'Aceptar',
           onPress: () => {
-            navigation.navigate('Tus Memorias Musicales'); // Redirige a la vista "home"
+            navigation.navigate('Tus Memorias Musicales');
           },
         },
       ],
@@ -280,4 +280,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CrearMemoria;
+export default EditMemory;

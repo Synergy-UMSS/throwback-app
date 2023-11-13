@@ -25,6 +25,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import SearchSelect from './src/screens/SearchSelect';
 import {Image, View} from 'react-native'; 
 import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
+import EditMemory from './src/screens/EditMemory';
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -228,6 +229,11 @@ const App = () => {
             <Stack.Screen
               name="Player"
               component={Player}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EditMemory"
+              component={EditMemory}
               options={{headerShown: false}}
             />
             <Stack.Screen

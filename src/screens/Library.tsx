@@ -432,16 +432,17 @@ const handleUpdatePlaylist = () => {
         Editar lista
       </Text>
       <View style={styles.imageContainer}>
-              <TouchableOpacity onPress={handleEditImage}>
-                <Image
-                  source={{ uri: playlistImage || 'ruta_predeterminada' }}
-                  style={{ width: 100, height: 100, borderRadius: 50 }}
-                />
-                <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
+          <TouchableOpacity onPress={handleEditImage}>
+            <Image
+              source={{ uri: playlistImage ? playlistImage : 'ruta_predeterminada' }}
+              style={{ width: 100, height: 100 }}
+            />
+             <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
                   Cambiar imagen
                 </Text>
-              </TouchableOpacity>
-            </View>
+          </TouchableOpacity>
+        </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}

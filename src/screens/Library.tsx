@@ -63,9 +63,13 @@ const Library = () => {
     return colors[playlistName] || '#FBBAA4';
   };
 
+  const [showEditImage, setShowEditImage] = useState(false);
+
   const handlePressMore = () => {
     setShowModal(true);
   };
+
+  
 
   //CREATE
   const handleCreatePlaylist = (name: string) => {
@@ -178,12 +182,14 @@ const Library = () => {
 
 
   //EDIT 
-  const handleEditPlaylist = (playlistName) => {
-    setSelectedPlaylistName(playlistName);
-    setEditPlaylistName(playlistName);
-    setSelectedColor(getColorByPlaylistName(playlistName)); 
-    setShowEditModal(true);
-  };
+const handleEditPlaylist = (playlistName) => {
+  setSelectedPlaylistName(playlistName);
+  setEditPlaylistName(playlistName);
+  setSelectedColor(getColorByPlaylistName(playlistName));
+  setShowEditModal(true);
+  setShowEditImage(true); 
+};
+
 
 const handleUpdatePlaylist = () => {
   if (editPlaylistName.trim() === '') {
@@ -396,44 +402,56 @@ const handleUpdatePlaylist = () => {
       </Modal>
       
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
-      <View style={[styles.modalContainer, { backgroundColor: modalColor }]}>
-          <View style={styles.customModalContent}>
-            <Text style={[styles.modalTitle, { textAlign: 'left', color: modalTextColor }]}>
-              Edita el nombre de tu lista
-            </Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
-                value={editPlaylistName}
-                onChangeText={text => {
-                  if (text.length <= MAX_NAME_LENGTH) {
-                    setEditPlaylistName(text);
-                    setError('');
-                  }
-                }}
-                maxLength={MAX_NAME_LENGTH}
-                placeholderTextColor={modalTextColor}
-              />
-            </View>
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
-            <View style={styles.buttonGroup}>
-              <TouchableOpacity
-                style={styles.createButton}
-                onPress={() => handleUpdatePlaylist(selectedPlaylistName)}>
-                <Text style={styles.buttonText}>Actualizar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => {
-                  setShowEditModal(false);
-                  setError('');
-                }}>
-                <Text style={styles.buttonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+  <View style={[styles.modalContainer, { backgroundColor: modalColor }]}>
+    <View style={styles.customModalContent}>
+      <Text style={[styles.modalTitle, { textAlign: 'center', color: modalTextColor }]}>
+        Editar lista
+      </Text>
+      <View style={styles.imageContainer}>
+        <Image
+          source={require('../assets/playlist/2.png')}  // Reemplaza con la ruta correcta de tu imagen grande
+          style={{ width: 100, height: 100 }}
+        />
+        <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
+          Cambiar imagen
+        </Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}
+          value={editPlaylistName}
+          onFocus={() => setShowEditImage(true)}
+          onBlur={() => setShowEditImage(false)}
+          onChangeText={(text) => {
+            if (text.length <= MAX_NAME_LENGTH) {
+              setEditPlaylistName(text);
+              setError('');
+            }
+          }}
+          maxLength={MAX_NAME_LENGTH}
+          placeholderTextColor={modalTextColor}
+        />
+      </View>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity
+          style={styles.createButton}
+          onPress={() => handleUpdatePlaylist(selectedPlaylistName)}>
+          <Text style={styles.buttonText}>Actualizar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => {
+            setShowEditModal(false);
+            setError('');
+          }}>
+          <Text style={styles.buttonText}>Cerrar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
+
       <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
     </View>
   );
@@ -465,6 +483,10 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  imageContainer: {
+    alignItems: 'center', 
+    marginTop: 10, 
   },
   content: {
     flex: 1,
@@ -606,6 +628,14 @@ const styles = StyleSheet.create({
     color: '#000000', 
     fontSize: 16,
   },
+  editImage: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  
 });
 const optionsStyles = {
   optionsContainer: {

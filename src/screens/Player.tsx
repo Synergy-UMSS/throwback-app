@@ -133,7 +133,7 @@ const Player = ({ navigation, route }) => {
       sliderWork.position = 0;
       console.log(currentPlaylist.songs_p);
       console.log("llegue acaaa", indexCurrent);
-      if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow) {  //agregar lo del modo, pero ya no cambia bien
+      if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow && repeatMode == 'off') {  //agregar lo del modo, pero ya no cambia bien
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist } = track;
         setTrackTitle(title);
@@ -221,7 +221,12 @@ const Player = ({ navigation, route }) => {
 
   const skipTo = async trackId => {
     if(playlistFlow){
-      await TrackPlayer.skip(indexCurrent);
+      if(repeatMode == 'track'){
+        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+      }else{
+        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+      }
+      
     }else{
       await TrackPlayer.skipToNext();
     }

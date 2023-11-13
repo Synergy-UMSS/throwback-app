@@ -25,7 +25,7 @@ const MiniPlayer = ({ navigation }) => {
     };
 
     const handlePressPlayer = () => {
-        navigation.navigate('Player', { songData: currentSong });
+        navigation.navigate('Player', { songData: currentSong, playlistFlow: true });
     };
 
     // bug solucionado, ya no se muestra el miniplayer cuando no se esta reproduciendo una cancion xd

@@ -248,5 +248,23 @@ const styles = StyleSheet.create({
     height: 250,
     borderRadius: 20,
   },
+  fullScreenContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  backIcon: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    padding: 10,
+    zIndex: 10,
+  },
 });
 export default MemoryDetail;

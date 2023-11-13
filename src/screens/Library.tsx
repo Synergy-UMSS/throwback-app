@@ -43,6 +43,8 @@ const Library = () => {
   const [selectedColor, setSelectedColor] = useState('#FBBAA4');
   const [colors, setColors] = useState<{ [key: string]: string }>({});
   const [playlistImage, setPlaylistImage] = useState<string | null>(null);
+  const [playlistImages, setPlaylistImages] = useState<{ [key: string]: string | null }>({});
+
   const options: ImageLibraryOptions = {
     mediaType: 'photo',
   };
@@ -215,9 +217,15 @@ const handleEditPlaylist = (playlistName) => {
   setSelectedPlaylistName(playlistName);
   setEditPlaylistName(playlistName);
   setSelectedColor(getColorByPlaylistName(playlistName));
+  const currentPlaylistImage = playlistImages[playlistName] || null;
+  
+  // Almacena la imagen actual en el estado playlistImage
+  setPlaylistImage(currentPlaylistImage);
+
   setShowEditModal(true);
-  setShowEditImage(true); 
+  setShowEditImage(true);
 };
+
 
 const handleUpdatePlaylist = () => {
   if (editPlaylistName.trim() === '') {
@@ -230,9 +238,12 @@ const handleUpdatePlaylist = () => {
     playlistRef = playlistRef.limit(1);
     playlistRef.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
+        // Obtener URL
+        const playlistImageUrl = playlistImage || ''; // Image actual si no hay modificcaciones
+
         doc.ref.update({
           name: editPlaylistName,
-          playlistImage: playlistImage, 
+          playlistImage: playlistImageUrl,
         });
       });
 
@@ -247,7 +258,11 @@ const handleUpdatePlaylist = () => {
         return playlist;
       });
 
-      setPlaylists(updatedPlaylists);
+      setPlaylistImages(prevImages => ({
+        ...prevImages,
+        [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName], // Usa playlistImage si no se selecciona una nueva imagen
+      }));
+
       setSelectedPlaylistName(editPlaylistName);
       setShowEditModal(false);
     });

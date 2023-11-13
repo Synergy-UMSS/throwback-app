@@ -312,9 +312,15 @@ const handleUpdatePlaylist = () => {
                   
               <View style={styles.playlistBox}>
               <Image
-          source={require('../assets/playlist/notita.png')}
-          style={styles.playlistImage}
-        />
+  source={require('../assets/playlist/2.png')}
+  style={{
+    ...styles.playlistImage,
+    width: 60,  
+    height: 60, 
+    marginLeft: -10, 
+  }}
+/>
+
         <View style={styles.playlistContent}>
           <View style={[styles.playlistText, { width: 200 }]}>
             <Text

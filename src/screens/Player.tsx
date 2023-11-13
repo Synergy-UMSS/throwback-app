@@ -16,6 +16,7 @@ import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 import { usePlaylistStore } from '../store/playlistStore';
+import { useLoopGlobal } from '../helpcomponents/loopGlobal';
 
 let color: string[] = [
   '#C7A9D560',
@@ -52,8 +53,8 @@ const Player = ({ navigation, route }) => {
   const [heartLikes, setHeartLikes] = useState({});
   const [heartUpdate, setHeartUpdate] = useState(false);
   const [messageA, setMessageA] = useState('');
-  const [playlistPlay, setPlaylistPlay] = useState({});
   const [indexCurrent, setIndexCurrent] = useState(0);
+  const {isLoop, setIsLoop} = useLoopGlobal();
 
   const setPlayer = async () => {
     try {
@@ -132,7 +133,7 @@ const Player = ({ navigation, route }) => {
       sliderWork.position = 0;
       console.log(currentPlaylist.songs_p);
       console.log("llegue acaaa", indexCurrent);
-      if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow) {
+      if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow) {  //agregar lo del modo, pero ya no cambia bien
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist } = track;
         setTrackTitle(title);
@@ -140,7 +141,7 @@ const Player = ({ navigation, route }) => {
         setTrackArtwork(artwork);
         await setCurrentSong(track);
       } else {
-        if (event.nextTrack !== null && !playlistFlow) {
+        if (event.nextTrack !== null) {
           const idNumerico = parseInt(currentSong.id);
           const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
           const { title, artwork, artist } = track;
@@ -205,14 +206,17 @@ const Player = ({ navigation, route }) => {
   }, [messageA]);
 
   const changeRepeatMode = () => {
-    if (repeatMode == 'off') {
-      TrackPlayer.setRepeatMode(RepeatMode.Track);
-      setRepeatMode('track');
-    };
-    if (repeatMode == 'track') {
-      TrackPlayer.setRepeatMode(RepeatMode.Off);
-      setRepeatMode('off');
-    };
+      if (repeatMode == 'off') {
+        TrackPlayer.setRepeatMode(RepeatMode.Track);
+        setIsLoop('track');
+        setRepeatMode('track');
+      };
+      if (repeatMode == 'track') {
+        TrackPlayer.setRepeatMode(RepeatMode.Off);
+        setIsLoop('off');
+        setRepeatMode('off');
+      };
+    /*}*/
   };
 
   const skipTo = async trackId => {
@@ -238,7 +242,6 @@ const Player = ({ navigation, route }) => {
           console.log(indexCurrent, 'vine como al indice re extraño', currentPlaylist.songs_p[indexCurrent]);
         }
       }else{
-        /*playlistFlow= false;*/
         await TrackPlayer.skip(currentSong.id);
         console.log(indexCurrent, 'vine como al otro re extraño estee ', currentSong.id );
       }
@@ -262,7 +265,14 @@ const Player = ({ navigation, route }) => {
             await TrackPlayer.skip(currentSong.id);
             console.log('llego');
             await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar hasta que la canción actual se reproduzca completamente
-            setIndexCurrent(indexCurrent + 1);
+            console.log('repeat llego como', repeatMode);
+            /*if(repeatMode ==='track' ){
+              setIndexCurrent(indexCurrent);  //puede ser util
+              console.log('se hara bucle');
+            }else{*/
+              setIndexCurrent(indexCurrent + 1);
+              /*console.log('no se hara bucle');
+            }*/
           };
           if (!isPaused) {
             await TrackPlayer.play();
@@ -310,6 +320,7 @@ const Player = ({ navigation, route }) => {
 
   useEffect(() => {
     const changeAndPlayTrack = async () => {
+      setIsLoop(isLoop);
       await changeValuesTrack();
       if (isConnected) {
         setIsPlaying(true);
@@ -319,7 +330,7 @@ const Player = ({ navigation, route }) => {
     if (currentSong) {
       changeAndPlayTrack();
     }
-  }, [currentSong, isConnected]);
+  }, [currentSong, isConnected, repeatMode]);
 
   return (
     <SafeAreaView style={{

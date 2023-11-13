@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import storage from '@react-native-firebase/storage';
-import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, ScrollView } from 'react-native';
+import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, Modal, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
@@ -60,6 +60,15 @@ const CrearMemoria = ({ navigation }) => {
   const [isCreatingMemory, setIsCreatingMemory] = useState(false);
   const cooldownTime = 5000;
 
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   const handleEmotionSelected = (emotion) => {
     setSelectedEmotion(emotion);

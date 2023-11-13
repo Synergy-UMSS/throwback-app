@@ -52,7 +52,7 @@ const Player = ({ navigation, route }) => {
   const [heartLikes, setHeartLikes] = useState({});
   const [heartUpdate, setHeartUpdate] = useState(false);
   const [messageA, setMessageA] = useState('');
-  const [indexSongsp, setIndexSongsp] = useState({});
+  const [playlistPlay, setPlaylistPlay] = useState({});
   const [indexCurrent, setIndexCurrent] = useState(0);
 
   const setPlayer = async () => {
@@ -110,6 +110,7 @@ const Player = ({ navigation, route }) => {
           artwork: song.coverURL,
         };
         tracks.push(track);
+        /*console.log(track.id, "-");   ayudo a saber donde estaba el error, podria ayudar de nuevo */
       });
       setPlayer();
     } catch (e) {
@@ -129,22 +130,19 @@ const Player = ({ navigation, route }) => {
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
       sliderWork.position = 0;
-      
       console.log(currentPlaylist.songs_p);
       console.log("llegue acaaa", indexCurrent);
       if (indexCurrent < currentPlaylist.songs_p.length) {
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
-        const { title, artwork, artist, duration } = track;
-        
+        const { title, artwork, artist } = track;
         setTrackTitle(title);
         setTrackArtist(artist);
         setTrackArtwork(artwork);
-        console.log('hasta aca bien?');
         await setCurrentSong(track);
       } else {
         if (event.nextTrack !== null) {
           const idNumerico = parseInt(currentSong.id);
-          const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));  //cambiara, para el azar no
+          const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
           const { title, artwork, artist } = track;
           setTrackTitle(title);
           setTrackArtist(artist);
@@ -160,9 +158,6 @@ const Player = ({ navigation, route }) => {
       return 'repeat-off';
     };
     if (repeatMode == 'track') {
-      return 'repeat';
-    };
-    if (repeatMode == 'repeat') {
       return 'repeat';
     };
   };
@@ -221,12 +216,26 @@ const Player = ({ navigation, route }) => {
   };
 
   const skipTo = async trackId => {
-    await TrackPlayer.skipToNext();
+    if(playlistFlow){
+      await TrackPlayer.skip(indexCurrent);
+    }else{
+      await TrackPlayer.skipToNext();
+    }
   };
 
   const previousTo = async trackId => {
-    await TrackPlayer.skipToPrevious();
-  }
+    if(playlistFlow){
+      setIndexCurrent(indexCurrent-2);
+      if(indexCurrent >= 0){
+        await TrackPlayer.skip(indexCurrent);
+      }else{
+        await TrackPlayer.skip(currentSong.id);
+      }
+    }else{
+      await TrackPlayer.skipToPrevious();
+    }
+  };
+
   const changeValuesTrack = async () => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
@@ -241,8 +250,8 @@ const Player = ({ navigation, route }) => {
           if (currentSong !== lastSong) {
             await TrackPlayer.skip(currentSong.id);
             console.log('llego');
-            
-        setIndexCurrent(indexCurrent + 1);
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar hasta que la canción actual se reproduzca completamente
+            setIndexCurrent(indexCurrent + 1);
           };
           if (!isPaused) {
             await TrackPlayer.play();
@@ -260,6 +269,24 @@ const Player = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    if(!playlistFlow){
+      setCurrentPlaylist({
+        id: 'undef', 
+        name: 'undef',
+        songs_p: []});
+      setIndexCurrent(0);
+    }else{
+      let arraySongs = currentPlaylist.songs_p;
+      if(arraySongs.length > 0){
+        setIndexCurrent(arraySongs.indexOf(currentSong.id));
+      }else{
+        setIndexCurrent(0);
+      }
+    }
+    console.log(playlistFlow);
+  }, [playlistFlow]);
+
+  useEffect(() => {
     const updatedHeartLikes = {};
     if (currentPlaylistfav && currentPlaylistfav.songs_fav) {
       currentPlaylistfav.songs_fav.forEach((favSong) => {
@@ -267,6 +294,7 @@ const Player = ({ navigation, route }) => {
       });
     };
     setHeartLikes(updatedHeartLikes);
+
   }, [currentPlaylistfav]);
 
   useEffect(() => {
@@ -277,11 +305,11 @@ const Player = ({ navigation, route }) => {
         await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
       }
     };
-
     if (currentSong) {
       changeAndPlayTrack();
     }
   }, [currentSong, isConnected]);
+
   return (
     <SafeAreaView style={{
       flex: 1,

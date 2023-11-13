@@ -13,6 +13,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
+import ImagePicker from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { usePlaylistStore } from '../store/playlistStore';
 import {
@@ -25,6 +26,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import MiniPlayer from '../components/MiniPlayer';
 import FavoritePlaylist from '../components/FavoritePlaylist';
 import ColorPicker from '../components/ColorPicker';
+import { launchImageLibrary, ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
+
 
 const Library = () => {
   const [showModal, setShowModal] = useState(false);
@@ -39,6 +42,11 @@ const Library = () => {
   const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
   const [selectedColor, setSelectedColor] = useState('#FBBAA4');
   const [colors, setColors] = useState<{ [key: string]: string }>({});
+  const [playlistImage, setPlaylistImage] = useState<string | null>(null);
+  const options: ImageLibraryOptions = {
+    mediaType: 'photo',
+  };
+  
 
   const modalBackgroundColor = '#ffffff';
   const modalTextColor = '#000000';
@@ -65,6 +73,22 @@ const Library = () => {
 
   const [showEditImage, setShowEditImage] = useState(false);
 
+  const handleEditImage = () => {
+    const options: ImageLibraryOptions = {
+      mediaType: 'photo',
+    };
+  
+    launchImageLibrary(options, (response: ImagePickerResponse) => {
+      if (response.didCancel) {
+        console.log('El usuario canceló la selección de imagen');
+      } else if (response.errorMessage) {
+        console.error('Error al seleccionar la imagen:', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0 && response.assets[0].uri) {
+        setPlaylistImage(response.assets[0].uri);
+      }
+    });
+  };
+  
   const handlePressMore = () => {
     setShowModal(true);
   };
@@ -318,14 +342,14 @@ const handleUpdatePlaylist = () => {
                   
               <View style={styles.playlistBox}>
               <Image
-  source={require('../assets/playlist/2.png')}
-  style={{
-    ...styles.playlistImage,
-    width: 60,  
-    height: 60, 
-    marginLeft: -10, 
-  }}
-/>
+                source={require('../assets/playlist/2.png')}
+                style={{
+                  ...styles.playlistImage,
+                  width: 60,  
+                  height: 60, 
+                  marginLeft: -10, 
+                }}
+              />
 
         <View style={styles.playlistContent}>
           <View style={[styles.playlistText, { width: 200 }]}>
@@ -384,7 +408,7 @@ const handleUpdatePlaylist = () => {
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
      </View>
 
-<ColorPicker onSelectColor={(selectedColor) => handleColorSelection(selectedColor)} />
+   <ColorPicker onSelectColor={(selectedColor) => handleColorSelection(selectedColor)} />
             <View style={styles.buttonGroup}>
               <TouchableOpacity
                 style={styles.createButton}
@@ -408,14 +432,16 @@ const handleUpdatePlaylist = () => {
         Editar lista
       </Text>
       <View style={styles.imageContainer}>
-        <Image
-          source={require('../assets/playlist/2.png')}  // Reemplaza con la ruta correcta de tu imagen grande
-          style={{ width: 100, height: 100 }}
-        />
-        <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
-          Cambiar imagen
-        </Text>
-      </View>
+              <TouchableOpacity onPress={handleEditImage}>
+                <Image
+                  source={{ uri: playlistImage || 'ruta_predeterminada' }}
+                  style={{ width: 100, height: 100, borderRadius: 50 }}
+                />
+                <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
+                  Cambiar imagen
+                </Text>
+              </TouchableOpacity>
+            </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={[styles.input, { color: modalTextColor, borderColor: modalTextColor }]}

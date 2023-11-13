@@ -357,6 +357,21 @@ const CrearMemoria = ({ navigation }) => {
           </View>
         )}
 
+        {/* para el modaaaaal de mostrar la imagen en pantalla completa */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={isModalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.fullScreenContainer}>
+          <Image source={{ uri: imageUri }} style={styles.fullScreenImage} />
+          <Pressable style={styles.closeModalButton} onPress={closeModal}>
+            <Text style={styles.closeModalButtonText}>Cerrar</Text>
+          </Pressable>
+        </View>
+      </Modal>
+
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected} />
 

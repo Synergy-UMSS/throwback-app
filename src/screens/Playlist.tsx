@@ -21,9 +21,9 @@ const Playlist = ({ navigation }) => {
 	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
-	const {setCurrentSong} = usePlayerStore();
-	const {isConnected} = useConnectionGlobal();
-	
+	const { setCurrentSong } = usePlayerStore();
+	const { isConnected } = useConnectionGlobal();
+
 	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
 
 	useEffect(() => {
@@ -87,8 +87,10 @@ const Playlist = ({ navigation }) => {
 	};
 
 	const goToPlayer = () => {
-		setCurrentSong(localSongsAdded[0]);
-		navigation.navigate('Player', {undefined, playlistFlow: true})
+		if (localSongsAdded.length > 0) {
+			setCurrentSong(localSongsAdded[0]);
+		}
+		navigation.navigate('Player', { undefined, playlistFlow: true })
 	};
 
 	const imagePlaylist = {
@@ -172,11 +174,15 @@ const Playlist = ({ navigation }) => {
 					</Text>
 				</View>
 				<View style={style.mainContainer}>
-					<View>
-						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
-							<Ionicons name='play-circle-outline' size={50} color='black'/>
-						</TouchableOpacity>
-					</View>
+					{(localSongsAdded.length > 0) ? (
+						<View>
+							<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
+								<Ionicons name='play-circle-outline' size={50} color='black' />
+							</TouchableOpacity>
+						</View>
+					) : (
+						<></>
+					)}
 					<View style={style.container}>
 						<TouchableOpacity style={style.add} onPress={goToSearchSelect}>
 							<Octicons name='diff-added' size={40} color='black' />
@@ -242,7 +248,7 @@ const style = StyleSheet.create({
 	},
 	mainContainer: {
 		backgroundColor: 'pink',
-	
+
 	},
 	container: {
 		display: 'flex',
@@ -300,7 +306,7 @@ const style = StyleSheet.create({
 		justifyContent: 'center',
 		textAlign: 'center',
 		alignItems: 'center',
-		marginTop:0,
+		marginTop: 0,
 		paddingTop: 0,
 	}
 });

@@ -16,7 +16,7 @@ const PlaylistFav = ({ navigation }) => {
 	const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
-	const {setCurrentSong} = usePlayerStore();
+	const { setCurrentSong } = usePlayerStore();
 
 	useEffect(() => {
 		const unsubscribe = firestore()
@@ -50,8 +50,10 @@ const PlaylistFav = ({ navigation }) => {
 	};
 
 	const goToPlayer = () => {
-		setCurrentSong(localSongsAdded[0]);
-		navigation.navigate('Player', {undefined, playlistFlow: true})
+		if (localSongsAdded.length > 0) {
+			setCurrentSong(localSongsAdded[0]);
+		}
+		navigation.navigate('Player', { undefined, playlistFlow: true })
 	};
 
 	const imagePlaylist = {
@@ -79,11 +81,16 @@ const PlaylistFav = ({ navigation }) => {
 					</Text>
 				</View>
 				<View style={style.mainContainer}>
-					<View>
-						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
-							<Ionicons name='play-circle-outline' size={50}  color='#2F3243'/>
-						</TouchableOpacity>
-					</View>
+					{(localSongsAdded.length > 0) ? (
+						<View>
+							<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
+								<Ionicons name='play-circle-outline' size={50} color='#2F3243' />
+							</TouchableOpacity>
+						</View>
+						):(
+							<></>
+						)
+					}
 					{displaySongsInPlayLists()}
 				</View>
 			</ScrollView>
@@ -141,7 +148,7 @@ const style = StyleSheet.create({
 	},
 	mainContainer: {
 		backgroundColor: '#B6BFD4',
-	
+
 	},
 	container: {
 		display: 'flex',
@@ -199,7 +206,7 @@ const style = StyleSheet.create({
 		justifyContent: 'center',
 		textAlign: 'center',
 		alignItems: 'center',
-		marginTop:0,
+		marginTop: 0,
 		paddingTop: 0,
 	},
 });

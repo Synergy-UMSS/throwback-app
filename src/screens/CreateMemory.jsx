@@ -342,35 +342,35 @@ const CrearMemoria = ({ navigation }) => {
           </Pressable>
         )}
 
-        {/* previsualizar la imagen con boton de cierre */}
+        {/* Modal para mostrar la imagen en pantalla completa */}
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={isModalVisible}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.fullScreenContainer}>
+            <Image source={{ uri: imageUri }} style={styles.fullScreenImage} />
+
+          </View>
+        </Modal>
+
+        {/* Vista previa de la imagen con Pressable para abrir el modal */}
         {imageUri && (
           <View style={styles.containerImage}>
             <View style={styles.previewContainer}>
-              <Image source={{ uri: imageUri }} style={styles.previewImage} />
+              <Pressable onPress={openModal}>
+                <Image source={{ uri: imageUri }} style={styles.previewImage} />
+              </Pressable>
               <Pressable
                 style={styles.closeButton}
-                onPress={confirmImageRemoval}  //alertita
+                onPress={confirmImageRemoval}
               >
                 <Ionicons name="close-circle-outline" size={28} color="black" />
               </Pressable>
             </View>
           </View>
         )}
-
-        {/* para el modaaaaal de mostrar la imagen en pantalla completa */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={isModalVisible}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.fullScreenContainer}>
-          <Image source={{ uri: imageUri }} style={styles.fullScreenImage} />
-          <Pressable style={styles.closeModalButton} onPress={closeModal}>
-            <Text style={styles.closeModalButtonText}>Cerrar</Text>
-          </Pressable>
-        </View>
-      </Modal>
 
         <RequiredField style={styles.label}>Emoción:</RequiredField>
         <EmotionPicker onEmotionChange={handleEmotionSelected} />
@@ -497,6 +497,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 3,
   },
+
+  fullScreenContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+
+  fullScreenImage: {
+    width: '100%',
+    height: '80%',
+    resizeMode: 'contain',
+  },
+  
 });
 
 export default CrearMemoria;

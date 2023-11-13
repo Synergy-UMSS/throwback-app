@@ -10,11 +10,13 @@ import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import ConnectionGral from '../components/ConnectionGral';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
+import { usePlayerStore } from '../store/playerStore';
 
 const PlaylistFav = ({ navigation }) => {
 	const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
+	const {setCurrentSong} = usePlayerStore();
 
 	useEffect(() => {
 		const unsubscribe = firestore()
@@ -48,6 +50,7 @@ const PlaylistFav = ({ navigation }) => {
 	};
 
 	const goToPlayer = () => {
+		setCurrentSong(localSongsAdded[0]);
 		navigation.navigate('Player', {undefined, playlistFlow: true})
 	};
 

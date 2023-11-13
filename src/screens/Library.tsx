@@ -108,11 +108,10 @@ const Library = () => {
       const playlistData = {
         id: '',
         name: name,
-        createDate: firebase.firestore.FieldValue.serverTimestamp(),
+        createDate: timestamp,
         songs: [],
         color: selectedColor,
       };
-      
 
       firestore()
         .collection('playlists')
@@ -152,28 +151,21 @@ const Library = () => {
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];
         const colorsData: { [key: string]: string } = {};
-        const imagesData: { [key: string]: string | null } = {};
-  
         querySnapshot.forEach((doc, index) => {
           const { name, createDate, color, playlistImage } = doc.data();
           playlistsData.push(name);
           colorsData[name] = color || '#FBBAA4';
-          imagesData[name] = playlistImage || null;
-  
+
           if (name === selectedPlaylist) {
             setPlaylistImage(playlistImage || null);
           }
         });
-  
         setPlaylists(playlistsData);
         setColors(colorsData);
-        setPlaylistImages(imagesData);
       });
   
     return () => unsubscribe();
-  }, [selectedPlaylist]);
-  
-  
+  }, [selectedPlaylist]); 
 
 
 
@@ -268,7 +260,7 @@ const handleUpdatePlaylist = () => {
 
       setPlaylistImages(prevImages => ({
         ...prevImages,
-        [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName], 
+        [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName], // Usa playlistImage si no se selecciona una nueva imagen
       }));
 
       setSelectedPlaylistName(editPlaylistName);
@@ -277,10 +269,6 @@ const handleUpdatePlaylist = () => {
   }
 };
 
-useEffect(() => {
-  console.log('playlists:', playlists);
-  console.log('playlistImages:', playlistImages);
-}, [playlists, playlistImages]);
 
 
   const resetModal = () => {
@@ -376,17 +364,15 @@ useEffect(() => {
               />
                   
               <View style={styles.playlistBox}>
-                <Image
+              <Image
                   source={{ uri: playlistImages[playlist] || 'ruta_predeterminada' }}
                   style={{
                     ...styles.playlistImage,
-                    width: 60,
-                    height: 60,
-                    marginLeft: -10,
+                    width: 60,  
+                    height: 60, 
+                    marginLeft: -10, 
                   }}
                 />
-
-
 
         <View style={styles.playlistContent}>
           <View style={[styles.playlistText, { width: 200 }]}>

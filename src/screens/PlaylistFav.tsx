@@ -77,7 +77,7 @@ const PlaylistFav = ({ navigation }) => {
 				</View>
 				<View style={style.textTitle}>
 					<Text style={style.mtext}>
-						Tus favoritos
+						Tus Me Gusta
 					</Text>
 				</View>
 				<View style={style.mainContainer}>

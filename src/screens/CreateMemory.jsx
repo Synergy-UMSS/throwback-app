@@ -350,8 +350,13 @@ const CrearMemoria = ({ navigation }) => {
           onRequestClose={closeModal}
         >
           <View style={styles.fullScreenContainer}>
+            <Pressable style={styles.backIcon} onPress={closeModal}>
+              <Ionicons name="arrow-back-outline" size={30} color="white" />    
+            </Pressable>
             <Image source={{ uri: imageUri }} style={styles.fullScreenImage} />
-
+            <Pressable style={styles.closeModalButton} onPress={closeModal}>
+              <Text style={styles.closeModalButtonText}>Cerrar</Text>
+            </Pressable>
           </View>
         </Modal>
 
@@ -364,7 +369,7 @@ const CrearMemoria = ({ navigation }) => {
               </Pressable>
               <Pressable
                 style={styles.closeButton}
-                onPress={confirmImageRemoval}
+                onPress={confirmImageRemoval} //alertita 
               >
                 <Ionicons name="close-circle-outline" size={28} color="black" />
               </Pressable>
@@ -507,10 +512,17 @@ const styles = StyleSheet.create({
 
   fullScreenImage: {
     width: '100%',
-    height: '80%',
+    height: '100%',
     resizeMode: 'contain',
   },
-  
+
+  backIcon: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    padding: 10,
+    zIndex: 10, // Asegúrate de que el icono esté por encima de otros elementos
+  },
 });
 
 export default CrearMemoria;

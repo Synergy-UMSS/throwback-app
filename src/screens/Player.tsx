@@ -197,6 +197,10 @@ const Player = ({ navigation, route }) => {
       }
     });
   };
+  
+  useEffect(() => {
+    setHeartLikes(heartLikes);
+  }, [heartLikes]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

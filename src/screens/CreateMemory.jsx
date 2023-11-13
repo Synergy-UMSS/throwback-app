@@ -190,7 +190,7 @@ const CrearMemoria = ({ navigation }) => {
           />
         )}
 
-        <RequiredField style={styles.label}>Emoción:</RequiredField>
+        <Text style={styles.label}>Emoción:</Text>
         <EmotionPicker onEmotionChange={handleEmotionSelected}/>
         
         <Text style={styles.label}>Canción vinculada:</Text>

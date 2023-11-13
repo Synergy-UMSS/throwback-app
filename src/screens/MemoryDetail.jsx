@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Modal, Dimensions } from 'react-native';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import EmocionWrapped from '../components/EmotionWrapped';
@@ -41,6 +41,16 @@ const MemoryDetail = ({ route, navigation }) => {
   const { emotion } = route.params;
   const { memoriaId, index } = route.params;
   const { memorie, song } = route.params;
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
 
   const { setCurrentSong } = usePlayerStore();

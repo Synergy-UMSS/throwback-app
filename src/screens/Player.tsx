@@ -132,7 +132,7 @@ const Player = ({ navigation, route }) => {
       sliderWork.position = 0;
       console.log(currentPlaylist.songs_p);
       console.log("llegue acaaa", indexCurrent);
-      if (indexCurrent < currentPlaylist.songs_p.length) {
+      if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow) {
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist } = track;
         setTrackTitle(title);
@@ -140,7 +140,7 @@ const Player = ({ navigation, route }) => {
         setTrackArtwork(artwork);
         await setCurrentSong(track);
       } else {
-        if (event.nextTrack !== null) {
+        if (event.nextTrack !== null && !playlistFlow) {
           const idNumerico = parseInt(currentSong.id);
           const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
           const { title, artwork, artist } = track;
@@ -225,11 +225,22 @@ const Player = ({ navigation, route }) => {
 
   const previousTo = async trackId => {
     if(playlistFlow){
-      setIndexCurrent(indexCurrent-2);
-      if(indexCurrent >= 0){
-        await TrackPlayer.skip(indexCurrent);
+      let possibleIndex = indexCurrent-2;
+      console.log(possibleIndex);
+      if(possibleIndex >= 0){
+        const currentPosition = await TrackPlayer.getPosition();
+        console.log(currentPosition);
+        if(currentPosition > 1.800){
+          await TrackPlayer.seekTo(0);
+        }else{
+          setIndexCurrent(possibleIndex);
+          await TrackPlayer.skip(currentPlaylist.songs_p[possibleIndex]);   //creo que no llega :?
+          console.log(indexCurrent, 'vine como al indice re extraño', currentPlaylist.songs_p[indexCurrent]);
+        }
       }else{
+        /*playlistFlow= false;*/
         await TrackPlayer.skip(currentSong.id);
+        console.log(indexCurrent, 'vine como al otro re extraño estee ', currentSong.id );
       }
     }else{
       await TrackPlayer.skipToPrevious();

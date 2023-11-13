@@ -197,31 +197,19 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
-      .orderBy('createDate', 'desc')
-      .onSnapshot((querySnapshot) => {
+      .orderBy('createDate', 'desc') // Ordenar por createDate en orden descendente
+      .onSnapshot(querySnapshot => {
         const playlistsData: string[] = [];
         const colorsData: { [key: string]: string } = {};
-        const imagesData: { [key: string]: string | null } = {};
-  
         querySnapshot.forEach((doc, index) => {
-          const { name, createDate, color, playlistImage } = doc.data();
+          const { name, createDate, color } = doc.data();
           playlistsData.push(name);
-          colorsData[name] = color || '#FBBAA4';
-          imagesData[name] = playlistImage || null;
-  
-          if (name === selectedPlaylist) {
-            setPlaylistImage(playlistImage || null);
-          }
         });
-  
         setPlaylists(playlistsData);
-        setColors(colorsData);
-        setPlaylistImages(imagesData);
       });
   
     return () => unsubscribe();
-  }, [selectedPlaylist]);
-  
+  }, []);
 
 
   //EDIT 

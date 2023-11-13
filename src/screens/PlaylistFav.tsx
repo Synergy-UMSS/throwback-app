@@ -48,7 +48,7 @@ const PlaylistFav = ({ navigation }) => {
 	};
 
 	const goToPlayer = () => {
-		navigation.navigate('Player', {undefined, playlistFlow: false})
+		navigation.navigate('Player', {undefined, playlistFlow: true})
 	};
 
 	const imagePlaylist = {

@@ -323,6 +323,13 @@ const MemoryList = ({ navigation }) => {
                 />
               </Animatable.View>
               </View>
+
+              {filteredMemories.length === 0 && (
+                <View style={styles.noDataContainer}>
+                  <Text style={styles.noDataText}>No se encontraron resultados</Text>
+                </View>
+              )}
+
               </>
             );
           } else if (item.type === 'memory') {
@@ -345,15 +352,24 @@ const MemoryList = ({ navigation }) => {
         <MiniPlayer navigation={navigation} style={styles.miniPlayer} />
       </View>
     </View>
-    //{/* </TouchableWithoutFeedback> */}
   );
   
 };
 
 const styles = StyleSheet.create({
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
+  },
+  noDataText: {
+    fontSize: 15,
+    color: 'gray',
+  },
   iconLupa: {
     marginRight: -38,
-    marginLeft: 15, // Espacio entre el ícono y el texto
+    marginLeft: 15,
   },
   container: {
     flex: 1,

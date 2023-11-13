@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Modal, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Modal, Dimensions, Pressable } from 'react-native';
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
 import EmocionWrapped from '../components/EmotionWrapped';
 //import { Dimensions } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 const screenHeight = Dimensions.get('window').height;
 function getColorForEmotion(emotion) {
@@ -122,14 +124,32 @@ const MemoryDetail = ({ route, navigation }) => {
             </>
           ) : null
         }
-        
-        {memorie.imageURL && 
-        <>
-          <Text style={styles.tsong}>Imagen:</Text>
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: memorie.imageURL }} style={styles.image} />
+
+        {/* Modal para mostrar la imagen en pantalla completa */}
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={isModalVisible}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.fullScreenContainer}>
+            <Pressable style={styles.backIcon} onPress={closeModal}>
+              <Ionicons name="arrow-back-outline" size={30} color="white" />
+            </Pressable>
+            <Image source={{ uri: memorie.imageURL }} style={styles.fullScreenImage} />
           </View>
-        </>
+        </Modal>
+
+        {/* Vista previa de la imagen con Pressable para abrir el modal */}
+        {memorie.imageURL &&
+          <>
+            <Text style={styles.tsong}>Imagen:</Text>
+            <View style={styles.imageContainer}>
+              <Pressable onPress={openModal}>
+                <Image source={{ uri: memorie.imageURL }} style={styles.image} />
+              </Pressable>
+            </View>
+          </>
         }
 
         <Text style={styles.tsong}>
@@ -224,11 +244,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: 250, // Este tamaño debe coincidir con el tamaño de la vista previa en CreateMemory
-    height: 250, // Este tamaño debe coincidir con el tamaño de la vista previa en CreateMemory
-    borderRadius: 20, // Si quieres bordes redondeados
-    // ... otros estilos que necesites para la imagen ...
+    width: 250,
+    height: 250,
+    borderRadius: 20,
   },
 });
-
 export default MemoryDetail;

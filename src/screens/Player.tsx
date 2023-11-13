@@ -1,26 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
+import firestore from '@react-native-firebase/firestore';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Connection from '../components/Connection';
-import TrackPlayer, { Event, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
+import TrackPlayer, { Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
 import { useSearchStore } from '../store/searchStore';
 import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
+import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
 let color: string[] = [
   '#C7A9D560',
   '#96ead280',
   '#FFC1D860',
 ];
+let colorSec: string[] = [
+  '#64556B',
+  '#4B7569',
+  '#80616C',
+];
 
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
-
 const tracks = [];
 
 const Player = ({ navigation, route }) => {
@@ -32,12 +39,17 @@ const Player = ({ navigation, route }) => {
   const { setCurrentSong, currentSong } = usePlayerStore();
   const playState: State = usePlaybackState();
   const sliderWork = useProgress();
+  const [repeatMode, setRepeatMode] = useState('off');
   const [trackTitle, setTrackTitle] = useState();
   const [trackArtist, setTrackArtist] = useState();
   const [trackArtwork, setTrackArtwork] = useState();
   const { isPlaying, setIsPlaying } = useContext(MusicPlayerContext);
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
+  const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
+  const [heartLikes, setHeartLikes] = useState({});
+  const [heartUpdate, setHeartUpdate] = useState(false);
+  const [messageA, setMessageA] = useState('');
 
   const setPlayer = async () => {
     try {
@@ -105,36 +117,104 @@ const Player = ({ navigation, route }) => {
     const fetchDataAndInitializePlayer = async () => {
       await fetchSongs();
       await setPlayer();
-      console.log('Player initialized:', playerInitialized);
       setPlayerInitialized(true);
     };
     fetchDataAndInitializePlayer();
   }, []);
 
-  useEffect(() => {
-    playTrack();
-  }, [isConnected]);
-
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-		if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-			const idNumerico = parseInt(currentSong.id);
-			const track = await TrackPlayer.getTrack(parseInt(idNumerico));
-			const { title, artwork, artist } = track;
-			setTrackTitle(title);
-			setTrackArtist(artist);
-			setTrackArtwork(artwork);
-			await setCurrentSong(track);
-		}
-	});
+    if (event.type === Event.PlaybackTrackChanged) {
+      //solucion a bug del bug Dx para que no se guarde la anterior duracion de la cancion
+      sliderWork.position = 0;
+      if (event.nextTrack !== null) {
+        const idNumerico = parseInt(currentSong.id);
+        const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));  //cambiara, para el azar no
+        const { title, artwork, artist } = track;
+        setTrackTitle(title);
+        setTrackArtist(artist);
+        setTrackArtwork(artwork);
+        await setCurrentSong(track);
+      }
+    }
+  });
 
+  const repeatIcon = () => {
+    if (repeatMode == 'off') {
+      return 'repeat-off';
+    };
+    if (repeatMode == 'track') {
+      return 'repeat';
+    };
+    if (repeatMode == 'repeat') {
+      return 'repeat';
+    };
+  };
+
+  const addSongPlaylistFav = async (song) => {
+    const docRef = firestore().collection('playlist_fav').doc(currentPlaylistfav.id);
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (Array.isArray(data.songs_fav)) {
+          if (heartLikes[song.id]) {
+            data.songs_fav = data.songs_fav.filter((favSong) => favSong.id !== song.id);
+          } else {
+            data.songs_fav.push(song);
+          }
+          docRef.update({
+            songs_fav: data.songs_fav
+          })
+            .then(() => {
+              console.log('Dato cambiado con éxito');
+              setHeartUpdate(!heartUpdate);
+              setHeartLikes((prevHeartLikes) => ({
+                ...prevHeartLikes,
+                [song.id]: !heartLikes[song.id],
+              }));
+              setMessageA(heartLikes[song.id] ? 'Canción removida de lista de favoritos.' : 'Canción agregada a lista de favoritos.');
+            })
+            .catch((error) => {
+              console.error('Error al actualizar el documento:', error);
+            });
+        } else {
+          console.error('El campo songs no es un arreglo o no existe');
+        }
+      } else {
+        console.error('No se encontró el documento');
+      }
+    });
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setMessageA('');
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [messageA]);
+
+  const changeRepeatMode = () => {
+    if (repeatMode == 'off') {
+      TrackPlayer.setRepeatMode(RepeatMode.Track);
+      setRepeatMode('track');
+    };
+    if (repeatMode == 'track') {
+      TrackPlayer.setRepeatMode(RepeatMode.Off);
+      setRepeatMode('off');
+    };
+  };
+
+  const skipTo = async trackId => {
+    await TrackPlayer.skipToNext();
+  };
+
+  const previousTo = async trackId => {
+    await TrackPlayer.skipToPrevious();
+  }
   const changeValuesTrack = async () => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
       const idNumerico = parseInt(currentSong.id);
-      console.log(idNumerico);
       const track = await TrackPlayer.getTrack(idNumerico);
-
-      console.log('banderitaaaa', track);
       if (track !== null) {
         const { title, artwork, artist } = track;
         setTrackTitle(title);
@@ -161,14 +241,28 @@ const Player = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    changeValuesTrack();
-    console.log('currentSong', currentSong);
-  }, [currentSong, playlistFlow]);
+    const updatedHeartLikes = {};
+    if (currentPlaylistfav && currentPlaylistfav.songs_fav) {
+      currentPlaylistfav.songs_fav.forEach((favSong) => {
+        updatedHeartLikes[favSong.id] = true;
+      });
+    };
+    setHeartLikes(updatedHeartLikes);
+  }, [currentPlaylistfav]);
 
   useEffect(() => {
-    setIsPlaying(true);
-  }, [isPlaying]);
+    const changeAndPlayTrack = async () => {
+      await changeValuesTrack();
+      if (isConnected) {
+        setIsPlaying(true);
+        await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
+      }
+    };
 
+    if (currentSong) {
+      changeAndPlayTrack();
+    }
+  }, [currentSong, isConnected]);
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -176,7 +270,7 @@ const Player = ({ navigation, route }) => {
       justifyContent: 'center',
     }}>
       <TouchableOpacity style={style.flechita} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={30} color="white" />
+        <Ionicons style={{ color: colorSec[currentSong.id % 3] }} name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
 
       <View style={style.container}>
@@ -198,10 +292,10 @@ const Player = ({ navigation, route }) => {
 
         <View>
           <View style={style.songDurationMain}>
-            <Text>
+            <Text style={style.songTimer}>
               {new Date(sliderWork.position * 1000).toLocaleTimeString().substring(3, 8)}
             </Text>
-            <Text>
+            <Text style={style.songTimer}>
               {new Date(sliderWork.duration * 1000).toLocaleTimeString().substring(3, 8)}
             </Text>
           </View>
@@ -210,21 +304,42 @@ const Player = ({ navigation, route }) => {
             value={sliderWork.position}
             minimumValue={0}
             maximumValue={sliderWork.duration}
-            thumbTintColor='pink'
-            minimumTrackTintColor='white'
-            maximumTrackTintColor='#FFFFFF80'
+            thumbTintColor='white'
+            minimumTrackTintColor={colorSec[currentSong.id % 3]}
+            maximumTrackTintColor={colorSec[currentSong.id % 3]}
             onSlidingComplete={isConnected ? async time => {
               await TrackPlayer.seekTo(time);
             } : undefined}
           />
         </View>
-
         <View style={style.songControl}>
+          <TouchableOpacity onPress={() => previousTo()}>
+            <Ionicons name="play-skip-back-outline" size={35} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => playTrack(playState)}>
-            <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={44} color="white" />
+            <Ionicons name={playState !== State.Playing ? "play-outline" : "pause-outline"} size={50} color={colorSec[currentSong.id % 3]} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => skipTo(currentSong.id)}>
+            <Ionicons name="play-skip-forward-outline" size={35} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
+        <View style={style.songMainControl}>
+          <View style={{ left: -125 }}>
+            <TouchableOpacity onPress={() => addSongPlaylistFav(currentSong)}>
+              <Ionicons name={heartLikes[currentSong.id] ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ right: -125 }}>
+            <TouchableOpacity onPress={changeRepeatMode}>
+              <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
+            </TouchableOpacity>
+          </View>
+        </View>
 
+        {messageA &&
+          <View style={style.messageHeart}>
+            <Text style={{ color: 'white', textAlign:'center' }}>{messageA}</Text>
+          </View>}
         <Connection />
       </View>
     </SafeAreaView>
@@ -284,6 +399,9 @@ const style = StyleSheet.create({
     height: 30,
     flexDirection: 'row',
   },
+  songTimer: {
+    color: '#3D3939',
+  },
   songDurationMain: {
     fontFamily: 'Quicksand-VariableFont',
     width: 300,
@@ -292,11 +410,25 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  songControl: {
-    width: 50,
+  messageHeart: {
+    position: 'absolute',
+    backgroundColor: '#505050',
+    justifyContent:'center',
     height: 40,
+    width: '100%',
+    bottom: 0,
+  },
+  songMainControl: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    top: 0,
+  },
+  songControl: {
+    width: '60%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
   },
   flechita: {
     justifyContent: 'flex-start',

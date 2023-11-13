@@ -365,14 +365,14 @@ const handleUpdatePlaylist = () => {
                   
               <View style={styles.playlistBox}>
               <Image
-                source={require('../assets/playlist/2.png')}
-                style={{
-                  ...styles.playlistImage,
-                  width: 60,  
-                  height: 60, 
-                  marginLeft: -10, 
-                }}
-              />
+                  source={{ uri: playlistImages[playlist] || 'ruta_predeterminada' }}
+                  style={{
+                    ...styles.playlistImage,
+                    width: 60,  
+                    height: 60, 
+                    marginLeft: -10, 
+                  }}
+                />
 
         <View style={styles.playlistContent}>
           <View style={[styles.playlistText, { width: 200 }]}>

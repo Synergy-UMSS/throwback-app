@@ -11,6 +11,7 @@ import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
 import Playlist from './src/screens/Playlist';
+import PlaylistFav from './src/screens/PlaylistFav';
 import Library from './src/screens/Library';
 import {MusicPlayerProvider} from './src/components/MusicPlayerContext';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -78,7 +79,7 @@ function MemoryNavigator() {
             fontFamily: 'arial-bold',
             marginLeft: 0,
           },
-          headerShown: true,
+          headerShown: false,
           cardStyle: {backgroundColor: '#e4e6dc'},
         }}
       />
@@ -104,19 +105,19 @@ const App = () => {
         screenOptions={({route}) => ({
           tabBarBackground: () => (
             <LinearGradient
-              colors={['rgba(120, 116, 116, 0.0)', 'rgba(38, 38, 38, 0.9)']}
+              // colors={['rgba(120, 116, 116, 0.1)', 'rgba(38, 38, 38, 1)']}
+              colors={['rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']}
               style={{
                 position: 'absolute',
                 left: 0,
                 right: 0,
                 bottom: -1,
-                height: 60,
+                height: 51,
               }}
             />
           ),
           tabBarActiveTintColor: '#ffffff',
           // tabBarInactiveTintColor: '#e4e6dc',
-
           tabBarInactiveTintColor: '#CECFC8',
           tabBarStyle: {
             backgroundColor: 'transparent',
@@ -142,7 +143,7 @@ const App = () => {
           options={{
             tabBarLabel: 'Inicio',
             tabBarIcon: ({color, size}) => (
-              <Icon name="home" color={color} size={size + 8} />
+              <Icon name="home" color={color} size={size} />
             ),
             headerShown: false,
           }}
@@ -154,7 +155,7 @@ const App = () => {
           options={{
             tabBarLabel: 'Buscar',
             tabBarIcon: ({color, size}) => (
-              <FontAwesomeIcon name="search" color={color} size={size} />
+              <FontAwesomeIcon name="search" color={color} size={size-3} />
             ),
             headerShown: false,
           }}
@@ -166,7 +167,7 @@ const App = () => {
             tabBarLabel: 'Tu Biblioteca',
             tabBarIcon: ({color, size}) => (
               <View style={{ borderRadius: 7 / 2, overflow: 'hidden' }}>
-              <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size, height: size }} />
+              <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size-4, height: size-4 }} />
             </View>
             ),
             headerShown: false,
@@ -183,6 +184,14 @@ const App = () => {
         <Tab.Screen
           name="SearchSelect"
           component={SearchSelect}
+          options={{
+            tabBarButton: (props) => null,
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="PlaylistFav"
+          component={PlaylistFav}
           options={{
             tabBarButton: (props) => null,
             headerShown: false,
@@ -249,6 +258,11 @@ const App = () => {
             <Stack.Screen
               name="Playlist"
               component={Playlist}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="PlaylistFav"
+              component={PlaylistFav}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

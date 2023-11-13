@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
+import firestore from '@react-native-firebase/firestore';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,6 +14,7 @@ import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
+import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 
 let color: string[] = [
   '#C7A9D560',
@@ -25,9 +27,7 @@ let colorSec: string[] = [
   '#80616C',
 ];
 
-
 let lastSong: { id: any; title: any; artist: any; artwork: any; url: any; } | null = null;
-
 const tracks = [];
 
 const Player = ({ navigation, route }) => {
@@ -46,6 +46,10 @@ const Player = ({ navigation, route }) => {
   const { isPlaying, setIsPlaying } = useContext(MusicPlayerContext);
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
+  const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
+  const [heartLikes, setHeartLikes] = useState({});
+  const [heartUpdate, setHeartUpdate] = useState(false);
+  const [messageA, setMessageA] = useState('');
 
   const setPlayer = async () => {
     try {
@@ -113,19 +117,8 @@ const Player = ({ navigation, route }) => {
     const fetchDataAndInitializePlayer = async () => {
       await fetchSongs();
       await setPlayer();
-      console.log('Player initialized:', playerInitialized);
       setPlayerInitialized(true);
     };
-    fetchDataAndInitializePlayer();
-  }, []);
-
-  useEffect(() => {
-    const fetchDataAndInitializePlayer = async () => {
-      await fetchSongs();
-      await setPlayer();
-      setPlayerInitialized(true);
-    };
-
     fetchDataAndInitializePlayer();
   }, []);
 
@@ -146,23 +139,65 @@ const Player = ({ navigation, route }) => {
   });
 
   const repeatIcon = () => {
-    if(repeatMode == 'off'){
+    if (repeatMode == 'off') {
       return 'repeat-off';
     };
-    if(repeatMode == 'track'){
+    if (repeatMode == 'track') {
       return 'repeat';
     };
-    if(repeatMode == 'repeat'){
+    if (repeatMode == 'repeat') {
       return 'repeat';
     };
   };
 
+  const addSongPlaylistFav = async (song) => {
+    const docRef = firestore().collection('playlist_fav').doc(currentPlaylistfav.id);
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (Array.isArray(data.songs_fav)) {
+          if (heartLikes[song.id]) {
+            data.songs_fav = data.songs_fav.filter((favSong) => favSong.id !== song.id);
+          } else {
+            data.songs_fav.push(song);
+          }
+          docRef.update({
+            songs_fav: data.songs_fav
+          })
+            .then(() => {
+              console.log('Dato cambiado con éxito');
+              setHeartUpdate(!heartUpdate);
+              setHeartLikes((prevHeartLikes) => ({
+                ...prevHeartLikes,
+                [song.id]: !heartLikes[song.id],
+              }));
+              setMessageA(heartLikes[song.id] ? 'Canción removida de lista de favoritos.' : 'Canción agregada a lista de favoritos.');
+            })
+            .catch((error) => {
+              console.error('Error al actualizar el documento:', error);
+            });
+        } else {
+          console.error('El campo songs no es un arreglo o no existe');
+        }
+      } else {
+        console.error('No se encontró el documento');
+      }
+    });
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setMessageA('');
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [messageA]);
+
   const changeRepeatMode = () => {
-    if(repeatMode == 'off'){
+    if (repeatMode == 'off') {
       TrackPlayer.setRepeatMode(RepeatMode.Track);
       setRepeatMode('track');
     };
-    if(repeatMode == 'track'){
+    if (repeatMode == 'track') {
       TrackPlayer.setRepeatMode(RepeatMode.Off);
       setRepeatMode('off');
     };
@@ -179,7 +214,6 @@ const Player = ({ navigation, route }) => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
       const idNumerico = parseInt(currentSong.id);
-      console.log(idNumerico);
       const track = await TrackPlayer.getTrack(idNumerico);
       if (track !== null) {
         const { title, artwork, artist } = track;
@@ -205,6 +239,16 @@ const Player = ({ navigation, route }) => {
       console.log('Error en changeValuesTrack:', e);
     }
   };
+
+  useEffect(() => {
+    const updatedHeartLikes = {};
+    if (currentPlaylistfav && currentPlaylistfav.songs_fav) {
+      currentPlaylistfav.songs_fav.forEach((favSong) => {
+        updatedHeartLikes[favSong.id] = true;
+      });
+    };
+    setHeartLikes(updatedHeartLikes);
+  }, [currentPlaylistfav]);
 
   useEffect(() => {
     const changeAndPlayTrack = async () => {
@@ -260,19 +304,13 @@ const Player = ({ navigation, route }) => {
             value={sliderWork.position}
             minimumValue={0}
             maximumValue={sliderWork.duration}
-            thumbTintColor= 'white'
+            thumbTintColor='white'
             minimumTrackTintColor={colorSec[currentSong.id % 3]}
             maximumTrackTintColor={colorSec[currentSong.id % 3]}
             onSlidingComplete={isConnected ? async time => {
               await TrackPlayer.seekTo(time);
             } : undefined}
           />
-        </View>
-
-        <View style={[style.songMainControl, { left: 45 }]}>
-          <TouchableOpacity>
-            <Ionicons name={playState !== State.Playing ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
-          </TouchableOpacity>
         </View>
         <View style={style.songControl}>
           <TouchableOpacity onPress={() => previousTo()}>
@@ -285,12 +323,23 @@ const Player = ({ navigation, route }) => {
             <Ionicons name="play-skip-forward-outline" size={35} color={colorSec[currentSong.id % 3]} />
           </TouchableOpacity>
         </View>
-        <View style={[style.songMainControl, { right: 45 }]}>
-          <TouchableOpacity onPress={changeRepeatMode}>
-            <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
-          </TouchableOpacity>
+        <View style={style.songMainControl}>
+          <View style={{ left: -125 }}>
+            <TouchableOpacity onPress={() => addSongPlaylistFav(currentSong)}>
+              <Ionicons name={heartLikes[currentSong.id] ? "heart" : "heart-outline"} size={25} color={colorSec[currentSong.id % 3]} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ right: -125 }}>
+            <TouchableOpacity onPress={changeRepeatMode}>
+              <MaterialCommunityIcons name={`${repeatIcon()}`} size={25} color={colorSec[currentSong.id % 3]} />
+            </TouchableOpacity>
+          </View>
         </View>
 
+        {messageA &&
+          <View style={style.messageHeart}>
+            <Text style={{ color: 'white', textAlign:'center' }}>{messageA}</Text>
+          </View>}
         <Connection />
       </View>
     </SafeAreaView>
@@ -361,11 +410,18 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  songMainControl: {
+  messageHeart: {
     position: 'absolute',
-    paddingBottom: 10,
-    zIndex: 1,
-    bottom: 80,
+    backgroundColor: '#505050',
+    justifyContent:'center',
+    height: 40,
+    width: '100%',
+    bottom: 0,
+  },
+  songMainControl: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    top: 0,
   },
   songControl: {
     width: '60%',

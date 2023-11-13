@@ -191,8 +191,7 @@ const CrearMemoria = ({ navigation }) => {
         )}
 
         <Text style={styles.label}>Emoción:</Text>
-        <EmotionPicker onEmotionChange={handleEmotionSelected}/>
-        
+        <EmotionPicker onEmotionChange={handleEmotionSelected} />
         <Text style={styles.label}>Canción vinculada:</Text>
         <View style={styles.marginBottom}>
           <ItemSong

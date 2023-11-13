@@ -89,6 +89,7 @@ const Library = () => {
     });
   };
   
+  
   const handlePressMore = () => {
     setShowModal(true);
   };
@@ -149,16 +150,20 @@ const Library = () => {
         const playlistsData: string[] = [];
         const colorsData: { [key: string]: string } = {};
         querySnapshot.forEach((doc, index) => {
-          const { name, createDate, color } = doc.data();
+          const { name, createDate, color, playlistImage } = doc.data();
           playlistsData.push(name);
           colorsData[name] = color || '#FBBAA4';
+
+          if (name === selectedPlaylist) {
+            setPlaylistImage(playlistImage || null);
+          }
         });
         setPlaylists(playlistsData);
         setColors(colorsData);
       });
-
+  
     return () => unsubscribe();
-  }, []);
+  }, [selectedPlaylist]); 
 
 
 
@@ -214,7 +219,6 @@ const handleEditPlaylist = (playlistName) => {
   setShowEditImage(true); 
 };
 
-
 const handleUpdatePlaylist = () => {
   if (editPlaylistName.trim() === '') {
     setError('El nombre de la lista no puede estar vacío.');
@@ -226,26 +230,30 @@ const handleUpdatePlaylist = () => {
     playlistRef = playlistRef.limit(1);
     playlistRef.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        doc.ref.update({ name: editPlaylistName });
+        doc.ref.update({
+          name: editPlaylistName,
+          playlistImage: playlistImage, 
+        });
       });
+
+      // Actualiza el objeto 'colors' con el nuevo nombre y color de la playlist
+      colors[editPlaylistName] = selectedColor;
+      delete colors[selectedPlaylistName];
+
+      const updatedPlaylists = playlists.map(playlist => {
+        if (playlist === selectedPlaylistName) {
+          return editPlaylistName;
+        }
+        return playlist;
+      });
+
+      setPlaylists(updatedPlaylists);
+      setSelectedPlaylistName(editPlaylistName);
+      setShowEditModal(false);
     });
-
-    // Actualiza el objeto 'colors' con el nuevo nombre y color de la playlist
-    colors[editPlaylistName] = selectedColor;
-    delete colors[selectedPlaylistName];
-
-    const updatedPlaylists = playlists.map(playlist => {
-      if (playlist === selectedPlaylistName) {
-        return editPlaylistName;
-      }
-      return playlist;
-    });
-
-    setPlaylists(updatedPlaylists);
-    setSelectedPlaylistName(editPlaylistName);
-    setShowEditModal(false);
   }
 };
+
 
 
   const resetModal = () => {
@@ -433,10 +441,10 @@ const handleUpdatePlaylist = () => {
       </Text>
       <View style={styles.imageContainer}>
           <TouchableOpacity onPress={handleEditImage}>
-            <Image
-              source={{ uri: playlistImage ? playlistImage : 'ruta_predeterminada' }}
-              style={{ width: 100, height: 100 }}
-            />
+          <Image
+            source={{ uri: playlistImage ? playlistImage : 'ruta_predeterminada' }}
+            style={{ width: 100, height: 100 }}
+          />
              <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
                   Cambiar imagen
                 </Text>

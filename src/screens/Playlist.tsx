@@ -12,6 +12,7 @@ import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 import { useSearchStore } from '../store/searchStore';
 import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
+import { usePlayerStore } from '../store/playerStore';
 import ConnectionGral from '../components/ConnectionGral';
 
 const Playlist = ({ navigation }) => {
@@ -20,6 +21,7 @@ const Playlist = ({ navigation }) => {
 	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
+	const {setCurrentSong} = usePlayerStore();
 	const {isConnected} = useConnectionGlobal();
 	
 	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
@@ -85,7 +87,8 @@ const Playlist = ({ navigation }) => {
 	};
 
 	const goToPlayer = () => {
-		navigation.navigate('Player', {undefined, playlistFlow: false})
+		setCurrentSong(localSongsAdded[0]);
+		navigation.navigate('Player', {undefined, playlistFlow: true})
 	};
 
 	const imagePlaylist = {

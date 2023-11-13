@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,12 @@ const SongSuggestion = ({songData, screenSelected}) => {
     setShowOptions(!showOptions);
   };
 
+  useEffect(() => {
+    if (showOptions) {
+        console.log('El ModalContainer está visible');
+    }
+}, [showOptions]);
+
   const handlePlayPress = () => {
     setCurrentSong(songData);
     navigation.navigate('Player', {songData, playlistFlow: false});
@@ -66,6 +72,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
   };
 
   const createMemory = () => {
+    setShowOptions(false); // para cerrar el modal luego de crear memoria Dx bug solucionado
     checkSongMemory(currentSong);
   };
 

@@ -3,6 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, Modal, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
+import firabase from '@react-native-firebase/app';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
@@ -177,6 +178,7 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     const memoria = {
+      userKey: firabase.auth().currentUser?.email,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
       emotion: selectedEmotion,

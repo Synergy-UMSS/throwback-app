@@ -380,7 +380,7 @@ const handleUpdatePlaylist = () => {
                   
               <View style={styles.playlistBox}>
               <Image
-                  source={{ uri: playlistImages[playlist] || 'ruta_predeterminada' }}
+                  source={{ uri: playlistImages[playlist] || 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
                   style={{
                     ...styles.playlistImage,
                     width: 60,  
@@ -472,7 +472,7 @@ const handleUpdatePlaylist = () => {
       <View style={styles.imageContainer}>
           <TouchableOpacity onPress={handleEditImage}>
           <Image
-            source={{ uri: playlistImage ? playlistImage : 'ruta_predeterminada' }}
+            source={{ uri: playlistImage ? playlistImage : 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
             style={{ width: 100, height: 100 }}
           />
              <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>

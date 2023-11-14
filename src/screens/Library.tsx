@@ -27,6 +27,7 @@ import MiniPlayer from '../components/MiniPlayer';
 import FavoritePlaylist from '../components/FavoritePlaylist';
 import ColorPicker from '../components/ColorPicker';
 import { launchImageLibrary, ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
+import auth from '@react-native-firebase/auth';
 
 
 const Library = () => {
@@ -111,6 +112,7 @@ const Library = () => {
         createDate: timestamp,
         songs: [],
         color: selectedColor,
+        userKey: firebase.auth().currentUser?.getIdToken
       };
 
       firestore()
@@ -147,6 +149,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
+      .where('userKey', '==', firebase.auth().currentUser?.getIdToken)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];
@@ -200,6 +203,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
+      .where('userKey', '==', firebase.auth().currentUser?.getIdToken)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];

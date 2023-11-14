@@ -58,6 +58,7 @@ const EmotionPicker = ({ emotion, onEmotionChange }) => {
   return (
     <View style={styles.container}>
       <FlatList
+        showsHorizontalScrollIndicator={false}
         ref={flatListRef}
         data={Object.keys(emotions)}
         renderItem={({ item }) => (

@@ -41,7 +41,7 @@ function aclararColor(hex, porcentaje=0.5) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-const EditMemory = ({ navigation }) => {
+const EditMemory = ({ memoria, onClose }) => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -51,7 +51,7 @@ const EditMemory = ({ navigation }) => {
   const [selectedEmotionName, setSelectedEmotionName] = useState("emo1");
   const [showName, setShowName] = useState(true);
 
-  const [isCreatingMemory, setIsCreatingMemory] = useState(false);
+  const [isUpdatingMemory, setIsUpdatingMemory] = useState(false);
   const cooldownTime = 5000;
 
   const handleEmotionSelected = (emotion) => {
@@ -66,31 +66,28 @@ const EditMemory = ({ navigation }) => {
   };
 
   const onSubmit = async (data) => {
-    if (isCreatingMemory) {
+    if (isUpdatingMemory) {
       return;
     }
 
-    setIsCreatingMemory(true);
+    setIsUpdatingMemory(true);
 
-    const memoria = {
+    const uptatedMemoria = {
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
       emotion: selectedEmotion,
-      createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
       song: parseInt(currentSong.id)
     };
 
     try {
-      await firestore().collection('memories').add(memoria);
-      console.log('Memoria guardada correctamente.');
-      showSuccessAlert();
+      await firestore().collection('memories').doc(memoria.id).update(updatedMemoria);
+      console.log('Memoria actualizada correctamente.');
+      onClose(); // Cierra la vista de edición después de actualizar
     } catch (error) {
-      console.error('Error al guardar la memoria: ', error);
+      console.error('Error al actualizar la memoria: ', error);
     } finally {
-      setTimeout(() => {
-        setIsCreatingMemory(false);
-      }, cooldownTime);
+      setIsUpdatingMemory(false);
     }
   };
 
@@ -100,8 +97,8 @@ const EditMemory = ({ navigation }) => {
 
   const showSuccessAlert = () => {
     Alert.alert(
-      'Memoria creada con éxito',
-      'La memoria se ha guardado correctamente.',
+      'Memoria actualizada con éxito',
+      'La memoria se ha actualizado correctamente.',
       [
         {
           text: 'Aceptar',
@@ -118,7 +115,7 @@ const EditMemory = ({ navigation }) => {
   return (
     <View style={[styles.container, { backgroundColor: aclararColor(getColorForEmotion(selectedEmotion))}]}>
     
-      <Text style={styles.pageTitle}>Crear memoria musical</Text>
+      <Text style={styles.pageTitle}>Editar memoria musical</Text>
 
       <ScrollView>
 
@@ -131,10 +128,11 @@ const EditMemory = ({ navigation }) => {
               value={value}
               onChangeText={onChange}
               maxLength={50}
+              editable={false}
             />
           )}
           name="tituloMemoria"
-          defaultValue=""
+          defaultValue={memoria.title}
           rules={{
             required: 'Este campo es obligatorio',
             validate: {
@@ -164,7 +162,7 @@ const EditMemory = ({ navigation }) => {
             />
           )}
           name="descripcionMemoria"
-          defaultValue=""
+          defaultValue={memoria.description}
         />
 
             <Text style={styles.label}>Fecha:</Text>

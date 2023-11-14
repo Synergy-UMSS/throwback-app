@@ -6,7 +6,6 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import TextTicker from 'react-native-text-ticker';
-import EditarMemoria from '../screens/EditMemory';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -76,7 +75,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
   }
 
   const editMemory = () => {
-    navigation.navigate('EditMemory', {memoria}); 
+    navigate('EditMemory', {memoria}); 
   } 
   return (
     <View style={styles.mainContainer}>

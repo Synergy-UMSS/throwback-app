@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Image, View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import emo1 from '../assets/emotion/1.png';
@@ -46,9 +46,19 @@ const EmotionPicker = ({ emotion, onEmotionChange }) => {
     onEmotionChange(selectedEmotion);
   };
 
+  useEffect(() => {
+    // Selecciona la emoción "emo1" cuando el componente se monta
+    setSelectedEmotion("emo1");
+    setSelectedEmotionName(emotions["emo1"].name);
+    setShowName(true);
+    onEmotionChange("emo1");
+  }, []);
+
+
   return (
     <View style={styles.container}>
       <FlatList
+        showsHorizontalScrollIndicator={false}
         ref={flatListRef}
         data={Object.keys(emotions)}
         renderItem={({ item }) => (

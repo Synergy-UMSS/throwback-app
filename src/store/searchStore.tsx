@@ -1,4 +1,5 @@
 import {initializeApp} from 'firebase/app';
+import firebase from '@react-native-firebase/app';
 const {getAuth} = require('firebase/auth');
 import {
   getFirestore,
@@ -20,6 +21,8 @@ const firebaseConfig = {
   messagingSenderId: '123136814804',
   appId: '1:123136814804:web:67e9d849c4778270941541',
 };
+
+const userKey = auth.currentUser.uid;
 
 const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);

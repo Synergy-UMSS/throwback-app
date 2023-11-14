@@ -205,7 +205,7 @@ const App = () => {
     <MusicPlayerProvider>
       <MenuProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="Splash">
             <Stack.Screen
               name="Home"
               component={Movible}

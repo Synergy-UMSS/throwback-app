@@ -1,4 +1,5 @@
 import {initializeApp} from 'firebase/app';
+const {getAuth} = require('firebase/auth');
 import {
   getFirestore,
   collection,
@@ -21,6 +22,7 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+export const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 const historyCollectionRef = collection(db, 'history');
 interface SearchStore {

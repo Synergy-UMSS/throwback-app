@@ -181,9 +181,12 @@ const Library = () => {
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
-        setCurrentPlaylist({ id: playlistId, name: playlistName });
+        const playlistData = playlistDoc.data();
+        setCurrentPlaylist({ 
+          id: playlistId, 
+          name: playlistName,
+          songs_p: playlistData.songs.map((song) => song.id) }); 
         navigation.navigate('Playlist', { playlistName, playlistId });
-        console.log(currentPlaylist);
       } else {
         console.error(
           `No se encontró ninguna playlist con el nombre ${playlistName}`,

@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, StyleSheet, View, Image } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
+import { usePlaylistStore } from '../store/playlistStore';
 
 interface FavoritePlaylistProps {
   handlePlayListView: (playlistName: string) => void;
@@ -11,9 +12,10 @@ interface FavoritePlaylistProps {
 
 const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, colorSequence, styles,}) => {
   const navigation = useNavigation();
-  const favoritePlaylistName = 'Mis Favoritos';
+  const favoritePlaylistName = 'Tus Me Gusta';
   const {currentPlaylistfav, setCurrentPlaylistfav} = usePlaylistFavGlobal();
-  
+  const {setCurrentPlaylist} = usePlaylistStore();
+
   const handlePlayListView2 = async () => {
     try {
       const playlistRef = await firestore()
@@ -24,6 +26,11 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
         const playlistData = playlistDoc.data();
+        setCurrentPlaylist({
+          id: playlistId, 
+          name: 'favs', 
+          songs_p: playlistData.songs_fav.map((song) => song.id),
+       });
         setCurrentPlaylistfav({
            id: playlistId, 
            name: 'favs', 
@@ -61,7 +68,7 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
             <Text style={styles.playlistName} numberOfLines={2} ellipsizeMode="tail">
               {favoritePlaylistName}
             </Text>
-            <Text style={styles.playlistLabel}>Lista de reproducción</Text>
+            <Text style={styles.playlistLabel}>Lista de favoritos</Text>
           </View>
         </View>
       </View>

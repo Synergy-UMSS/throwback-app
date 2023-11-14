@@ -43,7 +43,11 @@ const SongSuggestion = ({songData, screenSelected}) => {
 
   const handlePlayPress = () => {
     setCurrentSong(songData);
-    navigation.navigate('Player', {songData, playlistFlow: false});
+    if(screenSelected == 'search'){
+      navigation.navigate('Player', {songData, playlistFlow: false});
+    }else{
+      navigation.navigate('Player', {songData, playlistFlow: true});
+    }
   };
 
   const checkSongMemory = async (song) => {

@@ -50,16 +50,17 @@ const Carousel = () => {
 
   return (
     <View style={styles.container}>
-      <AppIntroSlider
-        data={slides}
-        renderItem={RenderItem}
-        showSkipButton={true}
-        showNextButton={false}
-        showPrevButton={false}
-        showDoneButton={false}
-        showSkipButton={false}
-      />
-      <Authenticate authenticated={authenticated} handleGoogleButtonPress={handleGoogleButtonPress} />
+        <AppIntroSlider
+          data={slides}
+          renderItem={RenderItem}
+          showSkipButton={false}
+          showNextButton={false}
+          showPrevButton={false}
+          showDoneButton={false}
+        />
+      <View style={styles.authenticateContainer}>
+        <Authenticate authenticated={authenticated} handleGoogleButtonPress={handleGoogleButtonPress} />
+      </View>
     </View>
   );
 };
@@ -86,6 +87,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
     fontWeight: 'bold',
+  },
+  authenticateContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'transparent',
+    padding: 16,
+  },
+  dotStyle: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
 });
 

@@ -178,7 +178,7 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     const memoria = {
-      userKey: firabase.auth().currentUser?.email,
+      userKey: firabase.auth().currentUser?.uid,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
       emotion: selectedEmotion,

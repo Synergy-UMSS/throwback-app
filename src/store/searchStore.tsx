@@ -10,6 +10,7 @@ import {
   deleteDoc,
   query,
   orderBy,
+  where
 } from 'firebase/firestore';
 import {create} from 'zustand';
 
@@ -51,7 +52,9 @@ export const useSearchStore = create<SearchStore>(set => ({
   deleteRecentSearch: async searchQuery => {
     try {
       // Eliminar el documento correspondiente en la base de datos
-      const querySnapshot = await getDocs(collection(db, 'history'));
+      const querySnapshot = await getDocs(
+        query(collection(db, 'history'), where('userKey', '==', userKey))
+      );
       querySnapshot.forEach(doc => {
         const history = doc.data();
         if (history.searchQuery === searchQuery) {
@@ -82,6 +85,7 @@ export const useSearchStore = create<SearchStore>(set => ({
         addDoc(historyCollectionRef, {
           searchQuery: searchQuery.trim(),
           searchDate: serverTimestamp(),
+          userKey: userKey
         });
         return {
           recentSearches: updatedRecentSearches,
@@ -92,7 +96,9 @@ export const useSearchStore = create<SearchStore>(set => ({
   clearRecentSearches: async () => {
     try {
       // Crear una consulta para obtener todos los documentos en la colección
-      const querySnapshot = await getDocs(collection(db, 'history'));
+      const querySnapshot = await getDocs(
+        query(collection(db, 'history'), where('userKey', '==', userKey))
+      );
 
       // Iterar a través de los documentos y eliminarlos
       querySnapshot.forEach(doc => {

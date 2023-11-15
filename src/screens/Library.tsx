@@ -149,7 +149,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
-      .where('userKey', '==', firebase.auth().currentUser?.getIdToken)
+      .where('userKey', '==', firebase.auth().currentUser?.email)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];

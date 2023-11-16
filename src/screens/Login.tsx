@@ -36,28 +36,33 @@ const Login = () => {
 
       // Verificar si es la primera vez que el usuario inicia sesión
       const user = auth().currentUser;
-
       const isFirstSignIn = user?.metadata.creationTime === user?.metadata.lastSignInTime;
-
+      console.log(isFirstSignIn)
+      console.log(user?.metadata.creationTime)
       if (isFirstSignIn) {
-        // El usuario está iniciando sesión por primera vez, crea el documento
-        const favs= {
-          id: user?.uid, // o puedes usar firestore().collection('playlist_fav').doc().id para generar un ID
-          name: 'favs',
+        const playlistFav = {
+          id: '',
+          name: 'favs' + user?.displayName,
           songs_fav: [],
-          userKey: user?.uid,
-        }
-
-        try {
-          await firestore().collection('playlist_fav').add(favs);
-          console.log('lista de favoritos creada correctamente.');
-        } catch (error) {
-          console.error('Error al crear playlist: ', error);
-        }
+          userKey: auth().currentUser?.uid
+        };
+  
+        firestore()
+          .collection('playlist_fav')
+          .add(playlistFav)
+          .then((docRef) => {
+            const playlistId = docRef.id;
+            docRef.update({ id: playlistId }).then(() => {
+              console.log(
+                'Se ha creado la playlist con ID:',
+                playlistId
+              );
+            });
+          })
       }
 
-      console.log('Logged in: ', user?.displayName);
-      console.log('User ID: ', user?.uid);
+      console.log('Logged in: ', user.displayName);
+      console.log('User ID: ', user.uid);
 
       navigation.replace('Home');
     } catch (error) {

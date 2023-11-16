@@ -43,19 +43,6 @@ export function MemoryNavigator() {
           cardStyle: {backgroundColor: 'transparent'},
         }}
       />
-      <Stack.Screen
-        name="EditMemory"
-        component={EditMemory}
-        options={{
-          title: 'ui',
-          headerStyle: {
-            // backgroundColor: '#e4e6dc',
-            backgroundColor: 'd',
-          },
-          // cardStyle: {backgroundColor: '#e4e6dc'},
-          cardStyle: {backgroundColor: 'transparent'},
-        }}
-      />
     </Stack.Navigator>
   );
 }

@@ -49,6 +49,7 @@ const EmotionPicker = ({ emotion, onEmotionChange }) => {
   return (
     <View style={styles.container}>
       <FlatList
+        showsHorizontalScrollIndicator={false}
         ref={flatListRef}
         data={Object.keys(emotions)}
         renderItem={({ item }) => (
@@ -92,6 +93,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'black'
   },
+  FlatList: {
+
+  }
 });
 
 export default EmotionPicker;

@@ -142,7 +142,7 @@ export const useSearchStore = create<SearchStore>(set => ({
       const res: string[] = [];
   
       // Usa await para esperar a que se resuelva la promesa de getDocs
-      const querySnapshot = await getDocs(query(collection(db, 'history'), orderBy('searchDate', 'desc')));
+      const querySnapshot = await getDocs(query(collection(db, 'history'),where('userKey', '==', userKey), orderBy('searchDate', 'desc')));
   
       // Itera sobre los documentos a través de .docs
       querySnapshot.docs.forEach(doc => {

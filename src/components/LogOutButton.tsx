@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import React from 'react';
-import {View, Button} from 'react-native';
+import {Pressable, Text, StyleSheet} from 'react-native';
 
 const LogOutButton = () => {
   const handleLogOut = async () => {
@@ -22,18 +22,29 @@ const LogOutButton = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Button title="Log out" onPress={handleLogOut} />
-    </View>
+    <Pressable onPress={handleLogOut} style={styles.container}>
+      <Text style={styles.text}>
+        Cerrar Sesión      
+      </Text>
+    </Pressable>
   );
 };
-
-const styles = {
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20, // Ajusta el tamaño horizontal según tus preferencias
+    borderRadius: 10,
+    elevation: 3,
+    backgroundColor: 'red',
+    alignSelf: 'center',
   },
-};
+  text:{
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold'
+  }
+})
 
 export default LogOutButton;

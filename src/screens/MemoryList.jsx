@@ -26,7 +26,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import TermsList from '../components/TermsList';
+import LogOutButton from '../components/LogOutButton';
 
+import firebase from '@react-native-firebase/app';
 
 const MemoryList = ({ navigation }) => {
 
@@ -57,6 +59,7 @@ const MemoryList = ({ navigation }) => {
   useEffect(() => {
     const unsubscribeMemories = firestore()
       .collection('memories')
+      .where('userKey', '==', firebase.auth().currentUser?.email)
       .orderBy('createDate', 'desc')
       .onSnapshot(
         querySnapshot => {

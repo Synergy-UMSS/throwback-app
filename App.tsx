@@ -10,6 +10,7 @@ import MemoryList from './src/screens/MemoryList';
 import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
+import Login from './src/screens/Login';
 import Playlist from './src/screens/Playlist';
 import PlaylistFav from './src/screens/PlaylistFav';
 import Library from './src/screens/Library';
@@ -242,6 +243,11 @@ const App = () => {
             <Stack.Screen
               name="CreateMemory"
               component={CreateMemory}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
               options={{headerShown: false}}
             />
             {/*<Stack.Screen

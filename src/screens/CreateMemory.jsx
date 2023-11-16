@@ -127,13 +127,13 @@ const CrearMemoria = ({ navigation }) => {
             setImageUri(source.uri);
           } else {
             Alert.alert(
-              'Alerta',
-              'El archivo seleccionado supera el tamaño máximo permitido.',
+              'Archivo demasiado grande',
+              'Por favor, elige uno menor a 7 MB.',
               [{ text: 'Aceptar' }]
             );
           }
         } else {
-          Alert.alert('Alerta', 'El formato del archivo seleccionado no es compatible.',
+          Alert.alert('Achivo no válido', 'Por favor, usa JPG, JPEG o PNG.',
             [{ text: 'Aceptar' }]
           );
         }

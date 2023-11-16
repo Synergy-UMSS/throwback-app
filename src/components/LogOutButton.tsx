@@ -36,8 +36,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20, // Ajusta el tamaño horizontal según tus preferencias
     borderRadius: 10,
+    borderColor: 'white',
+    borderWidth: 2,
     elevation: 3,
-    backgroundColor: 'red',
+    backgroundColor: '#fbbaa4',
     alignSelf: 'center',
   },
   text:{

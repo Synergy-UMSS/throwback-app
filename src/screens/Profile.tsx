@@ -43,11 +43,12 @@ export default function Profile() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: '#e4e6dc',
   },
 
   bigLabel: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     marginTop: 10,
     fontWeight: 'bold',
   },
@@ -56,17 +57,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 10,
-    color: 'black',
+    color: 'white',
   },
 
   card: {
-    backgroundColor: '#e4e6dc',
+    backgroundColor: '#b6bfd4',
     alignItems: 'baseline',
     alignSelf: 'center',
     flex: 0,
     borderRadius: 10,
-    borderColor: 'black',
-    borderWidth: 1,
+    borderColor: 'white',
+    borderWidth: 2,
+    elevation: 3,
     marginBottom: 10,
     marginTop: 10,
     paddingHorizontal: 10,
@@ -76,15 +78,15 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 10,
-    borderColor: 'black',
-    borderWidth: 1,
+    borderColor: 'white',
+    borderWidth: 2,
     marginBottom: 10,
     marginTop: 20,
     alignSelf: 'center',
   },
   text: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     marginBottom: 10,// Añade subrayado para indicar enlace
   },
 });

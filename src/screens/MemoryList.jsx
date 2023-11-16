@@ -59,7 +59,7 @@ const MemoryList = ({ navigation }) => {
   useEffect(() => {
     const unsubscribeMemories = firestore()
       .collection('memories')
-      .where('userKey', '==', firebase.auth().currentUser?.email)
+      .where('userKey', '==', firebase.auth().currentUser?.uid)
       .orderBy('createDate', 'desc')
       .onSnapshot(
         querySnapshot => {

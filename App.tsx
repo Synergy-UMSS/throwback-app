@@ -27,6 +27,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import SearchSelect from './src/screens/SearchSelect';
 import {Image, View} from 'react-native'; 
 import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
+import Profile from './src/screens/Profile';
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -164,7 +165,7 @@ const App = () => {
           name="Library"
           component={Library}
           options={{
-            tabBarLabel: 'Tu Biblioteca',
+            tabBarLabel: 'Biblioteca',
             tabBarIcon: ({color, size}) => (
               <View style={{ borderRadius: 7 / 2, overflow: 'hidden' }}>
               <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size-4, height: size-4 }} />
@@ -173,6 +174,19 @@ const App = () => {
             headerShown: false,
           }}
         />
+
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarLabel: 'Cuenta',
+            tabBarIcon: ({color, size}) => (
+              <FontAwesomeIcon name="user-circle-o" color={color} size={size-3} />
+            ),
+            headerShown: false,
+          }}
+        />
+
         <Tab.Screen
           name="Playlist"
           component={Playlist}
@@ -263,6 +277,11 @@ const App = () => {
             <Stack.Screen
               name="PlaylistFav"
               component={PlaylistFav}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

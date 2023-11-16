@@ -5,6 +5,7 @@ import Authenticate from '../screens/Authenticate';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View, Text, Image } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
+import firestore from '@react-native-firebase/firestore';
 
 GoogleSignin.configure({
   webClientId: '123136814804-9t4p6s2pui4a9mrsrb0v5pedjjtvgb17.apps.googleusercontent.com',
@@ -32,6 +33,33 @@ const Carousel = () => {
       console.log('sigan viendoooo');
       console.log(auth().currentUser.uid);
       console.log(auth().currentUser.displayName);
+      // Verificar si es la primera vez que el usuario inicia sesión
+      const user = auth().currentUser;
+      const isFirstSignIn = user?.metadata.creationTime === user?.metadata.lastSignInTime;
+      console.log(isFirstSignIn)
+      console.log(user?.metadata.creationTime)
+      console.log(user?.metadata.lastSignInTime)
+      if (isFirstSignIn) {
+        const playlistFav = {
+          id: '',
+          name: 'favs',
+          songs_fav: [],
+          userKey: auth().currentUser?.uid
+        };
+  
+        firestore()
+          .collection('playlist_fav')
+          .add(playlistFav)
+          .then((docRef) => {
+            const playlistId = docRef.id;
+            docRef.update({ id: playlistId }).then(() => {
+              console.log(
+                'Se ha creado la playlist con ID:',
+                playlistId
+              );
+            });
+          })
+      }
       navigation.replace('Home');
     } catch (error) {
       console.log(error);
@@ -90,7 +118,7 @@ const styles = StyleSheet.create({
   },
   authenticateContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: '10%',
     width: '100%',
     backgroundColor: 'transparent',
     padding: 16,

@@ -1,14 +1,16 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // o el conjunto de iconos que prefieras
 
 export default function Authenticate(props) {
   return (
     <View style={styles.container}>
-      <GoogleSigninButton
-        style={styles.googleSignInButton}
-        onPress={props.handleGoogleButtonPress}
-      />
+      <Pressable onPress={props.handleGoogleButtonPress} style={styles.button}>
+        <View style={styles.buttonContent}>
+          <Icon name="google" size={30} color="white" />
+          <Text style={styles.text}>Iniciar Sesión con Google</Text>
+        </View>
+      </Pressable>
     </View>
   );
 }
@@ -19,8 +21,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  googleSignInButton: {
-    width: 192, // Ajusta el ancho según tus preferencias
-    height: 48, // Ajusta la altura según tus preferencias
+  button: {
+    borderRadius: 10,
+    elevation: 3,
+    backgroundColor: 'black',
+    alignSelf: 'center',
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  text: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
 });

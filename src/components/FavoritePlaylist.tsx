@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 import { usePlaylistStore } from '../store/playlistStore';
+import auth from '@react-native-firebase/auth';
 
 interface FavoritePlaylistProps {
   handlePlayListView: (playlistName: string) => void;
@@ -20,7 +21,7 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
     try {
       const playlistRef = await firestore()
         .collection('playlist_fav')
-        .where('name', '==', 'favs')
+        .where('userKey', '==', auth().currentUser?.uid)
         .get();
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];

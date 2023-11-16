@@ -112,7 +112,7 @@ const Library = () => {
         createDate: timestamp,
         songs: [],
         color: selectedColor,
-        userKey: firebase.auth().currentUser?.getIdToken
+        userKey: firebase.auth().currentUser?.uid
       };
 
       firestore()
@@ -149,7 +149,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
-      .where('userKey', '==', firebase.auth().currentUser?.email)
+      .where('userKey', '==', firebase.auth().currentUser?.uid)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];
@@ -203,7 +203,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
-      .where('userKey', '==', firebase.auth().currentUser?.getIdToken)
+      .where('userKey', '==', firebase.auth().currentUser?.uid)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];

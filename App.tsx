@@ -181,9 +181,7 @@ const App = () => {
           options={{
             tabBarLabel: 'Cuenta',
             tabBarIcon: ({color, size}) => (
-              <View style={{ borderRadius: 7 / 2, overflow: 'hidden' }}>
-              <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size-4, height: size-4 }} />
-            </View>
+              <FontAwesomeIcon name="user-circle-o" color={color} size={size-3} />
             ),
             headerShown: false,
           }}

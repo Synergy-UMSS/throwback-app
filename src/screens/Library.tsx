@@ -27,6 +27,7 @@ import MiniPlayer from '../components/MiniPlayer';
 import FavoritePlaylist from '../components/FavoritePlaylist';
 import ColorPicker from '../components/ColorPicker';
 import { launchImageLibrary, ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
+import auth from '@react-native-firebase/auth';
 
 
 const Library = () => {
@@ -111,6 +112,7 @@ const Library = () => {
         createDate: timestamp,
         songs: [],
         color: selectedColor,
+        userKey: firebase.auth().currentUser?.uid
       };
 
       firestore()
@@ -147,6 +149,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
+      .where('userKey', '==', firebase.auth().currentUser?.uid)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];
@@ -181,9 +184,12 @@ const Library = () => {
       if (!playlistRef.empty) {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
-        setCurrentPlaylist({ id: playlistId, name: playlistName });
+        const playlistData = playlistDoc.data();
+        setCurrentPlaylist({ 
+          id: playlistId, 
+          name: playlistName,
+          songs_p: playlistData.songs.map((song) => song.id) }); 
         navigation.navigate('Playlist', { playlistName, playlistId });
-        console.log(currentPlaylist);
       } else {
         console.error(
           `No se encontró ninguna playlist con el nombre ${playlistName}`,
@@ -197,6 +203,7 @@ const Library = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('playlists')
+      .where('userKey', '==', firebase.auth().currentUser?.uid)
       .orderBy('createDate', 'desc')
       .onSnapshot((querySnapshot) => {
         const playlistsData: string[] = [];
@@ -377,7 +384,7 @@ const handleUpdatePlaylist = () => {
                   
               <View style={styles.playlistBox}>
               <Image
-                  source={{ uri: playlistImages[playlist] || 'ruta_predeterminada' }}
+                  source={{ uri: playlistImages[playlist] || 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
                   style={{
                     ...styles.playlistImage,
                     width: 60,  
@@ -469,7 +476,7 @@ const handleUpdatePlaylist = () => {
       <View style={styles.imageContainer}>
           <TouchableOpacity onPress={handleEditImage}>
           <Image
-            source={{ uri: playlistImage ? playlistImage : 'ruta_predeterminada' }}
+            source={{ uri: playlistImage ? playlistImage : 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
             style={{ width: 100, height: 100 }}
           />
              <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>

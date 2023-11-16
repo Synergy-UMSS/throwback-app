@@ -3,6 +3,7 @@ import storage from '@react-native-firebase/storage';
 import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, Modal, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import firestore from '@react-native-firebase/firestore';
+import firabase from '@react-native-firebase/app';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
@@ -126,13 +127,13 @@ const CrearMemoria = ({ navigation }) => {
             setImageUri(source.uri);
           } else {
             Alert.alert(
-              'Alerta',
-              'El archivo seleccionado supera el tamaño máximo permitido.',
+              'Archivo demasiado grande',
+              'Por favor, elige uno menor a 7 MB.',
               [{ text: 'Aceptar' }]
             );
           }
         } else {
-          Alert.alert('Alerta', 'El formato del archivo seleccionado no es compatible.',
+          Alert.alert('Achivo no válido', 'Por favor, usa JPG, JPEG o PNG.',
             [{ text: 'Aceptar' }]
           );
         }
@@ -177,6 +178,7 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     const memoria = {
+      userKey: firabase.auth().currentUser?.uid,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
       emotion: selectedEmotion,

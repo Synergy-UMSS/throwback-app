@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import MiniPlayer from '../components/MiniPlayer';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import { MusicPlayerProvider } from '../components/MusicPlayerContext';
-
+import LogOutButton from '../components/LogOutButton';
 const Home = ({navigation}) => {
   return (
     <View

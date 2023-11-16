@@ -1,4 +1,6 @@
 import {initializeApp} from 'firebase/app';
+import firebase from '@react-native-firebase/app';
+const {getAuth} = require('firebase/auth');
 import {
   getFirestore,
   collection,
@@ -8,6 +10,7 @@ import {
   deleteDoc,
   query,
   orderBy,
+  where
 } from 'firebase/firestore';
 import {create} from 'zustand';
 
@@ -20,7 +23,10 @@ const firebaseConfig = {
   appId: '1:123136814804:web:67e9d849c4778270941541',
 };
 
+const userKey = firebase.auth().currentUser?.uid;
+
 const firebaseApp = initializeApp(firebaseConfig);
+export const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 const historyCollectionRef = collection(db, 'history');
 interface SearchStore {
@@ -46,7 +52,9 @@ export const useSearchStore = create<SearchStore>(set => ({
   deleteRecentSearch: async searchQuery => {
     try {
       // Eliminar el documento correspondiente en la base de datos
-      const querySnapshot = await getDocs(collection(db, 'history'));
+      const querySnapshot = await getDocs(
+        query(collection(db, 'history'), where('userKey', '==', userKey))
+      );
       querySnapshot.forEach(doc => {
         const history = doc.data();
         if (history.searchQuery === searchQuery) {
@@ -77,6 +85,7 @@ export const useSearchStore = create<SearchStore>(set => ({
         addDoc(historyCollectionRef, {
           searchQuery: searchQuery.trim(),
           searchDate: serverTimestamp(),
+          userKey: userKey
         });
         return {
           recentSearches: updatedRecentSearches,
@@ -87,7 +96,9 @@ export const useSearchStore = create<SearchStore>(set => ({
   clearRecentSearches: async () => {
     try {
       // Crear una consulta para obtener todos los documentos en la colección
-      const querySnapshot = await getDocs(collection(db, 'history'));
+      const querySnapshot = await getDocs(
+        query(collection(db, 'history'), where('userKey', '==', userKey))
+      );
 
       // Iterar a través de los documentos y eliminarlos
       querySnapshot.forEach(doc => {
@@ -131,7 +142,7 @@ export const useSearchStore = create<SearchStore>(set => ({
       const res: string[] = [];
   
       // Usa await para esperar a que se resuelva la promesa de getDocs
-      const querySnapshot = await getDocs(query(collection(db, 'history'), orderBy('searchDate', 'desc')));
+      const querySnapshot = await getDocs(query(collection(db, 'history'),where('userKey', '==', userKey), orderBy('searchDate', 'desc')));
   
       // Itera sobre los documentos a través de .docs
       querySnapshot.docs.forEach(doc => {

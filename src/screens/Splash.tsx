@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { RootStackParamList } from '../utils/types';
 import FastImage from 'react-native-fast-image';
+import auth from '@react-native-firebase/auth';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
@@ -10,9 +11,24 @@ const Splash = ({ navigation }: SplashProps) => {
   const titleOpacity = useRef(0).current;
 
   useEffect(() => {
-    setTimeout(() => {
-      navigation.replace('Home');
+    const splashTimeout = setTimeout(() => {
+      const unsubscribe = auth().onAuthStateChanged((user) => {
+        console.log(user);
+        if (user) {
+           navigation.replace('Home');
+        } else {
+          navigation.replace('Login');
+        }
+      });
+      return () => {
+        unsubscribe();
+      };
     }, 3000);
+
+    // Limpia el timeout cuando el componente se desmonta
+    return () => {
+      clearTimeout(splashTimeout);
+    };
   }, [navigation]);
 
   const styles = StyleSheet.create({

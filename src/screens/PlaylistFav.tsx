@@ -10,11 +10,13 @@ import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import ConnectionGral from '../components/ConnectionGral';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
+import { usePlayerStore } from '../store/playerStore';
 
 const PlaylistFav = ({ navigation }) => {
 	const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
+	const { setCurrentSong } = usePlayerStore();
 
 	useEffect(() => {
 		const unsubscribe = firestore()
@@ -48,7 +50,10 @@ const PlaylistFav = ({ navigation }) => {
 	};
 
 	const goToPlayer = () => {
-		navigation.navigate('Player', {undefined, playlistFlow: false})
+		if (localSongsAdded.length > 0) {
+			setCurrentSong(localSongsAdded[0]);
+		}
+		navigation.navigate('Player', { undefined, playlistFlow: true })
 	};
 
 	const imagePlaylist = {
@@ -72,15 +77,20 @@ const PlaylistFav = ({ navigation }) => {
 				</View>
 				<View style={style.textTitle}>
 					<Text style={style.mtext}>
-						Tus favoritos
+						Tus Me Gusta
 					</Text>
 				</View>
 				<View style={style.mainContainer}>
-					<View>
-						<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
-							<Ionicons name='play-circle-outline' size={50}  color='#2F3243'/>
-						</TouchableOpacity>
-					</View>
+					{(localSongsAdded.length > 0) ? (
+						<View>
+							<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>
+								<Ionicons name='play-circle-outline' size={50} color='#2F3243' />
+							</TouchableOpacity>
+						</View>
+						):(
+							<></>
+						)
+					}
 					{displaySongsInPlayLists()}
 				</View>
 			</ScrollView>
@@ -138,7 +148,7 @@ const style = StyleSheet.create({
 	},
 	mainContainer: {
 		backgroundColor: '#B6BFD4',
-	
+
 	},
 	container: {
 		display: 'flex',
@@ -196,7 +206,7 @@ const style = StyleSheet.create({
 		justifyContent: 'center',
 		textAlign: 'center',
 		alignItems: 'center',
-		marginTop:0,
+		marginTop: 0,
 		paddingTop: 0,
 	},
 });

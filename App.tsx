@@ -10,6 +10,7 @@ import MemoryList from './src/screens/MemoryList';
 import Player from './src/screens/Player';
 import Search from './src/screens/Search';
 import Splash from './src/screens/Splash';
+import Login from './src/screens/Login';
 import Playlist from './src/screens/Playlist';
 import PlaylistFav from './src/screens/PlaylistFav';
 import Library from './src/screens/Library';
@@ -27,6 +28,7 @@ import SearchSelect from './src/screens/SearchSelect';
 import {Image, View} from 'react-native'; 
 import {Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import EditMemory from './src/screens/EditMemory';
+import Profile from './src/screens/Profile';
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -164,7 +166,7 @@ const App = () => {
           name="Library"
           component={Library}
           options={{
-            tabBarLabel: 'Tu Biblioteca',
+            tabBarLabel: 'Biblioteca',
             tabBarIcon: ({color, size}) => (
               <View style={{ borderRadius: 7 / 2, overflow: 'hidden' }}>
               <Image source={require('./src/assets/customIcon/book.png')} style={{ tintColor: color, width: size-4, height: size-4 }} />
@@ -173,6 +175,19 @@ const App = () => {
             headerShown: false,
           }}
         />
+
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarLabel: 'Cuenta',
+            tabBarIcon: ({color, size}) => (
+              <FontAwesomeIcon name="user-circle-o" color={color} size={size-3} />
+            ),
+            headerShown: false,
+          }}
+        />
+
         <Tab.Screen
           name="Playlist"
           component={Playlist}
@@ -250,6 +265,11 @@ const App = () => {
               component={CreateMemory}
               options={{headerShown: false}}
             />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
             {/*<Stack.Screen
             name="Library"
             component={Library}
@@ -263,6 +283,11 @@ const App = () => {
             <Stack.Screen
               name="PlaylistFav"
               component={PlaylistFav}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

@@ -3,4 +3,7 @@ export type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   CrearMemoria: undefined;
+  Carousel1: undefined; 
+  Carousel2: undefined; 
+  Carousel3: undefined; 
 };

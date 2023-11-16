@@ -15,6 +15,8 @@ import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
 import { firebase } from '@react-native-firebase/firestore';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
+import { usePlaylistStore } from '../store/playlistStore';
+import { useLoopGlobal } from '../helpcomponents/loopGlobal';
 
 let color: string[] = [
   '#C7A9D560',
@@ -47,9 +49,12 @@ const Player = ({ navigation, route }) => {
   const { isConnected } = useConnectionGlobal();
   const { isPaused, setIsPaused } = useControlPlayer();
   const { currentPlaylistfav, setCurrentPlaylistfav } = usePlaylistFavGlobal();
+  const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
   const [heartLikes, setHeartLikes] = useState({});
   const [heartUpdate, setHeartUpdate] = useState(false);
   const [messageA, setMessageA] = useState('');
+  const [indexCurrent, setIndexCurrent] = useState(0);
+  const {isLoop, setIsLoop} = useLoopGlobal();
 
   const setPlayer = async () => {
     try {
@@ -106,6 +111,7 @@ const Player = ({ navigation, route }) => {
           artwork: song.coverURL,
         };
         tracks.push(track);
+        /*console.log(track.id, "-");   ayudo a saber donde estaba el error, podria ayudar de nuevo */
       });
       setPlayer();
     } catch (e) {
@@ -124,16 +130,26 @@ const Player = ({ navigation, route }) => {
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
-      //solucion a bug del bug Dx para que no se guarde la anterior duracion de la cancion
       sliderWork.position = 0;
-      if (event.nextTrack !== null) {
-        const idNumerico = parseInt(currentSong.id);
-        const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));  //cambiara, para el azar no
+      console.log(currentPlaylist.songs_p);
+      console.log("llegue acaaa", indexCurrent);
+      if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow && repeatMode == 'off') {  //agregar lo del modo, pero ya no cambia bien
+        const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist } = track;
         setTrackTitle(title);
         setTrackArtist(artist);
         setTrackArtwork(artwork);
         await setCurrentSong(track);
+      } else {
+        if (event.nextTrack !== null) {
+          const idNumerico = parseInt(currentSong.id);
+          const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
+          const { title, artwork, artist } = track;
+          setTrackTitle(title);
+          setTrackArtist(artist);
+          setTrackArtwork(artwork);
+          await setCurrentSong(track);
+        }
       }
     }
   });
@@ -143,9 +159,6 @@ const Player = ({ navigation, route }) => {
       return 'repeat-off';
     };
     if (repeatMode == 'track') {
-      return 'repeat';
-    };
-    if (repeatMode == 'repeat') {
       return 'repeat';
     };
   };
@@ -184,6 +197,10 @@ const Player = ({ navigation, route }) => {
       }
     });
   };
+  
+  useEffect(() => {
+    setHeartLikes(heartLikes);
+  }, [heartLikes]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -193,23 +210,55 @@ const Player = ({ navigation, route }) => {
   }, [messageA]);
 
   const changeRepeatMode = () => {
-    if (repeatMode == 'off') {
-      TrackPlayer.setRepeatMode(RepeatMode.Track);
-      setRepeatMode('track');
-    };
-    if (repeatMode == 'track') {
-      TrackPlayer.setRepeatMode(RepeatMode.Off);
-      setRepeatMode('off');
-    };
+      if (repeatMode == 'off') {
+        TrackPlayer.setRepeatMode(RepeatMode.Track);
+        setIsLoop('track');
+        setRepeatMode('track');
+      };
+      if (repeatMode == 'track') {
+        TrackPlayer.setRepeatMode(RepeatMode.Off);
+        setIsLoop('off');
+        setRepeatMode('off');
+      };
+    /*}*/
   };
 
   const skipTo = async trackId => {
-    await TrackPlayer.skipToNext();
+    if(playlistFlow){
+      if(repeatMode == 'track'){
+        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+      }else{
+        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+      }
+      
+    }else{
+      await TrackPlayer.skipToNext();
+    }
   };
 
   const previousTo = async trackId => {
-    await TrackPlayer.skipToPrevious();
-  }
+    if(playlistFlow){
+      let possibleIndex = indexCurrent-2;
+      console.log(possibleIndex);
+      if(possibleIndex >= 0){
+        const currentPosition = await TrackPlayer.getPosition();
+        console.log(currentPosition);
+        if(currentPosition > 1.800){
+          await TrackPlayer.seekTo(0);
+        }else{
+          setIndexCurrent(possibleIndex);
+          await TrackPlayer.skip(currentPlaylist.songs_p[possibleIndex]);   //creo que no llega :?
+          console.log(indexCurrent, 'vine como al indice re extraño', currentPlaylist.songs_p[indexCurrent]);
+        }
+      }else{
+        await TrackPlayer.skip(currentSong.id);
+        console.log(indexCurrent, 'vine como al otro re extraño estee ', currentSong.id );
+      }
+    }else{
+      await TrackPlayer.skipToPrevious();
+    }
+  };
+
   const changeValuesTrack = async () => {
     try {
       const trackIndex = await TrackPlayer.getCurrentTrack();
@@ -224,6 +273,15 @@ const Player = ({ navigation, route }) => {
           if (currentSong !== lastSong) {
             await TrackPlayer.skip(currentSong.id);
             console.log('llego');
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar hasta que la canción actual se reproduzca completamente
+            console.log('repeat llego como', repeatMode);
+            /*if(repeatMode ==='track' ){
+              setIndexCurrent(indexCurrent);  //puede ser util
+              console.log('se hara bucle');
+            }else{*/
+              setIndexCurrent(indexCurrent + 1);
+              /*console.log('no se hara bucle');
+            }*/
           };
           if (!isPaused) {
             await TrackPlayer.play();
@@ -241,6 +299,24 @@ const Player = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    if(!playlistFlow){
+      setCurrentPlaylist({
+        id: 'undef', 
+        name: 'undef',
+        songs_p: []});
+      setIndexCurrent(0);
+    }else{
+      let arraySongs = currentPlaylist.songs_p;
+      if(arraySongs.length > 0){
+        setIndexCurrent(arraySongs.indexOf(currentSong.id));
+      }else{
+        setIndexCurrent(0);
+      }
+    }
+    console.log(playlistFlow);
+  }, [playlistFlow]);
+
+  useEffect(() => {
     const updatedHeartLikes = {};
     if (currentPlaylistfav && currentPlaylistfav.songs_fav) {
       currentPlaylistfav.songs_fav.forEach((favSong) => {
@@ -248,21 +324,23 @@ const Player = ({ navigation, route }) => {
       });
     };
     setHeartLikes(updatedHeartLikes);
+
   }, [currentPlaylistfav]);
 
   useEffect(() => {
     const changeAndPlayTrack = async () => {
+      setIsLoop(isLoop);
       await changeValuesTrack();
       if (isConnected) {
         setIsPlaying(true);
         await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
       }
     };
-
     if (currentSong) {
       changeAndPlayTrack();
     }
-  }, [currentSong, isConnected]);
+  }, [currentSong, isConnected, repeatMode]);
+
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -338,7 +416,7 @@ const Player = ({ navigation, route }) => {
 
         {messageA &&
           <View style={style.messageHeart}>
-            <Text style={{ color: 'white', textAlign:'center' }}>{messageA}</Text>
+            <Text style={{ color: 'white', textAlign: 'center' }}>{messageA}</Text>
           </View>}
         <Connection />
       </View>
@@ -413,7 +491,7 @@ const style = StyleSheet.create({
   messageHeart: {
     position: 'absolute',
     backgroundColor: '#505050',
-    justifyContent:'center',
+    justifyContent: 'center',
     height: 40,
     width: '100%',
     bottom: 0,

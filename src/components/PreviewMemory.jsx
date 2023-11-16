@@ -6,6 +6,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import TextTicker from 'react-native-text-ticker';
+import { useNavigation } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -31,6 +32,8 @@ const emociones = {
   emo14: "#C7A9D5",
 };
 
+
+
 // aclarar un color hexadecimal
 function aclararColor(hex, porcentaje = 0.2) {
   let r = parseInt(hex.slice(1, 3), 16);
@@ -43,6 +46,8 @@ function aclararColor(hex, porcentaje = 0.2) {
 }
 
 const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
+
+  const navigation = useNavigation();
   // color de memoria
   const color = getColorForEmotion(emotion);
   const colorOscurecido = aclararColor(color);
@@ -74,8 +79,17 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
       });
   }
 
+  const memoriaSelecionada = {
+    title: memoria.title,
+    description: memoria.description,
+    emotion: memoria.emotion,
+    createDate: memoria.createDate,
+    memoryDate: memoria.memoryDate,
+    song: memoria.song, //debe ser un entero
+    imageURL: memoria.imageURL, // null si no hay imagen
+  }
   const editMemory = () => {
-    navigate('EditMemory', {memoria}); 
+    navigation.navigate('EditMemory', memoriaSelecionada);
   } 
   return (
     <View style={styles.mainContainer}>

@@ -41,7 +41,8 @@ function aclararColor(hex, porcentaje=0.5) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-const EditMemory = ({ memoria, onClose }) => {
+const EditMemory = ({ memoriaSelecionada }) => {
+  console.log(memoriaSelecionada);
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -64,6 +65,7 @@ const EditMemory = ({ memoria, onClose }) => {
     const sanitizedText = newText.replace(/(\r\n|\n|\r)/g, '');
     setDescription(sanitizedText);
   };
+
 
   const onSubmit = async (data) => {
     if (isUpdatingMemory) {
@@ -132,7 +134,7 @@ const EditMemory = ({ memoria, onClose }) => {
             />
           )}
           name="tituloMemoria"
-          defaultValue={memoria.title}
+          defaultValue={""}
           rules={{
             required: 'Este campo es obligatorio',
             validate: {
@@ -162,7 +164,7 @@ const EditMemory = ({ memoria, onClose }) => {
             />
           )}
           name="descripcionMemoria"
-          defaultValue={memoria.description}
+          defaultValue={""}
         />
 
             <Text style={styles.label}>Fecha:</Text>
@@ -203,7 +205,7 @@ const EditMemory = ({ memoria, onClose }) => {
 
         <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
           <Text style={{ color: 'white', fontSize: 16, fontWeight:'bold' }}>
-            {isCreatingMemory ? 'Creando Memoria...' : 'Crear Memoria'}
+            {isUpdatingMemory ? 'Actualizando Memoria...' : 'Actualizar Memoria'}
             </Text>
         </Pressable>
 

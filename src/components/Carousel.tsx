@@ -38,10 +38,11 @@ const Carousel = () => {
       const isFirstSignIn = user?.metadata.creationTime === user?.metadata.lastSignInTime;
       console.log(isFirstSignIn)
       console.log(user?.metadata.creationTime)
+      console.log(user?.metadata.lastSignInTime)
       if (isFirstSignIn) {
         const playlistFav = {
           id: '',
-          name: 'favs' + user?.displayName,
+          name: 'favs',
           songs_fav: [],
           userKey: auth().currentUser?.uid
         };

@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   authenticateContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: '10%',
     width: '100%',
     backgroundColor: 'transparent',
     padding: 16,

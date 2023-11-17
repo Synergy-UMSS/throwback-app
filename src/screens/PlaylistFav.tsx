@@ -19,6 +19,7 @@ const PlaylistFav = ({ navigation }) => {
 	const { setCurrentSong } = usePlayerStore();
 
 	useEffect(() => {
+		if (currentPlaylistfav.id) {
 		const unsubscribe = firestore()
 			.collection('playlist_fav')
 			.doc(currentPlaylistfav.id)
@@ -33,6 +34,7 @@ const PlaylistFav = ({ navigation }) => {
 				}
 			);
 		return () => unsubscribe();
+	}
 	}, [currentPlaylistfav.id]);
 
 	const displaySongsInPlayLists = () => {

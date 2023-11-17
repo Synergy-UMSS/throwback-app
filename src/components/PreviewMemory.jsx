@@ -89,7 +89,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
     imageURL: memoria.imageURL, // null si no hay imagen
   }
   const editMemory = () => {
-    navigation.navigate('EditMemory', memoriaSelecionada);
+    navigation.navigate('EditMemory', { memoria: memoriaSelecionada });
   } 
   return (
     <View style={styles.mainContainer}>

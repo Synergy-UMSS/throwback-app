@@ -178,6 +178,7 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     const memoria = {
+      id: '',
       userKey: firabase.auth().currentUser?.uid,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
@@ -188,15 +189,25 @@ const CrearMemoria = ({ navigation }) => {
       imageURL: uploadedImageUrl || '', // null si no hay imagen
     };
 
-    try {
-      await firestore().collection('memories').add(memoria);
-      console.log('Memoria guardada correctamente.');
-      showSuccessAlert();
-    } catch (error) {
-      console.error('Error al guardar la memoria: ', error);
-    } finally {
-      setIsCreatingMemory(false); // Habilita la creación de memoria después del tiempo de cooldown
-    }
+    firestore()
+    .collection('memories')
+    .add(memoria)
+    .then((docRef) => {
+      const memoriaId = docRef.id;
+      docRef.update({ id: memoriaId }).then(() => {
+        console.log(
+          'Se ha creado la memoria con ID:',
+          memoriaId
+        );
+        showSuccessAlert();
+      });
+    })
+    .catch((error) => {
+      console.error('Error al crear la playlist:', error);
+    })
+    .finally(() => {
+      setIsCreatingMemory(false);
+    })
   };
 
   const playSong = async () => {
@@ -379,7 +390,7 @@ const CrearMemoria = ({ navigation }) => {
           </View>
         )}
 
-        <RequiredField style={styles.label}>Emoción:</RequiredField>
+        <Text style={styles.label}>Emoción:</Text>
         <EmotionPicker onEmotionChange={handleEmotionSelected} />
 
         <Text style={styles.label}>Canción vinculada:</Text>

@@ -80,6 +80,8 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
   }
 
   const memoriaSelecionada = {
+    id: memoria.id,
+    userKey: memoria.userKey,
     title: memoria.title,
     description: memoria.description,
     emotion: memoria.emotion,
@@ -89,7 +91,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
     imageURL: memoria.imageURL, // null si no hay imagen
   }
   const editMemory = () => {
-    navigation.navigate('EditMemory', { memoria: memoriaSelecionada });
+    navigation.navigate('EditMemory', { memoriaE: memoriaSelecionada });
   } 
   return (
     <View style={styles.mainContainer}>

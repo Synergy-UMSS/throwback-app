@@ -95,7 +95,7 @@ const emotions = {
 };
 
 const EditMemory = ({ navigation, route }) => {
-  const { memoria } = route.params;
+  const { memoriaE } = route.params;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { setCurrentSong, currentSong } = usePlayerStore();
@@ -104,7 +104,7 @@ const EditMemory = ({ navigation, route }) => {
   const [selectedEmotionName, setSelectedEmotionName] = useState(emotions["emo1"].name);
   const [showName, setShowName] = useState(true);
 
-  const [isCreatingMemory, setIsCreatingMemory] = useState(false);
+  const [updatingMemory, setUpdatingMemory] = useState(false);
   const cooldownTime = 5000;
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -112,16 +112,16 @@ const EditMemory = ({ navigation, route }) => {
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
 
   const setInitialFormValues = () => {
-    setValue('tituloMemoria', memoria.title || ''); // Set title field
-    setValue('descripcionMemoria', memoria.description || ''); 
+    setValue('tituloMemoria', memoriaE.title || ''); // Set title field
+    setValue('descripcionMemoria', memoriaE.description || ''); 
 
-    if (memoria.imageURL) {
-      setImageUri(memoria.imageURL); // Set imageUri if there is an existing imageURL
+    if (memoriaE.imageURL) {
+      setImageUri(memoriaE.imageURL); // Set imageUri if there is an existing imageURL
     }
 
-    setSelectedDate(memoria.memoryDate.toDate());
-    setSelectedEmotion(memoria.emotion);
-    setSelectedEmotionName(emotions[memoria.emotion].name);
+    setSelectedDate(memoriaE.memoryDate.toDate());
+    setSelectedEmotion(memoriaE.emotion);
+    setSelectedEmotionName(emotions[memoriaE.emotion].name);
     setShowName(true);
     // ... (set other state variables based on your memoria structure)
   };
@@ -229,11 +229,11 @@ const EditMemory = ({ navigation, route }) => {
   };
   //hasta aqui para seleccionar la imagen
   const onSubmit = async (data) => {
-    if (isCreatingMemory) {
+    if (updatingMemory) {
       return;
     }
 
-    setIsCreatingMemory(true);
+    setUpdatingMemory(true);
 
     let uploadedImageUrl = null;
     if (imageUri) {
@@ -244,6 +244,7 @@ const EditMemory = ({ navigation, route }) => {
     }
 
     const memoria = {
+      id: memoriaE.id,
       userKey: firabase.auth().currentUser?.uid,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
@@ -255,15 +256,15 @@ const EditMemory = ({ navigation, route }) => {
     };
 
     try {
-      await firestore().collection('memories').update(memoria);
-      console.log('Memoria guardada correctamente.');
+      await firestore().collection('memories').doc(memoria.id).update(memoria);
+      console.log('Memoria actualizada correctamente.');
       showSuccessAlert();
     } catch (error) {
-      console.error('Error al guardar la memoria: ', error);
+      console.error('Error al actualizar la memoria: ', error);
     } finally {
-      setIsCreatingMemory(false); // Habilita la creación de memoria después del tiempo de cooldown
+      setUpdatingMemory(false);
     }
-  };
+};
 
   const playSong = async () => {
     navigation.navigate('Player', { currentSong, playlistFlow: false });
@@ -271,7 +272,7 @@ const EditMemory = ({ navigation, route }) => {
 
   const showSuccessAlert = () => {
     Alert.alert(
-      'Memoria creada con éxito',
+      'Memoria actualizada con éxito',
       'La memoria se ha guardado correctamente.',
       [
         {
@@ -448,7 +449,7 @@ const EditMemory = ({ navigation, route }) => {
 
         <Text style={styles.label}>Emoción:</Text>
         <EmotionPicker
-          emotion={memoria.emotion}
+          emotion={memoriaE.emotion}
           onEmotionChange={handleEmotionSelected}
           isEditing={true}
         />
@@ -463,9 +464,9 @@ const EditMemory = ({ navigation, route }) => {
           />
         </View>
 
-        <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
+        <Pressable title="Editar Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
           <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
-            {isCreatingMemory ? 'Editando Memoria...' : 'Editar Memoria'}
+            {updatingMemory ? 'Editando Memoria...' : 'Editar Memoria'}
           </Text>
         </Pressable>
 

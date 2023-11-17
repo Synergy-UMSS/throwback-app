@@ -6,6 +6,8 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import TextTicker from 'react-native-text-ticker';
+import { useNavigation } from '@react-navigation/native';
+
 const screenWidth = Dimensions.get('window').width;
 
 // obtener el color de la memoria basado en la emoción
@@ -30,6 +32,8 @@ const emociones = {
   emo14: "#C7A9D5",
 };
 
+
+
 // aclarar un color hexadecimal
 function aclararColor(hex, porcentaje = 0.2) {
   let r = parseInt(hex.slice(1, 3), 16);
@@ -42,6 +46,8 @@ function aclararColor(hex, porcentaje = 0.2) {
 }
 
 const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
+
+  const navigation = useNavigation();
   // color de memoria
   const color = getColorForEmotion(emotion);
   const colorOscurecido = aclararColor(color);
@@ -59,6 +65,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
       ]
     );
   }
+
   const deleteMemoryFromFirestore = (memoryId) => {
     console.log('Memoria a eliminar');
     console.log(memoryId);
@@ -71,6 +78,21 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
         console.error("Error eliminando memoria: ", error);
       });
   }
+
+  const memoriaSelecionada = {
+    id: memoria.id,
+    userKey: memoria.userKey,
+    title: memoria.title,
+    description: memoria.description,
+    emotion: memoria.emotion,
+    createDate: memoria.createDate,
+    memoryDate: memoria.memoryDate,
+    song: memoria.song, //debe ser un entero
+    imageURL: memoria.imageURL, // null si no hay imagen
+  }
+  const editMemory = () => {
+    navigation.navigate('EditMemory', { memoriaE: memoriaSelecionada });
+  } 
   return (
     <View style={styles.mainContainer}>
       <TouchableOpacity
@@ -91,6 +113,9 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
               />
             </MenuTrigger>
             <MenuOptions customStyles={optionsStyles}>
+            <MenuOption onSelect={editMemory}>
+                <Text style={styles.optionText}>Editar</Text>
+              </MenuOption>
               <MenuOption onSelect={showDeleteConfirmation}>
                 <Text style={styles.optionText}>Eliminar</Text>
               </MenuOption>

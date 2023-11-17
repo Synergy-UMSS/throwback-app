@@ -33,27 +33,34 @@ const emotions = {
   emo13: { image: emo13, name: 'Triste' },
 };
 
-const EmotionPicker = ({ emotion, onEmotionChange }) => {
-  const [selectedEmotion, setSelectedEmotion] = useState(emotion);
-  const [showName, setShowName] = useState(false); // Estado para controlar la visibilidad del nombre
-  const [selectedEmotionName, setSelectedEmotionName] = useState(''); // Estado para almacenar el nombre
-  const flatListRef = useRef(null); 
+const EmotionPicker = ({ emotion, onEmotionChange, isEditing }) => {
+  const [selectedEmotion, setSelectedEmotion] = useState("emo1");
+  const [showName, setShowName] = useState(false);
+  const [selectedEmotionName, setSelectedEmotionName] = useState('');
+
+  const flatListRef = useRef(null);
 
   const handleEmotionChange = (selectedEmotion, emotionName) => {
     setSelectedEmotion(selectedEmotion);
     setSelectedEmotionName(emotionName);
-    setShowName(true); // Mostrar el nombre cuando se presiona la imagen
+    setShowName(true);
     onEmotionChange(selectedEmotion);
   };
 
   useEffect(() => {
-    // Selecciona la emoción "emo1" cuando el componente se monta
-    setSelectedEmotion("emo1");
-    setSelectedEmotionName(emotions["emo1"].name);
-    setShowName(true);
-    onEmotionChange("emo1");
-  }, []);
-
+    if (!isEditing) {
+      setSelectedEmotion("emo1"); // Emoción predeterminada al crear
+      setSelectedEmotionName(emotions["emo1"].name);
+      setShowName(true);
+      onEmotionChange("emo1");
+    } else {
+      // Lógica de inicio para editar una memoria
+      setSelectedEmotion(emotion); // Use provided emotion or default to "emo1"
+      setSelectedEmotionName(emotions[emotion].name);
+      setShowName(true);
+      onEmotionChange(emotion);
+    }
+  }, [isEditing, emotion, onEmotionChange]);
 
   return (
     <View style={styles.container}>
@@ -102,6 +109,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'black'
   },
+  FlatList: {
+
+  }
 });
 
 export default EmotionPicker;

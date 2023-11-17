@@ -1,4 +1,33 @@
-import React, { useState } from 'react';
+{/*
+  const [formData, setFormData] = useState({
+    username: 'UsuarioInicial',
+    email: 'correo@ejemplo.com',
+  });
+
+  const handleChange = (field, value) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+  };
+
+  return (
+    <View>
+      <TextInput
+        placeholder="Nombre de usuario"
+        value={formData.username}
+        onChangeText={(text) => handleChange('username', text)}
+      />
+      <TextInput
+        placeholder="Correo electrónico"
+        value={formData.email}
+        onChangeText={(text) => handleChange('email', text)}
+      />
+      <Button title="Enviar" onPress={handleSubmit} />
+    </View>
+  );*/}
+
+import React, { useState, useEffect } from 'react';
 import storage from '@react-native-firebase/storage';
 import { Image, View, Text, TextInput, StyleSheet, Alert, Pressable, Modal, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
@@ -48,20 +77,57 @@ function aclararColor(hex, porcentaje = 0.5) {
   b = Math.floor(b + (255 - b) * porcentaje);
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
-const CrearMemoria = ({ navigation }) => {
-  const { control, handleSubmit, formState: { errors } } = useForm();
+
+const emotions = {
+  emo1: { name: 'Feliz' },
+  emo2: { name: 'Enojado' },
+  emo3: { name: 'Frustrado' },
+  emo4: { name: 'Cariñoso' },
+  emo5: { name: 'No emotivo' },
+  emo6: { name: 'Indeciso' },
+  emo7: { name: 'Agradecido' },
+  emo8: { name: 'Enamorado' },
+  emo9: { name: 'Juguetón' },
+  emo10: { name: 'Relajado' },
+  emo11: { name: 'Confundido' },
+  emo12: { name: 'Alegre' },
+  emo13: { name: 'Triste' },
+};
+
+const EditMemory = ({ navigation, route }) => {
+  const { memoriaE } = route.params;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { setCurrentSong, currentSong } = usePlayerStore();
 
   const [selectedEmotion, setSelectedEmotion] = useState("emo1");
-  const [selectedEmotionName, setSelectedEmotionName] = useState("emo1");
+  const [selectedEmotionName, setSelectedEmotionName] = useState(emotions["emo1"].name);
   const [showName, setShowName] = useState(true);
 
-  const [isCreatingMemory, setIsCreatingMemory] = useState(false);
+  const [updatingMemory, setUpdatingMemory] = useState(false);
   const cooldownTime = 5000;
 
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm();
+
+  const setInitialFormValues = () => {
+    setValue('tituloMemoria', memoriaE.title || ''); // Set title field
+    setValue('descripcionMemoria', memoriaE.description || ''); 
+
+    if (memoriaE.imageURL) {
+      setImageUri(memoriaE.imageURL); // Set imageUri if there is an existing imageURL
+    }
+
+    setSelectedDate(memoriaE.memoryDate.toDate());
+    setSelectedEmotion(memoriaE.emotion);
+    setSelectedEmotionName(emotions[memoriaE.emotion].name);
+    setShowName(true);
+    // ... (set other state variables based on your memoria structure)
+  };
+  useEffect(() => {
+    setInitialFormValues();
+  }, []);
 
   const openModal = () => {
     setModalVisible(true);
@@ -163,11 +229,11 @@ const CrearMemoria = ({ navigation }) => {
   };
   //hasta aqui para seleccionar la imagen
   const onSubmit = async (data) => {
-    if (isCreatingMemory) {
+    if (updatingMemory) {
       return;
     }
 
-    setIsCreatingMemory(true);
+    setUpdatingMemory(true);
 
     let uploadedImageUrl = null;
     if (imageUri) {
@@ -178,7 +244,7 @@ const CrearMemoria = ({ navigation }) => {
     }
 
     const memoria = {
-      id: '',
+      id: memoriaE.id,
       userKey: firabase.auth().currentUser?.uid,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
@@ -189,26 +255,16 @@ const CrearMemoria = ({ navigation }) => {
       imageURL: uploadedImageUrl || '', // null si no hay imagen
     };
 
-    firestore()
-    .collection('memories')
-    .add(memoria)
-    .then((docRef) => {
-      const memoriaId = docRef.id;
-      docRef.update({ id: memoriaId }).then(() => {
-        console.log(
-          'Se ha creado la memoria con ID:',
-          memoriaId
-        );
-        showSuccessAlert();
-      });
-    })
-    .catch((error) => {
-      console.error('Error al crear la playlist:', error);
-    })
-    .finally(() => {
-      setIsCreatingMemory(false);
-    })
-  };
+    try {
+      await firestore().collection('memories').doc(memoria.id).update(memoria);
+      console.log('Memoria actualizada correctamente.');
+      showSuccessAlert();
+    } catch (error) {
+      console.error('Error al actualizar la memoria: ', error);
+    } finally {
+      setUpdatingMemory(false);
+    }
+};
 
   const playSong = async () => {
     navigation.navigate('Player', { currentSong, playlistFlow: false });
@@ -216,7 +272,7 @@ const CrearMemoria = ({ navigation }) => {
 
   const showSuccessAlert = () => {
     Alert.alert(
-      'Memoria creada con éxito',
+      'Memoria actualizada con éxito',
       'La memoria se ha guardado correctamente.',
       [
         {
@@ -275,7 +331,7 @@ const CrearMemoria = ({ navigation }) => {
   return (
     <View style={[styles.container, { backgroundColor: aclararColor(getColorForEmotion(selectedEmotion)) }]}>
 
-      <Text style={styles.pageTitle}>Crear memoria musical</Text>
+      <Text style={styles.pageTitle}>Editar memoria musical</Text>
 
       <ScrollView>
 
@@ -288,6 +344,7 @@ const CrearMemoria = ({ navigation }) => {
               value={value}
               onChangeText={onChange}
               maxLength={50}
+              editable={false}
             />
           )}
           name="tituloMemoria"
@@ -391,7 +448,11 @@ const CrearMemoria = ({ navigation }) => {
         )}
 
         <Text style={styles.label}>Emoción:</Text>
-        <EmotionPicker onEmotionChange={handleEmotionSelected} />
+        <EmotionPicker
+          emotion={memoriaE.emotion}
+          onEmotionChange={handleEmotionSelected}
+          isEditing={true}
+        />
 
         <Text style={styles.label}>Canción vinculada:</Text>
         <View style={styles.marginBottom}>
@@ -403,9 +464,9 @@ const CrearMemoria = ({ navigation }) => {
           />
         </View>
 
-        <Pressable title="Crear Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
+        <Pressable title="Editar Memoria" onPress={handleSubmit(onSubmit)} style={styles.button}>
           <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
-            {isCreatingMemory ? 'Creando Memoria...' : 'Crear Memoria'}
+            {updatingMemory ? 'Editando Memoria...' : 'Editar Memoria'}
           </Text>
         </Pressable>
 
@@ -538,4 +599,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CrearMemoria;
+export default EditMemory;

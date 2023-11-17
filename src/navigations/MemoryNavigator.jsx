@@ -3,6 +3,7 @@ import React from 'react';
 import MemoryList from '../screens/MemoryList';
 import MemoryDetail from '../screens/MemoryDetail';
 import {Stack} from '../../App';
+import EditMemory from '../screens/EditMemory';
 
 
 export function MemoryNavigator() {

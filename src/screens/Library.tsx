@@ -186,10 +186,6 @@ const Library = () => {
         .get();
         
       if (!playlistRef.empty) {
-        console.log('playlistname nada mas 1 ', playlistName);
-        setPlaylistName(selectedPlaylistName);
-        console.log('playlistname nada mas 2 ', playlistName);
-        console.log('selected playlistname ', selectedPlaylistName);
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
         const playlistData = playlistDoc.data();
@@ -299,7 +295,7 @@ const Library = () => {
           ...prevImages,
           [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName], // Usa playlistImage si no se selecciona una nueva imagen
         }));
-        console.log('Updated playlists:', updatedPlaylists);
+        setPlaylists(updatedPlaylists);
         setSelectedPlaylistName(editPlaylistName);
         setShowEditModal(false);
       });

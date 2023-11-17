@@ -41,7 +41,7 @@ const FavoritePlaylist: React.FC<FavoritePlaylistProps> = ({handlePlayListView, 
         
       } else {
         console.error(
-          `No se encontró ninguna playlist con el nombre ${playlistName}`,
+          'No se encontró ninguna playlist'
         );
       }
     } catch (error) {

@@ -1,9 +1,28 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image, Button} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export default function Authenticated() {
+  useEffect(()=> {
+    const createUserPlaylist = async () => {
+      const user = auth().currentUser;
+      if (user) {
+        const userKey = user.uid;
+        const userPlaylistRef = firestore().collection('playlist_fav').doc(userKey);
+        const userPlaylistDoc = await userPlaylistRef.get();
+
+        if (!userPlaylistDoc.exists) {
+          await userPlaylistRef.set({
+            created_at: firestore.FieldValue.serverTimestamp()
+          });
+        }
+      }
+    };
+    createUserPlaylist();
+  },[]);
   const user = auth().currentUser;
+  console.log('Si se ejecutaaaa');
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>You have logged in successfully</Text>

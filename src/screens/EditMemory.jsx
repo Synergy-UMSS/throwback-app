@@ -446,7 +446,7 @@ const EditMemory = ({ navigation, route }) => {
           </View>
         )}
 
-        <RequiredField style={styles.label}>Emoción:</RequiredField>
+        <Text style={styles.label}>Emoción:</Text>
         <EmotionPicker
           emotion={memoria.emotion}
           onEmotionChange={handleEmotionSelected}

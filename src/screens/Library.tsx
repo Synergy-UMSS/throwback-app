@@ -399,7 +399,7 @@ const Library = () => {
 
               <View style={styles.playlistBox}>
                 <Image
-                  source={{ uri: playlistImages[playlist] || 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
+                  source={{ uri: playlistImages[playlist] || 'https://i.pinimg.com/originals/40/68/3b/40683b2b9fa2a42d7d4305ec536a00b9.jpg' }}
                   style={{
                     ...styles.playlistImage,
                     width: 60,
@@ -491,7 +491,7 @@ const Library = () => {
             <View style={styles.imageContainer}>
               <TouchableOpacity onPress={handleEditImage}>
                 <Image
-                  source={{ uri: playlistImage ? playlistImage : 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
+                  source={{ uri: playlistImage ? playlistImage : 'https://i.pinimg.com/originals/40/68/3b/40683b2b9fa2a42d7d4305ec536a00b9.jpg' }}
                   style={{ width: 100, height: 100 }}
                 />
                 <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
@@ -657,9 +657,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   playlistImage: {
-    width: 45,
-    height: 45,
-    marginRight: 10,
+    width: 60,
+    height: 60,
+    marginLeft: -10,
     resizeMode: 'cover',
   },
   playlistContainer: {

@@ -359,10 +359,10 @@ const EditMemory = ({ navigation, route }) => {
             //   noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
             // },
             validate: {
-              // noSpecialChars: (value) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/.test(value) || 'Solo se permiten letras y espacios',
-              // noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten emojis',
+              noSpecialChars: (value) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s,.]+$/.test(value) || 'Solo se permiten letras, espacios, comas y puntos',
+              noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten emojis',
               noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
-            },
+            }
           }}
         />
         {errors.tituloMemoria && <Text style={styles.error}>{errors.tituloMemoria.message}</Text>}

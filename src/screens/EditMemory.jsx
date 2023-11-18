@@ -346,16 +346,21 @@ const EditMemory = ({ navigation, route }) => {
               value={value}
               onChangeText={onChange}
               maxLength={50}
-              editable={false}
+              editable={true}
             />
           )}
           name="tituloMemoria"
           defaultValue=""
           rules={{
             required: 'Este campo es obligatorio',
+            // validate: {
+            //   noSpecialChars: (value) => !/[^a-zA-Z0-9ñ\s]+/.test(value) || 'No se permiten caracteres especiales',
+            //   noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+            //   noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
+            // },
             validate: {
-              noSpecialChars: (value) => !/[^a-zA-Z0-9ñ\s]+/.test(value) || 'No se permiten caracteres especiales',
-              noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten caracteres especiales',
+              // noSpecialChars: (value) => /^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/.test(value) || 'Solo se permiten letras y espacios',
+              // noEmojis: (value) => !/\p{Extended_Pictographic}/u.test(value) || 'No se permiten emojis',
               noEmptySpaces: (value) => !/^\s+$/.test(value) || 'No se permiten crear memorias solo con espacios',
             },
           }}

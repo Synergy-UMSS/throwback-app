@@ -79,24 +79,48 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
       });
   }
 
+  // const memoriacancionSelecionada = {
+  //   id: memoria.id,
+  //   userKey: memoria.userKey,
+  //   title: memoria.title,
+  //   description: memoria.description,
+  //   emotion: memoria.emotion,
+  //   createDate: memoria.createDate,
+  //   memoryDate: memoria.memoryDate,
+  //   song: memoria.song, //debe ser un entero
+  //   imageURL: memoria.imageURL, // null si no hay imagen
+  //     album: song.album,
+  //     artist: song.artist,
+  //     coverURL: song.coverURL,
+  //     genre: song.genre,
+  //     idS: song.id,
+  //     songURL: song.songURL,
+  //     titleS: song.title
+  // }
+
   const memoriacancionSelecionada = {
-    id: memoria.id,
-    userKey: memoria.userKey,
-    title: memoria.title,
-    description: memoria.description,
-    emotion: memoria.emotion,
-    createDate: memoria.createDate,
-    memoryDate: memoria.memoryDate,
-    song: memoria.song, //debe ser un entero
-    imageURL: memoria.imageURL, // null si no hay imagen
+    ...(memoria && {
+        id: memoria.id,
+        userKey: memoria.userKey,
+        title: memoria.title,
+        description: memoria.description,
+        emotion: memoria.emotion,
+        createDate: memoria.createDate,
+        memoryDate: memoria.memoryDate,
+        song: memoria.song,
+        imageURL: memoria.imageURL, // null si no hay imagen
+    }),
+    ...(song && {
       album: song.album,
-      artist: song.artist,
-      coverURL: song.coverURL,
-      genre: song.genre,
-      idS: song.id,
-      songURL: song.songURL,
-      titleS: song.title
-  }
+          artist: song.artist,
+          coverURL: song.coverURL,
+          genre: song.genre,
+          idS: song.id,
+          songURL: song.songURL,
+          titleS: song.title
+        // Agrega más propiedades de song si es necesario
+    }),
+};
 
   const editMemory = () => {
     navigation.navigate('EditMemory', { datos: memoriacancionSelecionada});

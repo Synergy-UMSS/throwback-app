@@ -95,7 +95,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
       genre: song.genre,
       id: song.id,
       songURL: song.songURL,
-      title: song.title
+      titleS: song.title
   }
 
   const editMemory = () => {

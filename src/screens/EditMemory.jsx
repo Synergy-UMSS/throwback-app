@@ -43,6 +43,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-picker';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
@@ -324,8 +325,15 @@ const EditMemory = ({ navigation, route }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: aclararColor(getColorForEmotion(selectedEmotion)) }]}>
-
-      <Text style={styles.pageTitle}>Editar memoria musical</Text>
+      <View style={styles.headerview}>
+        <Pressable
+          onPress={() => {
+             navigation.navigate('Tus Memorias Musicales');
+          }}>
+          <MaterialIcons name="arrow-back" size={30} color="black" />
+        </Pressable>
+        <Text style={styles.pageTitle}>Editar memoria musical</Text>
+      </View>
 
       <ScrollView>
 
@@ -451,9 +459,10 @@ const EditMemory = ({ navigation, route }) => {
         <Text style={styles.label}>Canción vinculada:</Text>
         <View style={styles.marginBottom}>
           <ItemSong
-            song={datos.title}
+            song={datos.titleS}
             artist={datos.artist}
             imageUri={datos.coverURL || placeholderImage}
+            
           />
         </View>
 
@@ -480,6 +489,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 16,
     color: 'black',
+    paddingLeft: 10
   },
   label: {
     fontSize: 16,
@@ -590,6 +600,9 @@ const styles = StyleSheet.create({
     padding: 10,
     zIndex: 10, // Asegúrate de que el icono esté por encima de otros elementos
   },
+  headerview:{
+    flexDirection: 'row',
+  }
 });
 
 export default EditMemory;

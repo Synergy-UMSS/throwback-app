@@ -250,7 +250,7 @@ const EditMemory = ({ navigation, route }) => {
       emotion: selectedEmotion,
       createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
-      song: parseInt(datos.song), //debe ser un entero
+      song: datos.song, //debe ser un entero
       imageURL: uploadedImageUrl || '', // null si no hay imagen
     };
 

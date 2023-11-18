@@ -60,7 +60,7 @@ const EmotionPicker = ({ emotion, onEmotionChange, isEditing }) => {
       setShowName(true);
       onEmotionChange(emotion);
     }
-  }, [isEditing, emotion, onEmotionChange]);
+  }, []);
 
   return (
     <View style={styles.container}>

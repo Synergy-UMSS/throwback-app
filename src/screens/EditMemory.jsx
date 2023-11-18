@@ -36,7 +36,6 @@ import firabase from '@react-native-firebase/app';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Importa DateTimePicker
 import ItemSong from '../components/PreviewSong';
 import placeholderImage from '../assets/logo.png';
-import { usePlayerStore } from '../store/playerStore';
 import RequiredField from '../components/RequiredField';
 import { format } from 'date-fns';
 import EmotionPicker from '../components/EmotionPicker';
@@ -95,10 +94,9 @@ const emotions = {
 };
 
 const EditMemory = ({ navigation, route }) => {
-  const { memoriaE } = route.params;
+  const { datos } = route.params;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const { setCurrentSong, currentSong } = usePlayerStore();
 
   const [selectedEmotion, setSelectedEmotion] = useState("emo1");
   const [selectedEmotionName, setSelectedEmotionName] = useState(emotions["emo1"].name);
@@ -112,16 +110,16 @@ const EditMemory = ({ navigation, route }) => {
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
 
   const setInitialFormValues = () => {
-    setValue('tituloMemoria', memoriaE.title || ''); // Set title field
-    setValue('descripcionMemoria', memoriaE.description || ''); 
+    setValue('tituloMemoria', datos.title || ''); // Set title field
+    setValue('descripcionMemoria', datos.description || ''); 
 
-    if (memoriaE.imageURL) {
-      setImageUri(memoriaE.imageURL); // Set imageUri if there is an existing imageURL
+    if (datos.imageURL) {
+      setImageUri(datos.imageURL); // Set imageUri if there is an existing imageURL
     }
 
-    setSelectedDate(memoriaE.memoryDate.toDate());
-    setSelectedEmotion(memoriaE.emotion);
-    setSelectedEmotionName(emotions[memoriaE.emotion].name);
+    setSelectedDate(datos.memoryDate.toDate());
+    setSelectedEmotion(datos.emotion);
+    setSelectedEmotionName(emotions[datos.emotion].name);
     setShowName(true);
     // ... (set other state variables based on your memoria structure)
   };
@@ -244,14 +242,14 @@ const EditMemory = ({ navigation, route }) => {
     }
 
     const memoria = {
-      id: memoriaE.id,
+      id: datos.id,
       userKey: firabase.auth().currentUser?.uid,
       title: data.tituloMemoria,
       description: data.descripcionMemoria,
       emotion: selectedEmotion,
       createDate: firestore.Timestamp.now(),
       memoryDate: firestore.Timestamp.fromDate(selectedDate),
-      song: parseInt(currentSong.id), //debe ser un entero
+      song: parseInt(datos.song), //debe ser un entero
       imageURL: uploadedImageUrl || '', // null si no hay imagen
     };
 
@@ -265,10 +263,6 @@ const EditMemory = ({ navigation, route }) => {
       setUpdatingMemory(false);
     }
 };
-
-  const playSong = async () => {
-    navigation.navigate('Player', { currentSong, playlistFlow: false });
-  };
 
   const showSuccessAlert = () => {
     Alert.alert(
@@ -449,7 +443,7 @@ const EditMemory = ({ navigation, route }) => {
 
         <Text style={styles.label}>Emoción:</Text>
         <EmotionPicker
-          emotion={memoriaE.emotion}
+          emotion={datos.emotion}
           onEmotionChange={handleEmotionSelected}
           isEditing={true}
         />
@@ -457,10 +451,9 @@ const EditMemory = ({ navigation, route }) => {
         <Text style={styles.label}>Canción vinculada:</Text>
         <View style={styles.marginBottom}>
           <ItemSong
-            song={currentSong.title}
-            artist={currentSong.artist}
-            imageUri={currentSong.artwork || placeholderImage}
-            onPlay={playSong}
+            song={datos.title}
+            artist={datos.artist}
+            imageUri={datos.coverURL || placeholderImage}
           />
         </View>
 

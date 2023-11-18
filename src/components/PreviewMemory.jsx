@@ -79,7 +79,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
       });
   }
 
-  const memoriaSelecionada = {
+  const memoriacancionSelecionada = {
     id: memoria.id,
     userKey: memoria.userKey,
     title: memoria.title,
@@ -89,9 +89,17 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
     memoryDate: memoria.memoryDate,
     song: memoria.song, //debe ser un entero
     imageURL: memoria.imageURL, // null si no hay imagen
+      album: song.album,
+      artist: song.artist,
+      coverURL: song.coverURL,
+      genre: song.genre,
+      id: song.id,
+      songURL: song.songURL,
+      title: song.title
   }
+
   const editMemory = () => {
-    navigation.navigate('EditMemory', { memoriaE: memoriaSelecionada });
+    navigation.navigate('EditMemory', { datos: memoriacancionSelecionada});
   } 
   return (
     <View style={styles.mainContainer}>

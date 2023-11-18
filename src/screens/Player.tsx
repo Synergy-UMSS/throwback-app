@@ -111,7 +111,7 @@ const Player = ({ navigation, route }) => {
           artwork: song.coverURL,
         };
         tracks.push(track);
-        /*console.log(track.id, "-");   ayudo a saber donde estaba el error, podria ayudar de nuevo */
+        /*console.log(track.id, "-", track.title);   //ayudo a saber donde estaba el error, podria ayudar de nuevo */
       });
       setPlayer();
     } catch (e) {
@@ -226,9 +226,17 @@ const Player = ({ navigation, route }) => {
   const skipTo = async trackId => {
     if(playlistFlow){
       if(repeatMode == 'track'){
-        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+        /*if(indexCurrent <= currentPlaylist.songs_p.length){*/
+          await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+        /*}else{
+          await TrackPlayer.skipToNext();
+        }*/
       }else{
-        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+        if(indexCurrent <= currentPlaylist.songs_p.length-1){
+          await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+        }else{ 
+          await TrackPlayer.skipToNext();
+        }
       }
       
     }else{

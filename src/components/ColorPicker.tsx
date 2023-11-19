@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     marginHorizontal: 5,
+    borderWidth: 2, 
+    borderColor: 'transparent', 
     borderRadius: 15,
     overflow: 'hidden',
   },
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    borderRadius: 20,
   },
 });
 

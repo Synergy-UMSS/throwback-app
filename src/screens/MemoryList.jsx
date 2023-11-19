@@ -54,12 +54,12 @@ const MemoryList = ({ navigation }) => {
   const [memories, setMemories] = useState([]);
   const [songs, setSongs] = useState([]);
   const [selectedEmotion, setSelectedEmotion] = useState('Todo');
-  
+  const [memoryDataLength, setMemoryDataLength] = useState(0);
   // Efecto para cargar recuerdos desde Firestore
   useEffect(() => {
     const unsubscribeMemories = firestore()
       .collection('memories')
-      .where('userKey', '==', firebase.auth().currentUser?.uid)
+      .where('userKey', '==', firebase.auth().currentUser?.uid)      
       .orderBy('createDate', 'desc')
       .onSnapshot(
         querySnapshot => {
@@ -68,13 +68,19 @@ const MemoryList = ({ navigation }) => {
             ...doc.data(),
           }));
           setMemories(memoryData);
-          // console.log('>>>>>> Memories');
+          setMemoryDataLength(memoryData.length);
+          console.log('>>>>>> Memories');
+          console.log(memoryData);
+          console.log('>>>>>> Memores LENG');
+          console.log(memoryDataLength);
+          
+          
         },
         error => {
           console.log(error);
         },
       );
-    return () => unsubscribeMemories();
+      return () => unsubscribeMemories();
   }, []);
 
   // Efecto para cargar canciones desde Firestore
@@ -275,6 +281,8 @@ const MemoryList = ({ navigation }) => {
     setSelectedEmotion(selectedTerm);
   }, []); 
 
+
+  console.log(n);
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
     <View style={styles.container}>
@@ -326,13 +334,20 @@ const MemoryList = ({ navigation }) => {
                 />
               </Animatable.View>
               </View>
-
-              {filteredMemories.length === 0 && (
-                <View style={styles.noDataContainer}>
-                  <Text style={styles.noDataText}>No se encontraron resultados</Text>
-                </View>
-              )}
-
+              {
+                memoryDataLength === 0 ? (
+                  <View style={styles.noDataContainer}>
+                    <Text style={styles.noDataText}>No tiene memorias musicales</Text>
+                  </View>
+                ) : filteredMemories.length === 0 ? (
+                  <View style={styles.noDataContainer}>
+                    <Text style={styles.noDataText}>No se ha encontrado ningún resultado</Text>
+                  </View>
+                ) : (
+                  <>
+                  </>
+                )
+              }
               </>
             );
           } else if (item.type === 'memory') {

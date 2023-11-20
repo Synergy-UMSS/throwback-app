@@ -290,6 +290,10 @@ const Player = ({ navigation, route }) => {
               setIndexCurrent(indexCurrent + 1);
               /*console.log('no se hara bucle');
             }*/
+            if(playlistFlow){
+              await TrackPlayer.play();
+              setIsPaused(false);
+            }
           };
           if (!isPaused) {
             await TrackPlayer.play();
@@ -339,9 +343,13 @@ const Player = ({ navigation, route }) => {
     const changeAndPlayTrack = async () => {
       setIsLoop(isLoop);
       await changeValuesTrack();
-      if (isConnected) {
-        setIsPlaying(true);
-        await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
+      if(playlistFlow){
+
+      }else{
+        if (isConnected) {
+          setIsPlaying(true);
+          await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
+        }
       }
     };
     if (currentSong) {

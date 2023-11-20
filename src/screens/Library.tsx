@@ -42,7 +42,6 @@ const Library = () => {
   const [error, setError] = useState('');
   const navigation = useNavigation();
   const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
-  const [selectedColor, setSelectedColor] = useState('#FBBAA4');
   const [colors, setColors] = useState<{ [key: string]: string }>({});
   const [playlistImage, setPlaylistImage] = useState<string | null>(null);
   const [playlistImages, setPlaylistImages] = useState<{ [key: string]: string | null }>({});
@@ -55,6 +54,9 @@ const Library = () => {
   const modalBackgroundColor = '#ffffff';
   const modalTextColor = '#000000';
   const [modalColor, setModalColor] = useState('#FBBAA4');
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  
 
   const MAX_NAME_LENGTH = 50;
 
@@ -70,10 +72,10 @@ const Library = () => {
     const [r, g, b] = hex.match(/\w\w/g)?.map((x) => parseInt(x, 16)) || [0, 0, 0];
     return `rgba(${r},${g},${b},${alpha})`;
   };
-
-  const getColorByPlaylistName = (playlistName: string) => {
-    return colors[playlistName] || '#FBBAA4';
+  const getColorByPlaylistName = (playlistName: string): string | null => {
+    return colors[playlistName] || null;
   };
+  
 
   const [showEditImage, setShowEditImage] = useState(false);
 
@@ -92,7 +94,6 @@ const Library = () => {
       }
     });
   };
-
 
   const handlePressMore = () => {
     setShowModal(true);
@@ -132,8 +133,9 @@ const Library = () => {
             // Actualiza el estado colors con el nombre de la nueva playlist
             setColors((prevColors) => ({
               ...prevColors,
-              [name]: selectedColor,
+              [name]: selectedColor || '', 
             }));
+            
 
             const updatedPlaylists = [name, ...playlists];
             setPlaylists(updatedPlaylists);
@@ -245,18 +247,19 @@ const Library = () => {
 
   //EDIT 
   const handleEditPlaylist = (playlistName) => {
-    console.log(playlistName);
     setSelectedPlaylistName(playlistName);
     setEditPlaylistName(playlistName);
-    setSelectedColor(getColorByPlaylistName(playlistName));
-    const currentPlaylistImage = playlistImages[playlistName] || null;
+    setSelectedColor(getColorByPlaylistName(playlistName) ?? ''); 
 
+    const currentPlaylistImage = playlistImages[playlistName] || null;
+  
     // Almacena la imagen actual en el estado playlistImage
     setPlaylistImage(currentPlaylistImage);
-
+  
     setShowEditModal(true);
     setShowEditImage(true);
   };
+  
 
 
   const handleUpdatePlaylist = () => {
@@ -281,7 +284,7 @@ const Library = () => {
         });
 
         // Actualiza el objeto 'colors' con el nuevo nombre y color de la playlist
-        colors[editPlaylistName] = selectedColor;
+        colors[editPlaylistName] = selectedColor || ''; 
         delete colors[selectedPlaylistName];
 
         const updatedPlaylists = playlists.map(playlist => {
@@ -483,7 +486,7 @@ const Library = () => {
       </Modal>
 
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
-        <View style={[styles.modalContainer, { backgroundColor: modalColor }]}>
+        <View style={[styles.modalContainer, { backgroundColor: selectedColor || modalColor }]}>
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'center', color: modalTextColor }]}>
               Editar lista

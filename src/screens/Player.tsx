@@ -17,6 +17,7 @@ import { firebase } from '@react-native-firebase/firestore';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useLoopGlobal } from '../helpcomponents/loopGlobal';
+import { set } from 'react-hook-form';
 
 let color: string[] = [
   '#C7A9D560',
@@ -111,7 +112,7 @@ const Player = ({ navigation, route }) => {
           artwork: song.coverURL,
         };
         tracks.push(track);
-        /*console.log(track.id, "-");   ayudo a saber donde estaba el error, podria ayudar de nuevo */
+        /*console.log(track.id, "-", track.title);   //ayudo a saber donde estaba el error, podria ayudar de nuevo */
       });
       setPlayer();
     } catch (e) {
@@ -141,15 +142,22 @@ const Player = ({ navigation, route }) => {
         setTrackArtwork(artwork);
         await setCurrentSong(track);
       } else {
-        if (event.nextTrack !== null) {
-          const idNumerico = parseInt(currentSong.id);
-          const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
-          const { title, artwork, artist } = track;
-          setTrackTitle(title);
-          setTrackArtist(artist);
-          setTrackArtwork(artwork);
-          await setCurrentSong(track);
+        if(indexCurrent == currentPlaylist.songs_p.length && playlistFlow){
+          await TrackPlayer.pause();
+          //setIsPaused(true);
+          setIndexCurrent(indexCurrent+1);
+        }else{
+          if (event.nextTrack !== null) {
+            const idNumerico = parseInt(currentSong.id);
+            const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
+            const { title, artwork, artist } = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            await setCurrentSong(track);
+          }
         }
+        
       }
     }
   });
@@ -226,9 +234,17 @@ const Player = ({ navigation, route }) => {
   const skipTo = async trackId => {
     if(playlistFlow){
       if(repeatMode == 'track'){
-        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+        /*if(indexCurrent <= currentPlaylist.songs_p.length){*/
+          await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+        /*}else{
+          await TrackPlayer.skipToNext();
+        }*/
       }else{
-        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+        if(indexCurrent <= currentPlaylist.songs_p.length-1){
+          await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
+        }else{ 
+          await TrackPlayer.skipToNext();
+        }
       }
       
     }else{
@@ -282,6 +298,10 @@ const Player = ({ navigation, route }) => {
               setIndexCurrent(indexCurrent + 1);
               /*console.log('no se hara bucle');
             }*/
+            if(playlistFlow){
+              await TrackPlayer.play();
+              setIsPaused(false);
+            }
           };
           if (!isPaused) {
             await TrackPlayer.play();
@@ -331,9 +351,13 @@ const Player = ({ navigation, route }) => {
     const changeAndPlayTrack = async () => {
       setIsLoop(isLoop);
       await changeValuesTrack();
-      if (isConnected) {
-        setIsPlaying(true);
-        await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
+      if(playlistFlow){
+
+      }else{
+        if (isConnected) {
+          setIsPlaying(true);
+          await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
+        }
       }
     };
     if (currentSong) {

@@ -382,7 +382,7 @@ const Library = () => {
               style={[
                 styles.playlistContainer,
                 {
-                  backgroundColor: `${getColorByPlaylistName(playlist)}85`,
+                  backgroundColor: `${getColorByPlaylistName(playlist)}70`,
                   overflow: 'visible',
                 },
               ]}
@@ -391,7 +391,7 @@ const Library = () => {
                 style={[
                   styles.playlistBackground,
                   {
-                    backgroundColor: `${getColorByPlaylistName(playlist)}85`,
+                    backgroundColor: `${getColorByPlaylistName(playlist)}70`,
                     top: -7,
                   },
                 ]}
@@ -420,23 +420,23 @@ const Library = () => {
                     <Text style={styles.playlistLabel}>Lista de reproducción</Text>
                   </View>
                   <Menu style={styles.menuContainer}>
-                    <MenuTrigger>
-                      <Icon
-                        name="more-vert"
-                        size={24}
-                        color="black"
-                        style={styles.menuIcon}
-                      />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={optionsStyles}>
-                      <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
-                        <Text style={styles.optionText}>Editar</Text>
-                      </MenuOption>
-                      <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
-                        <Text style={styles.optionText}>Eliminar</Text>
-                      </MenuOption>
-                    </MenuOptions>
-                  </Menu>
+                  <MenuTrigger>
+                    <Icon
+                      name="more-vert"
+                      size={24}
+                      color="black"
+                      style={styles.menuIcon}
+                    />
+                  </MenuTrigger>
+                  <MenuOptions customStyles={optionsStyles}>
+                    <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
+                      <Text style={[styles.optionText, { textAlign: 'center' }]}>Editar</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
+                      <Text style={[styles.optionText, { textAlign: 'center' }]}>Eliminar</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
                 </View>
               </View>
             </TouchableOpacity>

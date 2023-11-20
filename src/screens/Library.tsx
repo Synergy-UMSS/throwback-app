@@ -489,16 +489,22 @@ const Library = () => {
               Editar lista
             </Text>
             <View style={styles.imageContainer}>
-              <TouchableOpacity onPress={handleEditImage}>
-                <Image
-                  source={{ uri: playlistImage ? playlistImage : 'https://i.pinimg.com/originals/40/68/3b/40683b2b9fa2a42d7d4305ec536a00b9.jpg' }}
-                  style={{ width: 100, height: 100 }}
-                />
-                <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
-                  Cambiar imagen
-                </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity onPress={handleEditImage}>
+                  <Image
+                    source={{
+                      uri: playlistImage
+                        ? playlistImage
+                        : 'https://i.pinimg.com/originals/40/68/3b/40683b2b9fa2a42d7d4305ec536a00b9.jpg'
+                    }}
+                    style={{ width: 100, height: 100 }}
+                  />
+                  <View style={styles.changeImageTextContainer}>
+                    <Text style={{ color: 'gray', fontSize: 12, textAlign: 'center' }}>
+                      Cambiar portada
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
 
             <View style={styles.inputContainer}>
               <TextInput
@@ -719,7 +725,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+  changeImageTextContainer: {
+    alignItems: 'center',
+    marginTop: 5,
+  },  
 });
 const optionsStyles = {
   optionsContainer: {

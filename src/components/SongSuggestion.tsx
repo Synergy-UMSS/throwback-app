@@ -166,8 +166,8 @@ const SongSuggestion = ({songData, screenSelected}) => {
             />
           )}
           <View style={styles.textContainer}>
-            <Text style={styles.songName}>{title}</Text>
-            <Text style={styles.artistName}>{artist}</Text>
+            <Text style={[styles.songName, screenSelected==='search'?{ color: '#777'}: {fontWeight:600, color:'black'}]}>{title}</Text>
+            <Text style={[styles.artistName, screenSelected ==='search'?{ color: '#777'}: {color:'black'}]}>{artist}</Text>
           </View>
         </View>
         {screenSelected === 'search' && (
@@ -223,7 +223,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
                   style={styles.imageSelected}
                 />
               )}
-              <Text style={styles.songName}>{title}</Text>
+              <Text style={[styles.songName]}>{title}</Text>
               <Text style={styles.artistName}>{artist}</Text>
               <View style={styles.buttonContainer}>
                 <TouchableOpacity

@@ -54,12 +54,12 @@ const MemoryList = ({ navigation }) => {
   const [memories, setMemories] = useState([]);
   const [songs, setSongs] = useState([]);
   const [selectedEmotion, setSelectedEmotion] = useState('Todo');
-  
+  const [memoryDataLength, setMemoryDataLength] = useState(0);
   // Efecto para cargar recuerdos desde Firestore
   useEffect(() => {
     const unsubscribeMemories = firestore()
       .collection('memories')
-      .where('userKey', '==', firebase.auth().currentUser?.uid)
+      .where('userKey', '==', firebase.auth().currentUser?.uid)      
       .orderBy('createDate', 'desc')
       .onSnapshot(
         querySnapshot => {
@@ -68,13 +68,14 @@ const MemoryList = ({ navigation }) => {
             ...doc.data(),
           }));
           setMemories(memoryData);
-          // console.log('>>>>>> Memories');
+          setMemoryDataLength(memoryData.length);
+          // console.log('>>>>>> Memories');      
         },
         error => {
           console.log(error);
         },
       );
-    return () => unsubscribeMemories();
+      return () => unsubscribeMemories();
   }, []);
 
   // Efecto para cargar canciones desde Firestore
@@ -143,51 +144,6 @@ const MemoryList = ({ navigation }) => {
     'emo13','emo14',
   ];
 
-  // Función para filtrar recuerdos basados en el término de búsqueda
-  // const filterMemories = (term) => {
-  //   // Convertir el término de búsqueda a minúsculas
-  //   const lowerCaseTerm = term.toLowerCase();
-
-  //   // Mapear los recuerdos y agregar información de búsqueda
-  //   const memoriesWithIndexAndSpace = memories.map(memory => {
-  //     const titleIndex = memory.title.toLowerCase().indexOf(lowerCaseTerm);
-  //     const descriptionIndex = memory.description.toLowerCase().indexOf(lowerCaseTerm);
-  //     const isExactMatch = memory.title.toLowerCase() === lowerCaseTerm;
-  //     const followsSpaceInTitle = memory.title.toLowerCase().startsWith(
-  //       `${lowerCaseTerm} `,
-  //       titleIndex
-  //     );
-
-  //     return {
-  //       ...memory,
-  //       titleIndex,
-  //       descriptionIndex,
-  //       isExactMatch,
-  //       followsSpaceInTitle
-  //     };
-  //   });
-
-  //   // Filtrar y ordenar los recuerdos en función de los resultados de búsqueda
-  //   return memoriesWithIndexAndSpace
-  //     .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
-  //     .sort((a, b) => {
-  //       if (a.isExactMatch && !b.isExactMatch) return -1;
-  //       if (!a.isExactMatch && b.isExactMatch) return 1;
-  //       if (a.titleIndex !== -1 && b.titleIndex === -1) return -1;
-  //       if (a.titleIndex === -1 && b.titleIndex !== -1) return 1;
-  //       if (a.titleIndex === b.titleIndex) {
-  //         if (a.followsSpaceInTitle && !b.followsSpaceInTitle) return -1;
-  //         if (!a.followsSpaceInTitle && b.followsSpaceInTitle) return 1;
-  //         if (a.followsSpaceInTitle && b.followsSpaceInTitle) {
-  //           return a.title.localeCompare(b.title);
-  //         }
-  //       }
-  //       if (a.titleIndex !== b.titleIndex) {
-  //         return a.titleIndex - b.titleIndex;
-  //       }
-  //       return a.title.localeCompare(b.title);
-  //     });
-  // };
 
   const filterMemories = (term) => {
     // Convertir el término de búsqueda a minúsculas
@@ -212,18 +168,6 @@ const MemoryList = ({ navigation }) => {
         };
     });
 
-    // Filtrar basado en el término de búsqueda
-    // let filteredBySearch = memoriesWithIndexAndSpace
-    //     .filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1);
-
-    // // Filtro adicional por emoción
-    // let finalFilteredMemories;
-    // if (selectedEmotion === 'todo') {
-    //     finalFilteredMemories = filteredBySearch;
-    // } else {
-    //     finalFilteredMemories = filteredBySearch
-    //         .filter(memory => memory.emotion === selectedEmotion);
-    // }
     let filteredBySearch = lowerCaseTerm 
         ? memoriesWithIndexAndSpace.filter(memory => memory.titleIndex !== -1 || memory.descriptionIndex !== -1)
         : memoriesWithIndexAndSpace;
@@ -326,13 +270,20 @@ const MemoryList = ({ navigation }) => {
                 />
               </Animatable.View>
               </View>
-
-              {filteredMemories.length === 0 && (
-                <View style={styles.noDataContainer}>
-                  <Text style={styles.noDataText}>No se encontraron resultados</Text>
-                </View>
-              )}
-
+              {
+                memoryDataLength === 0 ? (
+                  <View style={styles.noDataContainer}>
+                    <Text style={styles.noDataText}>No tiene memorias musicales creadas</Text>
+                  </View>
+                ) : filteredMemories.length === 0 ? (
+                  <View style={styles.noDataContainer}>
+                    <Text style={styles.noDataText}>No se encontraron resultados</Text>
+                  </View>
+                ) : (
+                  <>
+                  </>
+                )
+              }
               </>
             );
           } else if (item.type === 'memory') {

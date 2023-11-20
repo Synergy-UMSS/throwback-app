@@ -17,6 +17,7 @@ import { firebase } from '@react-native-firebase/firestore';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useLoopGlobal } from '../helpcomponents/loopGlobal';
+import { set } from 'react-hook-form';
 
 let color: string[] = [
   '#C7A9D560',
@@ -141,15 +142,22 @@ const Player = ({ navigation, route }) => {
         setTrackArtwork(artwork);
         await setCurrentSong(track);
       } else {
-        if (event.nextTrack !== null) {
-          const idNumerico = parseInt(currentSong.id);
-          const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
-          const { title, artwork, artist } = track;
-          setTrackTitle(title);
-          setTrackArtist(artist);
-          setTrackArtwork(artwork);
-          await setCurrentSong(track);
+        if(indexCurrent == currentPlaylist.songs_p.length && playlistFlow){
+          await TrackPlayer.pause();
+          //setIsPaused(true);
+          setIndexCurrent(indexCurrent+1);
+        }else{
+          if (event.nextTrack !== null) {
+            const idNumerico = parseInt(currentSong.id);
+            const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
+            const { title, artwork, artist } = track;
+            setTrackTitle(title);
+            setTrackArtist(artist);
+            setTrackArtwork(artwork);
+            await setCurrentSong(track);
+          }
         }
+        
       }
     }
   });

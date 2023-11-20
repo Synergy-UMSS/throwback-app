@@ -273,11 +273,11 @@ const MemoryList = ({ navigation }) => {
               {
                 memoryDataLength === 0 ? (
                   <View style={styles.noDataContainer}>
-                    <Text style={styles.noDataText}>No tiene memorias musicales</Text>
+                    <Text style={styles.noDataText}>No tiene memorias musicales creadas</Text>
                   </View>
                 ) : filteredMemories.length === 0 ? (
                   <View style={styles.noDataContainer}>
-                    <Text style={styles.noDataText}>No se ha encontrado ningún resultado</Text>
+                    <Text style={styles.noDataText}>No se encontraron resultados</Text>
                   </View>
                 ) : (
                   <>

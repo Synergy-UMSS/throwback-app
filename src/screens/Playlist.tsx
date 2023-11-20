@@ -54,8 +54,12 @@ const Playlist = ({ navigation }) => {
 			.onSnapshot(
 				doc => {
 					const playlistData = doc.data();
-					const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
-					setLocalSongsAdded(songsData);
+					if (playlistData && playlistData.songs) {
+						const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
+						setLocalSongsAdded(songsData);
+					}else {
+						setLocalSongsAdded([]);
+					}
 				},
 				error => {
 					console.error('Error al obtener el documento:', error);

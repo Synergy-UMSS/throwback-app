@@ -189,12 +189,14 @@ const Library = () => {
         const playlistDoc = playlistRef.docs[0];
         const playlistId = playlistDoc.id;
         const playlistData = playlistDoc.data();
+        const colorPlaylist = colors[playlistName];
+        console.log(colorPlaylist, 'color');
         setCurrentPlaylist({
           id: playlistId,
           name: playlistName,
           songs_p: playlistData.songs.map((song) => song.id)
         });
-        navigation.navigate('Playlist', { playlistName, playlistId });
+        navigation.navigate('Playlist', { playlistName, playlistId, colorPlaylist});
       } else {
         console.error(
           `No se encontró ninguna playlist con el nombre ${playlistName}`,

@@ -14,17 +14,24 @@ import MiniPlayer from '../components/MiniPlayer';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { usePlayerStore } from '../store/playerStore';
 import ConnectionGral from '../components/ConnectionGral';
+import { useColorPlaylistGlobal } from '../helpcomponents/colorPlaylistGlobal';
 
 const Playlist = ({ navigation }) => {
 	const ruta = useRoute();
-	const { playlistName, playlistId } = ruta.params;
+	const { playlistName, playlistId, colorPlaylist } = ruta.params;
+	const { colorPlaylistCurrent, setColorPlaylistCurrent } = useColorPlaylistGlobal();
 	const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
 	const { isAdded, setIsAdded } = useSuccesfulMessage();
 	const [localSongsAdded, setLocalSongsAdded] = useState([]);
 	const { setCurrentSong } = usePlayerStore();
 	const { isConnected } = useConnectionGlobal();
-
 	const { showHistory, showHistoryTrue, showHistoryFalse } = useSearchStore()
+
+	useEffect(() => {
+		if(colorPlaylist !== undefined){
+			setColorPlaylistCurrent(colorPlaylist);
+		}
+	}, [colorPlaylist]);
 
 	useEffect(() => {
 		const unsubscribeFocus = navigation.addListener('focus', () => {
@@ -57,7 +64,7 @@ const Playlist = ({ navigation }) => {
 					if (playlistData && playlistData.songs) {
 						const songsData = playlistData.songs || []; // Si songs no está definido, se establece como un arreglo vacío
 						setLocalSongsAdded(songsData);
-					}else {
+					} else {
 						setLocalSongsAdded([]);
 					}
 				},
@@ -87,7 +94,7 @@ const Playlist = ({ navigation }) => {
 	};
 	const goToSearchSelect = () => {
 		setIsAdded(false);
-		navigation.navigate('SearchSelect');
+		navigation.navigate('SearchSelect', colorPlaylist);
 	};
 
 	const goToPlayer = () => {
@@ -162,12 +169,12 @@ const Playlist = ({ navigation }) => {
 		}
 	}
 	return (
-		<SafeAreaView style={style.MainMainContainer}>
+		<SafeAreaView style={[style.MainMainContainer, { backgroundColor: colorPlaylistCurrent }]}>
 			<TouchableOpacity style={style.flechita} onPress={() => navigation.navigate('Library')}>
 				<Ionicons name="arrow-back" size={30} color="white" />
 			</TouchableOpacity>
 			<ScrollView style={style.scrollStyle}>
-				<View style={style.portada}>
+				<View style={[style.portada, { backgroundColor: colorPlaylistCurrent}]}>
 					<View style={style.containerimgs}>
 						{imgs}
 					</View>
@@ -177,7 +184,7 @@ const Playlist = ({ navigation }) => {
 						{playlistName !== null && playlistName !== undefined ? playlistName : currentPlaylist.name}
 					</Text>
 				</View>
-				<View style={style.mainContainer}>
+				<View style={[style.mainContainer, { backgroundColor: colorPlaylistCurrent }]}>
 					{(localSongsAdded.length > 0) ? (
 						<View>
 							<TouchableOpacity style={style.buttonPlay} onPress={goToPlayer}>

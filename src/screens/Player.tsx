@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import firestore from '@react-native-firebase/firestore';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -9,7 +9,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Connection from '../components/Connection';
 import TrackPlayer, { Event, RepeatMode, State, usePlaybackState, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import { MusicPlayerContext } from '../components/MusicPlayerContext';
-import { useSearchStore } from '../store/searchStore';
 import { usePlayerStore } from '../store/playerStore';
 import { useConnectionGlobal } from '../helpcomponents/connectionGlobal';
 import { useControlPlayer } from '../helpcomponents/controlPlayer';
@@ -17,7 +16,6 @@ import { firebase } from '@react-native-firebase/firestore';
 import { usePlaylistFavGlobal } from '../helpcomponents/playlistFGlobal';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useLoopGlobal } from '../helpcomponents/loopGlobal';
-import { set } from 'react-hook-form';
 
 let color: string[] = [
   '#C7A9D560',
@@ -38,7 +36,6 @@ const Player = ({ navigation, route }) => {
   const db = firebase.firestore();
   const songsRef = db.collection('songs');
   const [playerInitialized, setPlayerInitialized] = useState(false);
-  const { clearRecentSearches, recentSearches, showHistory, currentSearch } = useSearchStore();
   const { setCurrentSong, currentSong } = usePlayerStore();
   const playState: State = usePlaybackState();
   const sliderWork = useProgress();
@@ -55,7 +52,7 @@ const Player = ({ navigation, route }) => {
   const [heartUpdate, setHeartUpdate] = useState(false);
   const [messageA, setMessageA] = useState('');
   const [indexCurrent, setIndexCurrent] = useState(0);
-  const {isLoop, setIsLoop} = useLoopGlobal();
+  const { isLoop, setIsLoop } = useLoopGlobal();
 
   const setPlayer = async () => {
     try {
@@ -132,8 +129,8 @@ const Player = ({ navigation, route }) => {
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
       sliderWork.position = 0;
-      console.log(currentPlaylist.songs_p);
-      console.log("llegue acaaa", indexCurrent);
+      //console.log(currentPlaylist.songs_p);
+      //console.log("llegue acaaa", indexCurrent);
       if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow && repeatMode == 'off') {  //agregar lo del modo, pero ya no cambia bien
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist } = track;
@@ -142,14 +139,13 @@ const Player = ({ navigation, route }) => {
         setTrackArtwork(artwork);
         await setCurrentSong(track);
       } else {
-        if(indexCurrent == currentPlaylist.songs_p.length && playlistFlow){
+        if (indexCurrent == currentPlaylist.songs_p.length && playlistFlow) {
           await TrackPlayer.pause();
-          //setIsPaused(true);
-          setIndexCurrent(indexCurrent+1);
-        }else{
+          setIndexCurrent(indexCurrent + 1);
+        } else {
           if (event.nextTrack !== null) {
             const idNumerico = parseInt(currentSong.id);
-            const track = await TrackPlayer.getTrack(parseInt(event.nextTrack)); 
+            const track = await TrackPlayer.getTrack(parseInt(event.nextTrack));
             const { title, artwork, artist } = track;
             setTrackTitle(title);
             setTrackArtist(artist);
@@ -157,7 +153,7 @@ const Player = ({ navigation, route }) => {
             await setCurrentSong(track);
           }
         }
-        
+
       }
     }
   });
@@ -205,7 +201,7 @@ const Player = ({ navigation, route }) => {
       }
     });
   };
-  
+
   useEffect(() => {
     setHeartLikes(heartLikes);
   }, [heartLikes]);
@@ -218,59 +214,59 @@ const Player = ({ navigation, route }) => {
   }, [messageA]);
 
   const changeRepeatMode = () => {
-      if (repeatMode == 'off') {
-        TrackPlayer.setRepeatMode(RepeatMode.Track);
-        setIsLoop('track');
-        setRepeatMode('track');
-      };
-      if (repeatMode == 'track') {
-        TrackPlayer.setRepeatMode(RepeatMode.Off);
-        setIsLoop('off');
-        setRepeatMode('off');
-      };
+    if (repeatMode == 'off') {
+      TrackPlayer.setRepeatMode(RepeatMode.Track);
+      setIsLoop('track');
+      setRepeatMode('track');
+    };
+    if (repeatMode == 'track') {
+      TrackPlayer.setRepeatMode(RepeatMode.Off);
+      setIsLoop('off');
+      setRepeatMode('off');
+    };
     /*}*/
   };
 
   const skipTo = async trackId => {
-    if(playlistFlow){
-      if(repeatMode == 'track'){
+    if (playlistFlow) {
+      if (repeatMode == 'track') {
         /*if(indexCurrent <= currentPlaylist.songs_p.length){*/
-          await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent-1]);
+        await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent - 1]);
         /*}else{
           await TrackPlayer.skipToNext();
         }*/
-      }else{
-        if(indexCurrent <= currentPlaylist.songs_p.length-1){
+      } else {
+        if (indexCurrent <= currentPlaylist.songs_p.length - 1) {
           await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
-        }else{ 
+        } else {
           await TrackPlayer.skipToNext();
         }
       }
-      
-    }else{
+
+    } else {
       await TrackPlayer.skipToNext();
     }
   };
 
   const previousTo = async trackId => {
-    if(playlistFlow){
-      let possibleIndex = indexCurrent-2;
+    if (playlistFlow) {
+      let possibleIndex = indexCurrent - 2;
       console.log(possibleIndex);
-      if(possibleIndex >= 0){
+      if (possibleIndex >= 0) {
         const currentPosition = await TrackPlayer.getPosition();
         console.log(currentPosition);
-        if(currentPosition > 1.800){
+        if (currentPosition > 1.800) {
           await TrackPlayer.seekTo(0);
-        }else{
+        } else {
           setIndexCurrent(possibleIndex);
           await TrackPlayer.skip(currentPlaylist.songs_p[possibleIndex]);   //creo que no llega :?
           console.log(indexCurrent, 'vine como al indice re extraño', currentPlaylist.songs_p[indexCurrent]);
         }
-      }else{
+      } else {
         await TrackPlayer.skip(currentSong.id);
-        console.log(indexCurrent, 'vine como al otro re extraño estee ', currentSong.id );
+        console.log(indexCurrent, 'vine como al otro re extraño estee ', currentSong.id);
       }
-    }else{
+    } else {
       await TrackPlayer.skipToPrevious();
     }
   };
@@ -288,17 +284,9 @@ const Player = ({ navigation, route }) => {
         if (isConnected) {
           if (currentSong !== lastSong) {
             await TrackPlayer.skip(currentSong.id);
-            console.log('llego');
             await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar hasta que la canción actual se reproduzca completamente
-            console.log('repeat llego como', repeatMode);
-            /*if(repeatMode ==='track' ){
-              setIndexCurrent(indexCurrent);  //puede ser util
-              console.log('se hara bucle');
-            }else{*/
-              setIndexCurrent(indexCurrent + 1);
-              /*console.log('no se hara bucle');
-            }*/
-            if(playlistFlow){
+            setIndexCurrent(indexCurrent + 1);
+            if (playlistFlow) {
               await TrackPlayer.play();
               setIsPaused(false);
             }
@@ -319,17 +307,18 @@ const Player = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if(!playlistFlow){
+    if (!playlistFlow) {
       setCurrentPlaylist({
-        id: 'undef', 
+        id: 'undef',
         name: 'undef',
-        songs_p: []});
+        songs_p: []
+      });
       setIndexCurrent(0);
-    }else{
+    } else {
       let arraySongs = currentPlaylist.songs_p;
-      if(arraySongs.length > 0){
+      if (arraySongs.length > 0) {
         setIndexCurrent(arraySongs.indexOf(currentSong.id));
-      }else{
+      } else {
         setIndexCurrent(0);
       }
     }
@@ -351,9 +340,9 @@ const Player = ({ navigation, route }) => {
     const changeAndPlayTrack = async () => {
       setIsLoop(isLoop);
       await changeValuesTrack();
-      if(playlistFlow){
-
-      }else{
+      if (playlistFlow) {
+        setIsPlaying(true);
+      } else {
         if (isConnected) {
           setIsPlaying(true);
           await TrackPlayer.play(); // Para reproducir la nueva canción directamente y solucionar el bug de que no se reproduce al pausar
@@ -391,7 +380,6 @@ const Player = ({ navigation, route }) => {
           <Text style={style.songTitle}>{trackTitle}</Text>
           <Text style={style.songArtist}>{trackArtist}</Text>
         </View>
-
         <View>
           <View style={style.songDurationMain}>
             <Text style={style.songTimer}>

@@ -129,8 +129,8 @@ const Player = ({ navigation, route }) => {
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged) {
       sliderWork.position = 0;
-      //console.log(currentPlaylist.songs_p);
-      //console.log("llegue acaaa", indexCurrent);
+      console.log(currentPlaylist.songs_p);
+      console.log("llegue acaaa", indexCurrent);
       if (indexCurrent < currentPlaylist.songs_p.length && playlistFlow && repeatMode == 'off') {  //agregar lo del modo, pero ya no cambia bien
         const track = await TrackPlayer.getTrack(currentPlaylist.songs_p[indexCurrent]);
         const { title, artwork, artist } = track;
@@ -238,7 +238,9 @@ const Player = ({ navigation, route }) => {
       } else {
         if (indexCurrent <= currentPlaylist.songs_p.length - 1) {
           await TrackPlayer.skip(currentPlaylist.songs_p[indexCurrent]);
-        } else {
+        } else if (indexCurrent == currentPlaylist.songs_p.length) {
+          setCurrentSong(tracks[currentSong.id+1]);
+        }else{
           await TrackPlayer.skipToNext();
         }
       }

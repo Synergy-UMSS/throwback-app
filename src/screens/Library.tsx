@@ -102,52 +102,55 @@ const Library = () => {
 
 
   //CREATE
-  const handleCreatePlaylist = (name: string) => {
+  const handleCreatePlaylist = async (name: string) => {
     if (name.trim() === '') {
       setError('El nombre de la lista no puede estar vacío.');
     } else {
       setError('');
-      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
-        id: '',
         name: name,
-        createDate: timestamp,
+        createDate: firebase.firestore.Timestamp.fromDate(new Date()),
         songs: [],
         color: selectedColor,
-        userKey: firebase.auth().currentUser?.uid
+        userKey: firebase.auth().currentUser?.uid,
       };
-
-      firestore()
-        .collection('playlists')
-        .add(playlistData)
-        .then((docRef) => {
+  
+      const playlistRef = firestore().collection('playlists');
+      const playlistQuery = playlistRef
+        .where('name', '==', name)
+        .where('userKey', '==', firebase.auth().currentUser?.uid);
+  
+      try {
+        const querySnapshot = await playlistQuery.get();
+  
+        if (querySnapshot.size > 0) {
+          setError('Ya tienes esta lista en tu biblioteca.');
+        } else {
+          const docRef = await playlistRef.add(playlistData);
           const playlistId = docRef.id;
-          docRef.update({ id: playlistId }).then(() => {
-            console.log(
-              'Se ha creado la playlist:',
-              name,
-              'con ID:',
-              playlistId
-            );
-
-            // Actualiza el estado colors con el nombre de la nueva playlist
-            setColors((prevColors) => ({
-              ...prevColors,
-              [name]: selectedColor || '', 
-            }));
-            
-
-            const updatedPlaylists = [name, ...playlists];
-            setPlaylists(updatedPlaylists);
-            resetModal();
-            setShowModal(false);
-          });
-        })
-        .catch((error) => {
-          console.error('Error al crear la playlist:', error);
-        });
+  
+          await docRef.update({ id: playlistId });
+  
+          console.log('Se ha creado la playlist:', name, 'con ID:', playlistId);
+  
+          // Actualiza el estado colors con el nombre de la nueva playlist
+          setColors((prevColors) => ({
+            ...prevColors,
+            [name]: selectedColor || '',
+          }));
+  
+          const updatedPlaylists = [name, ...playlists];
+          setPlaylists(updatedPlaylists);
+          resetModal();
+          setShowModal(false);
+        }
+      } catch (error) {
+        console.error('Error al crear o validar la playlist:', error);
+      }
     }
   };
+  
+  
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -467,6 +470,7 @@ const Library = () => {
               />
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
+
 
             <ColorPicker onSelectColor={(selectedColor) => handleColorSelection(selectedColor)} />
             <View style={styles.buttonGroup}>

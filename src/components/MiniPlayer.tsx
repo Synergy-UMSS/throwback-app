@@ -5,16 +5,25 @@ import TextTicker from 'react-native-text-ticker';
 import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
-let colorSec: string[] = [
-  '#64556B',
-  '#4B7569',
-  '#80616C',
+let color: string[] = [
+    '#C7A9D560',
+    '#96ead280',
+    '#FFC1D860',
 ];
+
+let colorSec: string[] = [
+    '#64556B',
+    '#4B7569',
+    '#80616C',
+];
+
 
 const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
     const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+    const backgroundColorIndex = currentSong ? currentSong.id % color.length : 0;
+
 
     // para que se actualice cuando se reproduce una cancion 
     useEffect(() => {
@@ -26,7 +35,7 @@ const MiniPlayer = ({ navigation }) => {
     const playPause = () => {
         if (currentSong) {
             musicPlayer.playPause();
-            setHasStartedPlaying(true); 
+            setHasStartedPlaying(true);
         }
     };
 
@@ -40,7 +49,7 @@ const MiniPlayer = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.miniPlayerContainer}>
+        <View style={[styles.miniPlayerContainer, { backgroundColor: color[backgroundColorIndex] }]}>
             <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>
                 {currentSong.artwork && isValidURL(currentSong.artwork) ? (
                     <Image source={{ uri: currentSong.artwork }} style={styles.coverImage} />
@@ -70,11 +79,12 @@ const MiniPlayer = ({ navigation }) => {
                     </TextTicker>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
+            <TouchableOpacity onPress={playPause}>
                 <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color={colorSec[currentSong.id % 3]} />
             </TouchableOpacity>
         </View>
     );
+
 };
 
 
@@ -92,7 +102,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(149,228,206,220)',
         paddingHorizontal: 15,
         paddingVertical: 7,
         position: 'absolute',
@@ -115,7 +124,7 @@ const styles = StyleSheet.create({
     textContainer: {
         marginLeft: 10,
         flexShrink: 1,
-        maxWidth: '80%',  
+        maxWidth: '80%',
     },
     songTitle: {
         color: 'black',

@@ -5,6 +5,12 @@ import TextTicker from 'react-native-text-ticker';
 import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
+let colorSec: string[] = [
+  '#64556B',
+  '#4B7569',
+  '#80616C',
+];
+
 const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
@@ -65,7 +71,7 @@ const MiniPlayer = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
-                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
+                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color={colorSec[currentSong.id % 3]} />
             </TouchableOpacity>
         </View>
     );
@@ -86,14 +92,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(149,228,206,0.7)',
+        backgroundColor: 'rgba(149,228,206,220)',
         paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 30,
+        paddingVertical: 7,
         position: 'absolute',
-        left: 10,
-        right: 10,
         bottom: 50,
+        borderRadius: 7,
+        marginRight: 4,
+        marginLeft: 4,
     },
     contentRow: {
         flexDirection: 'row',
@@ -102,9 +108,9 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     coverImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 43,
+        height: 43,
+        borderRadius: 6,
     },
     textContainer: {
         marginLeft: 10,
@@ -114,15 +120,11 @@ const styles = StyleSheet.create({
     songTitle: {
         color: 'black',
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: 12,
     },
     songArtist: {
         color: 'black',
-        fontSize: 12,
-    },
-    playPauseButton: {
-        width: 40,
-        alignItems: 'center',
+        fontSize: 10,
     },
 });
 

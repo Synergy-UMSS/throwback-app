@@ -62,10 +62,11 @@ const Library = () => {
 
   const handleColorSelection = (selectedColor: string) => {
     const rgbaColor = hexToRgba(selectedColor, 0.85);
-
+  
     setSelectedColor(rgbaColor);
     setModalColor(rgbaColor);
   };
+  
 
 
   const hexToRgba = (hex: string, alpha: number): string => {
@@ -97,7 +98,9 @@ const Library = () => {
 
   const handlePressMore = () => {
     setShowModal(true);
+    setSelectedColor('');  
   };
+  
 
 
 
@@ -252,18 +255,18 @@ const Library = () => {
   const handleEditPlaylist = (playlistName) => {
     setSelectedPlaylistName(playlistName);
     setEditPlaylistName(playlistName);
-    setSelectedColor(getColorByPlaylistName(playlistName) ?? ''); 
-
-    const currentPlaylistImage = playlistImages[playlistName] || null;
+    const color = getColorByPlaylistName(playlistName) || '';
+    setSelectedColor(color);
   
-    // Almacena la imagen actual en el estado playlistImage
+    const currentPlaylistImage = playlistImages[playlistName] || null;
     setPlaylistImage(currentPlaylistImage);
   
     setShowEditModal(true);
     setShowEditImage(true);
   };
   
-
+  
+  
 
   const handleUpdatePlaylist = () => {
     if (editPlaylistName.trim() === '') {
@@ -289,17 +292,17 @@ const Library = () => {
         // Actualiza el objeto 'colors' con el nuevo nombre y color de la playlist
         colors[editPlaylistName] = selectedColor || ''; 
         delete colors[selectedPlaylistName];
-
+      
         const updatedPlaylists = playlists.map(playlist => {
           if (playlist === selectedPlaylistName) {
             return editPlaylistName;
           }
           return playlist;
         });
-
+      
         setPlaylistImages(prevImages => ({
           ...prevImages,
-          [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName], // Usa playlistImage si no se selecciona una nueva imagen
+          [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName],
         }));
         setPlaylists(updatedPlaylists);
         setSelectedPlaylistName(editPlaylistName);

@@ -42,7 +42,6 @@ const Library = () => {
   const [error, setError] = useState('');
   const navigation = useNavigation();
   const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
-  const [selectedColor, setSelectedColor] = useState('#FBBAA4');
   const [colors, setColors] = useState<{ [key: string]: string }>({});
   const [playlistImage, setPlaylistImage] = useState<string | null>(null);
   const [playlistImages, setPlaylistImages] = useState<{ [key: string]: string | null }>({});
@@ -55,25 +54,29 @@ const Library = () => {
   const modalBackgroundColor = '#ffffff';
   const modalTextColor = '#000000';
   const [modalColor, setModalColor] = useState('#FBBAA4');
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  
 
   const MAX_NAME_LENGTH = 50;
 
   const handleColorSelection = (selectedColor: string) => {
     const rgbaColor = hexToRgba(selectedColor, 0.85);
-
+  
     setSelectedColor(rgbaColor);
     setModalColor(rgbaColor);
   };
+  
 
 
   const hexToRgba = (hex: string, alpha: number): string => {
     const [r, g, b] = hex.match(/\w\w/g)?.map((x) => parseInt(x, 16)) || [0, 0, 0];
     return `rgba(${r},${g},${b},${alpha})`;
   };
-
-  const getColorByPlaylistName = (playlistName: string) => {
-    return colors[playlistName] || '#FBBAA4';
+  const getColorByPlaylistName = (playlistName: string): string | null => {
+    return colors[playlistName] || null;
   };
+  
 
   const [showEditImage, setShowEditImage] = useState(false);
 
@@ -93,59 +96,63 @@ const Library = () => {
     });
   };
 
-
   const handlePressMore = () => {
     setShowModal(true);
+    setSelectedColor('');
+    setModalColor('rgba(251, 186, 164, 0.8)'); 
   };
-
-
+  
 
   //CREATE
-  const handleCreatePlaylist = (name: string) => {
+  const handleCreatePlaylist = async (name: string) => {
     if (name.trim() === '') {
       setError('El nombre de la lista no puede estar vacío.');
     } else {
       setError('');
-      const timestamp = firebase.firestore.Timestamp.fromDate(new Date());
       const playlistData = {
-        id: '',
         name: name,
-        createDate: timestamp,
+        createDate: firebase.firestore.Timestamp.fromDate(new Date()),
         songs: [],
-        color: selectedColor,
-        userKey: firebase.auth().currentUser?.uid
+        color: selectedColor || '#FBBAA4', 
+        userKey: firebase.auth().currentUser?.uid,
       };
-
-      firestore()
-        .collection('playlists')
-        .add(playlistData)
-        .then((docRef) => {
+  
+      const playlistRef = firestore().collection('playlists');
+      const playlistQuery = playlistRef
+        .where('name', '==', name)
+        .where('userKey', '==', firebase.auth().currentUser?.uid);
+  
+      try {
+        const querySnapshot = await playlistQuery.get();
+  
+        if (querySnapshot.size > 0) {
+          setError('Ya tienes esta lista en tu biblioteca.');
+        } else {
+          const docRef = await playlistRef.add(playlistData);
           const playlistId = docRef.id;
-          docRef.update({ id: playlistId }).then(() => {
-            console.log(
-              'Se ha creado la playlist:',
-              name,
-              'con ID:',
-              playlistId
-            );
-
-            // Actualiza el estado colors con el nombre de la nueva playlist
-            setColors((prevColors) => ({
-              ...prevColors,
-              [name]: selectedColor,
-            }));
-
-            const updatedPlaylists = [name, ...playlists];
-            setPlaylists(updatedPlaylists);
-            resetModal();
-            setShowModal(false);
-          });
-        })
-        .catch((error) => {
-          console.error('Error al crear la playlist:', error);
-        });
+  
+          await docRef.update({ id: playlistId });
+  
+          console.log('Se ha creado la playlist:', name, 'con ID:', playlistId);
+  
+          // Actualiza el estado colors con el nombre de la nueva playlist
+          setColors((prevColors) => ({
+            ...prevColors,
+            [name]: selectedColor || '#FBBAA4', 
+          }));
+  
+          const updatedPlaylists = [name, ...playlists];
+          setPlaylists(updatedPlaylists);
+          resetModal();
+          setShowModal(false);
+        }
+      } catch (error) {
+        console.error('Error al crear o validar la playlist:', error);
+      }
     }
   };
+  
+  
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -247,19 +254,20 @@ const Library = () => {
 
   //EDIT 
   const handleEditPlaylist = (playlistName) => {
-    console.log(playlistName);
     setSelectedPlaylistName(playlistName);
     setEditPlaylistName(playlistName);
-    setSelectedColor(getColorByPlaylistName(playlistName));
+    const color = getColorByPlaylistName(playlistName) || '';
+    setSelectedColor(color);
+  
     const currentPlaylistImage = playlistImages[playlistName] || null;
-
-    // Almacena la imagen actual en el estado playlistImage
     setPlaylistImage(currentPlaylistImage);
-
+  
     setShowEditModal(true);
     setShowEditImage(true);
   };
-
+  
+  
+  
 
   const handleUpdatePlaylist = () => {
     if (editPlaylistName.trim() === '') {
@@ -283,19 +291,19 @@ const Library = () => {
         });
 
         // Actualiza el objeto 'colors' con el nuevo nombre y color de la playlist
-        colors[editPlaylistName] = selectedColor;
+        colors[editPlaylistName] = selectedColor || ''; 
         delete colors[selectedPlaylistName];
-
+      
         const updatedPlaylists = playlists.map(playlist => {
           if (playlist === selectedPlaylistName) {
             return editPlaylistName;
           }
           return playlist;
         });
-
+      
         setPlaylistImages(prevImages => ({
           ...prevImages,
-          [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName], // Usa playlistImage si no se selecciona una nueva imagen
+          [editPlaylistName]: playlistImage || playlistImages[selectedPlaylistName],
         }));
         setPlaylists(updatedPlaylists);
         setSelectedPlaylistName(editPlaylistName);
@@ -384,7 +392,7 @@ const Library = () => {
               style={[
                 styles.playlistContainer,
                 {
-                  backgroundColor: `${getColorByPlaylistName(playlist)}85`,
+                  backgroundColor: `${getColorByPlaylistName(playlist)}70`,
                   overflow: 'visible',
                 },
               ]}
@@ -393,7 +401,7 @@ const Library = () => {
                 style={[
                   styles.playlistBackground,
                   {
-                    backgroundColor: `${getColorByPlaylistName(playlist)}85`,
+                    backgroundColor: `${getColorByPlaylistName(playlist)}70`,
                     top: -7,
                   },
                 ]}
@@ -401,7 +409,7 @@ const Library = () => {
 
               <View style={styles.playlistBox}>
                 <Image
-                  source={{ uri: playlistImages[playlist] || 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
+                  source={{ uri: playlistImages[playlist] || 'https://i.pinimg.com/originals/40/68/3b/40683b2b9fa2a42d7d4305ec536a00b9.jpg' }}
                   style={{
                     ...styles.playlistImage,
                     width: 60,
@@ -422,23 +430,23 @@ const Library = () => {
                     <Text style={styles.playlistLabel}>Lista de reproducción</Text>
                   </View>
                   <Menu style={styles.menuContainer}>
-                    <MenuTrigger>
-                      <Icon
-                        name="more-vert"
-                        size={24}
-                        color="black"
-                        style={styles.menuIcon}
-                      />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={optionsStyles}>
-                      <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
-                        <Text style={styles.optionText}>Editar</Text>
-                      </MenuOption>
-                      <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
-                        <Text style={styles.optionText}>Eliminar</Text>
-                      </MenuOption>
-                    </MenuOptions>
-                  </Menu>
+                  <MenuTrigger>
+                    <Icon
+                      name="more-vert"
+                      size={24}
+                      color="black"
+                      style={styles.menuIcon}
+                    />
+                  </MenuTrigger>
+                  <MenuOptions customStyles={optionsStyles}>
+                    <MenuOption onSelect={() => handleEditPlaylist(playlist)}>
+                      <Text style={[styles.optionText, { textAlign: 'center' }]}>Editar</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={handleDeletePlaylist.bind(this, playlist)}>
+                      <Text style={[styles.optionText, { textAlign: 'center' }]}>Eliminar</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
                 </View>
               </View>
             </TouchableOpacity>
@@ -467,6 +475,7 @@ const Library = () => {
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
 
+
             <ColorPicker onSelectColor={(selectedColor) => handleColorSelection(selectedColor)} />
             <View style={styles.buttonGroup}>
               <TouchableOpacity
@@ -485,22 +494,28 @@ const Library = () => {
       </Modal>
 
       <Modal visible={showEditModal} animationType="slide" transparent={true}>
-        <View style={[styles.modalContainer, { backgroundColor: modalColor }]}>
+        <View style={[styles.modalContainer, { backgroundColor: selectedColor || modalColor }]}>
           <View style={styles.customModalContent}>
             <Text style={[styles.modalTitle, { textAlign: 'center', color: modalTextColor }]}>
               Editar lista
             </Text>
             <View style={styles.imageContainer}>
-              <TouchableOpacity onPress={handleEditImage}>
-                <Image
-                  source={{ uri: playlistImage ? playlistImage : 'https://i.pinimg.com/originals/ff/ee/2c/ffee2c3e6d0d348aa24308522e5a4bec.jpg' }}
-                  style={{ width: 100, height: 100 }}
-                />
-                <Text style={{ color: 'gray', fontSize: 12, marginTop: 5 }}>
-                  Cambiar imagen
-                </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity onPress={handleEditImage}>
+                  <Image
+                    source={{
+                      uri: playlistImage
+                        ? playlistImage
+                        : 'https://i.pinimg.com/originals/40/68/3b/40683b2b9fa2a42d7d4305ec536a00b9.jpg'
+                    }}
+                    style={{ width: 100, height: 100 }}
+                  />
+                  <View style={styles.changeImageTextContainer}>
+                    <Text style={{ color: 'gray', fontSize: 12, textAlign: 'center' }}>
+                      Cambiar portada
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
 
             <View style={styles.inputContainer}>
               <TextInput
@@ -659,9 +674,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   playlistImage: {
-    width: 45,
-    height: 45,
-    marginRight: 10,
+    width: 60,
+    height: 60,
+    marginLeft: -10,
     resizeMode: 'cover',
   },
   playlistContainer: {
@@ -721,7 +736,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+  changeImageTextContainer: {
+    alignItems: 'center',
+    marginTop: 5,
+  },  
 });
 const optionsStyles = {
   optionsContainer: {

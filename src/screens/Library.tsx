@@ -99,11 +99,9 @@ const Library = () => {
   const handlePressMore = () => {
     setShowModal(true);
     setSelectedColor('');
-    setModalColor('#FBBAA4');  
+    setModalColor('rgba(251, 186, 164, 0.8)'); 
   };
   
-
-
 
   //CREATE
   const handleCreatePlaylist = async (name: string) => {

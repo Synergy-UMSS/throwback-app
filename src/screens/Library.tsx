@@ -98,7 +98,8 @@ const Library = () => {
 
   const handlePressMore = () => {
     setShowModal(true);
-    setSelectedColor('');  
+    setSelectedColor('');
+    setModalColor('#FBBAA4');  
   };
   
 
@@ -114,7 +115,7 @@ const Library = () => {
         name: name,
         createDate: firebase.firestore.Timestamp.fromDate(new Date()),
         songs: [],
-        color: selectedColor,
+        color: selectedColor || '#FBBAA4', 
         userKey: firebase.auth().currentUser?.uid,
       };
   
@@ -139,7 +140,7 @@ const Library = () => {
           // Actualiza el estado colors con el nombre de la nueva playlist
           setColors((prevColors) => ({
             ...prevColors,
-            [name]: selectedColor || '',
+            [name]: selectedColor || '#FBBAA4', 
           }));
   
           const updatedPlaylists = [name, ...playlists];

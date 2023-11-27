@@ -6,15 +6,13 @@ import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
 let color: string[] = [
-    '#C7A9D560',
-    '#96ead280',
-    '#FFC1D860',
+    '#8643A6',   //morado
+    '#409D82',   //verdecito
+    '#CB4F7D',   //rosa
 ];
 
 let colorSec: string[] = [
-    '#64556B',
-    '#4B7569',
-    '#80616C',
+    '#FFFFFF',
 ];
 
 
@@ -59,7 +57,7 @@ const MiniPlayer = ({ navigation }) => {
                 <View style={styles.textContainer}>
                     <TextTicker
                         style={styles.songTitle}
-                        duration={15000}
+                        duration={30000}
                         loop
                         bounce
                         repeatSpacer={50}
@@ -69,7 +67,7 @@ const MiniPlayer = ({ navigation }) => {
                     </TextTicker>
                     <TextTicker
                         style={styles.songArtist}
-                        duration={15000}
+                        duration={30000}
                         loop
                         bounce
                         repeatSpacer={50}
@@ -80,7 +78,7 @@ const MiniPlayer = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={playPause}>
-                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color={colorSec[currentSong.id % 3]} />
+                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color={colorSec[currentSong.id % 1]} />
             </TouchableOpacity>
         </View>
     );
@@ -127,12 +125,12 @@ const styles = StyleSheet.create({
         maxWidth: '80%',
     },
     songTitle: {
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold',
         fontSize: 12,
     },
     songArtist: {
-        color: 'black',
+        color: 'white',
         fontSize: 10,
     },
 });

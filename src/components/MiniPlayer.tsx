@@ -5,10 +5,23 @@ import TextTicker from 'react-native-text-ticker';
 import { usePlayerStore } from '../store/playerStore';
 import { MusicPlayerContext } from './MusicPlayerContext';
 
+let color: string[] = [
+    '#8643A6',   //morado
+    '#409D82',   //verdecito
+    '#CB4F7D',   //rosa
+];
+
+let colorSec: string[] = [
+    '#FFFFFF',
+];
+
+
 const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
     const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+    const backgroundColorIndex = currentSong ? currentSong.id % color.length : 0;
+
 
     // para que se actualice cuando se reproduce una cancion 
     useEffect(() => {
@@ -20,7 +33,7 @@ const MiniPlayer = ({ navigation }) => {
     const playPause = () => {
         if (currentSong) {
             musicPlayer.playPause();
-            setHasStartedPlaying(true); 
+            setHasStartedPlaying(true);
         }
     };
 
@@ -34,7 +47,7 @@ const MiniPlayer = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.miniPlayerContainer}>
+        <View style={[styles.miniPlayerContainer, { backgroundColor: color[backgroundColorIndex] }]}>
             <TouchableOpacity style={styles.contentRow} onPress={handlePressPlayer}>
                 {currentSong.artwork && isValidURL(currentSong.artwork) ? (
                     <Image source={{ uri: currentSong.artwork }} style={styles.coverImage} />
@@ -44,7 +57,7 @@ const MiniPlayer = ({ navigation }) => {
                 <View style={styles.textContainer}>
                     <TextTicker
                         style={styles.songTitle}
-                        duration={15000}
+                        duration={30000}
                         loop
                         bounce
                         repeatSpacer={50}
@@ -54,7 +67,7 @@ const MiniPlayer = ({ navigation }) => {
                     </TextTicker>
                     <TextTicker
                         style={styles.songArtist}
-                        duration={15000}
+                        duration={30000}
                         loop
                         bounce
                         repeatSpacer={50}
@@ -64,11 +77,12 @@ const MiniPlayer = ({ navigation }) => {
                     </TextTicker>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.playPauseButton} onPress={playPause}>
-                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color="white" />
+            <TouchableOpacity onPress={playPause}>
+                <Ionicons name={musicPlayer.isPlaying ? "pause-outline" : "play-outline"} size={30} color={colorSec[currentSong.id % 1]} />
             </TouchableOpacity>
         </View>
     );
+
 };
 
 
@@ -86,14 +100,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(149,228,206,0.7)',
         paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 30,
+        paddingVertical: 7,
         position: 'absolute',
-        left: 10,
-        right: 10,
         bottom: 50,
+        borderRadius: 7,
+        marginRight: 4,
+        marginLeft: 4,
     },
     contentRow: {
         flexDirection: 'row',
@@ -102,27 +115,23 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     coverImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 43,
+        height: 43,
+        borderRadius: 6,
     },
     textContainer: {
         marginLeft: 10,
         flexShrink: 1,
-        maxWidth: '80%',  
+        maxWidth: '80%',
     },
     songTitle: {
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold',
-        fontSize: 14,
-    },
-    songArtist: {
-        color: 'black',
         fontSize: 12,
     },
-    playPauseButton: {
-        width: 40,
-        alignItems: 'center',
+    songArtist: {
+        color: 'white',
+        fontSize: 10,
     },
 });
 

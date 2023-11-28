@@ -1,7 +1,5 @@
 import React from 'react';
-import { Image } from 'react-native';
-import { Dimensions } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { Image, StyleSheet, Dimensions } from 'react-native';
 
 import emo1 from '../assets/emotion/wrapped/1.png';
 import emo2 from '../assets/emotion/wrapped/2.png';
@@ -18,36 +16,35 @@ import emo12 from '../assets/emotion/wrapped/12.png';
 import emo13 from '../assets/emotion/wrapped/13.png';
 import emo14 from '../assets/emotion/wrapped/14.png';
 
-
 const screenWidth = Dimensions.get('window').width;
+
 const Emocion = ({ nombre }) => {
-    const emociones = {
-        emo1,
-        emo2,
-        emo3,
-        emo4,
-        emo5,
-        emo6,
-        emo7,
-        emo8,
-        emo9,
-        emo10,
-        emo11,
-        emo12,
-        emo13,
-        emo14,
-    };
-    return <Image 
-    style={styles.imagen}
-    source={emociones[nombre]}
-  />
+  const emociones = {
+    emo1,
+    emo2,
+    emo3,
+    emo4,
+    emo5,
+    emo6,
+    emo7,
+    emo8,
+    emo9,
+    emo10,
+    emo11,
+    emo12,
+    emo13,
+    emo14,
+  };
+
+  return <Image style={styles.imagen} source={emociones[nombre]} />;
 };
 
 const styles = StyleSheet.create({
-    imagen: {
-      width: screenWidth * 0.6,
-      height: screenWidth * 0.6,
-      resizeMode: 'contain',
-    },
-  });
+  imagen: {
+    width: screenWidth * 0.6,
+    height: screenWidth * 0.6,
+    resizeMode: 'contain',
+  },
+});
+
 export default Emocion;

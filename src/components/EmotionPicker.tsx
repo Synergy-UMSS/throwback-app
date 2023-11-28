@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Image, View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
-
 import emo1 from '../assets/emotion/1.png';
 import emo2 from '../assets/emotion/2.png';
 import emo3 from '../assets/emotion/3.png';
@@ -15,7 +14,6 @@ import emo11 from '../assets/emotion/11.png';
 import emo12 from '../assets/emotion/12.png';
 import emo13 from '../assets/emotion/13.png';
 import emo14 from '../assets/emotion/14.png';
-
 
 const emotions = {
   emo1: { image: emo1, name: 'Feliz' },
@@ -34,10 +32,9 @@ const emotions = {
 };
 
 const EmotionPicker = ({ emotion, onEmotionChange, isEditing }) => {
-  const [selectedEmotion, setSelectedEmotion] = useState("emo1");
+  const [selectedEmotion, setSelectedEmotion] = useState('emo1');
   const [showName, setShowName] = useState(false);
   const [selectedEmotionName, setSelectedEmotionName] = useState('');
-
   const flatListRef = useRef(null);
 
   const handleEmotionChange = (selectedEmotion, emotionName) => {
@@ -48,19 +45,16 @@ const EmotionPicker = ({ emotion, onEmotionChange, isEditing }) => {
   };
 
   useEffect(() => {
-    if (!isEditing) {
-      setSelectedEmotion("emo1"); // Emoción predeterminada al crear
-      setSelectedEmotionName(emotions["emo1"].name);
+    const setInitialEmotion = () => {
+      const initialEmotion = isEditing ? emotion : 'emo1';
+      setSelectedEmotion(initialEmotion);
+      setSelectedEmotionName(emotions[initialEmotion].name);
       setShowName(true);
-      onEmotionChange("emo1");
-    } else {
-      // Lógica de inicio para editar una memoria
-      setSelectedEmotion(emotion); // Use provided emotion or default to "emo1"
-      setSelectedEmotionName(emotions[emotion].name);
-      setShowName(true);
-      onEmotionChange(emotion);
-    }
-  }, []);
+      onEmotionChange(initialEmotion);
+    };
+
+    setInitialEmotion();
+  }, [isEditing, emotion]);
 
   return (
     <View style={styles.container}>
@@ -95,23 +89,19 @@ const EmotionPicker = ({ emotion, onEmotionChange, isEditing }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
     flexDirection: 'row',
   },
   emotion: {
     width: 50,
     height: 50,
-    marginHorizontal:5,
-    marginVertical:1,
+    marginHorizontal: 5,
+    marginVertical: 1,
   },
   emotionName: {
     textAlign: 'center',
     fontSize: 11,
-    color: 'black'
+    color: 'black',
   },
-  FlatList: {
-
-  }
 });
 
 export default EmotionPicker;

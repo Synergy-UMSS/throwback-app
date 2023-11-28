@@ -61,14 +61,14 @@ const styles = StyleSheet.create({
   colorPickerContainer: {
     flexDirection: 'row',
     marginTop: 10,
-    marginBottom: 20, // Ajusta este valor según tus preferencias
+    marginBottom: 20,
   },
   colorPicker: {
     width: 30,
     height: 30,
     marginHorizontal: 5,
-    borderWidth: 2, 
-    borderColor: 'transparent', 
+    borderWidth: 2,
+    borderColor: 'transparent',
     borderRadius: 15,
     overflow: 'hidden',
   },

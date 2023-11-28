@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import auth from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import React, { useState, useEffect } from 'react';
+import auth, { FirebaseError } from '@react-native-firebase/auth';
+import { GoogleSignin, GoogleSigninUser } from '@react-native-google-signin/google-signin';
 import Authenticate from '../screens/Authenticate';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, StyleSheet, View, Text, Image } from 'react-native';
@@ -13,79 +13,78 @@ GoogleSignin.configure({
 
 const Carousel = () => {
   const navigation = useNavigation();
-
   const [authenticated, setAuthenticated] = useState(false);
 
-  auth().onAuthStateChanged((user) => {
-    if (user) {
-      setAuthenticated(true);
-    } else {
-      setAuthenticated(false);
-    }
-  });
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
+      setAuthenticated(!!user);
+    });
 
-  async function handleGoogleButtonPress() {
+    return () => unsubscribe();
+  }, []);
+
+  const handleGoogleButtonPress = async () => {
     try {
       const { idToken } = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredential);
-      console.log('Logged in' + idToken);
+
+      console.log('Logged in ' + idToken);
       console.log('sigan viendoooo');
-      console.log(auth().currentUser.uid);
-      console.log(auth().currentUser.displayName);
-      // Verificar si es la primera vez que el usuario inicia sesión
+      console.log(auth().currentUser?.uid);
+      console.log(auth().currentUser?.displayName);
+
       const user = auth().currentUser;
       const isFirstSignIn = user?.metadata.creationTime === user?.metadata.lastSignInTime;
-      console.log(isFirstSignIn)
-      console.log(user?.metadata.creationTime)
-      console.log(user?.metadata.lastSignInTime)
+
+      console.log(isFirstSignIn);
+      console.log(user?.metadata.creationTime);
+      console.log(user?.metadata.lastSignInTime);
+
       if (isFirstSignIn) {
         const playlistFav = {
           id: '',
           name: 'favs',
           songs_fav: [],
-          userKey: auth().currentUser?.uid
+          userKey: auth().currentUser?.uid,
         };
-  
-        firestore()
-          .collection('playlist_fav')
-          .add(playlistFav)
-          .then((docRef) => {
-            const playlistId = docRef.id;
-            docRef.update({ id: playlistId }).then(() => {
-              console.log(
-                'Se ha creado la playlist con ID:',
-                playlistId
-              );
-            });
-          })
+
+        const docRef = await firestore().collection('playlist_fav').add(playlistFav);
+        const playlistId = docRef.id;
+
+        await docRef.update({ id: playlistId });
+
+        console.log('Se ha creado la playlist con ID:', playlistId);
       }
+
       navigation.replace('Home');
     } catch (error) {
-      console.log(error);
+      handleGoogleSignInError(error);
     }
   };
 
-  const RenderItem = ({ item }) => {
-    return (
-      <View style={{ flex: 1, backgroundColor: item.backgroundColor, alignItems: 'center' }}>
-        <Text style={styles.introTitleStyle}>{item.title}</Text>
-        <Image style={styles.introImageStyle} source={item.image} />
-        <Text style={styles.introTextStyle}>{item.text}</Text>
-      </View>
-    );
+  const handleGoogleSignInError = (error: FirebaseError) => {
+    console.log('Google Sign In Error:', error.code, error.message);
   };
+
+  const RenderItem = ({ item }) => (
+    <View style={{ flex: 1, backgroundColor: item.backgroundColor, alignItems: 'center' }}>
+      <Text style={styles.introTitleStyle}>{item.title}</Text>
+      <Image style={styles.introImageStyle} source={item.image} />
+      <Text style={styles.introTextStyle}>{item.text}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-        <AppIntroSlider
-          data={slides}
-          renderItem={RenderItem}
-          showSkipButton={false}
-          showNextButton={false}
-          showPrevButton={false}
-          showDoneButton={false}
-        />
+      <AppIntroSlider
+        data={slides}
+        renderItem={RenderItem}
+        showSkipButton={false}
+        showNextButton={false}
+        showPrevButton={false}
+        showDoneButton={false}
+      />
       <View style={styles.authenticateContainer}>
         <Authenticate authenticated={authenticated} handleGoogleButtonPress={handleGoogleButtonPress} />
       </View>

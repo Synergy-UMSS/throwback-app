@@ -6,16 +6,11 @@ import {Pressable, Text, StyleSheet} from 'react-native';
 const LogOutButton = () => {
   const handleLogOut = async () => {
     try {
-      // Revoca el token de acceso de Google
         await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
-      // Cierra la sesión en Firebase
       await auth().signOut();
 
       console.log('User signed out!');
-
-      // Después del logout, redirige al usuario a la pantalla de inicio de sesión
-    //   navigation.replace('Login'); // o 'Splash' u otra pantalla que desees
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
@@ -34,7 +29,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 20, // Ajusta el tamaño horizontal según tus preferencias
+    paddingHorizontal: 20, 
     borderRadius: 10,
     elevation: 3,
     backgroundColor: '#fbbaa4',

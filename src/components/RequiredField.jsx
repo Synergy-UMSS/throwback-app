@@ -14,20 +14,18 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 16,
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginRight: 4,
     color: 'black',
-    marginTop: 16
   },
   asterisk: {
     fontSize: 16,
     color: 'red',
-    marginTop: 16
   },
 });
 
 export default RequiredField;
-

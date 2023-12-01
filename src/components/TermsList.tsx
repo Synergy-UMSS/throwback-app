@@ -1,13 +1,17 @@
-import React, { useState, useRef, useEffect }  from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet, Dimensions, View } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Dimensions,
+  View,
+} from 'react-native';
 
 const TermsList = ({ onTermSelect }) => {
   const [selectedTerm, setSelectedTerm] = useState('Todo');
   const scrollViewRef = useRef(null);
   const termRefs = useRef({});
-//   React.useEffect(() => {
-//     onTermSelect('Todo');
-//   }, [onTermSelect]);
 
   const termsWithColors = {
     Todo: { backgroundColor: 'gray', color: 'white' },
@@ -24,20 +28,19 @@ const TermsList = ({ onTermSelect }) => {
   const emotions = {
     Todo: { name: 'Todo', backgroundColor: 'black', textColor: 'white' },
     emo1: { name: 'Feliz', backgroundColor: '#F6EA7E', textColor: 'black' },
-    emo13: { name: 'Triste', backgroundColor:  '#9DE0D2', textColor: 'black' },
-    emo4: { name: 'Cariñoso', backgroundColor:  '#FFC1D8', textColor: 'black' },
-    emo12: { name: 'Alegre', backgroundColor:  '#F0CC8B', textColor: 'black' },
-    emo8: { name: 'Enamorado', backgroundColor:  '#FBBAA4', textColor: 'black' },
-    emo10: { name: 'Relajado', backgroundColor:  '#9DE0D2', textColor: 'black' },
-    emo7: { name: 'Agradecido', backgroundColor:  '#FFC1D8', textColor: 'black' },
-    emo2: { name: 'Enojado',backgroundColor: '#FBBAA4', textColor: 'black' },
+    emo13: { name: 'Triste', backgroundColor: '#9DE0D2', textColor: 'black' },
+    emo4: { name: 'Cariñoso', backgroundColor: '#FFC1D8', textColor: 'black' },
+    emo12: { name: 'Alegre', backgroundColor: '#F0CC8B', textColor: 'black' },
+    emo8: { name: 'Enamorado', backgroundColor: '#FBBAA4', textColor: 'black' },
+    emo10: { name: 'Relajado', backgroundColor: '#9DE0D2', textColor: 'black' },
+    emo7: { name: 'Agradecido', backgroundColor: '#FFC1D8', textColor: 'black' },
+    emo2: { name: 'Enojado', backgroundColor: '#FBBAA4', textColor: 'black' },
     emo3: { name: 'Frustrado', backgroundColor: '#C7A9D5', textColor: 'black' },
-    emo11: { name: 'Confundido', backgroundColor:  '#B6BFD4', textColor: 'black' },
-    emo5: { name: 'No emotivo', backgroundColor:  '#F0CC8B', textColor: 'black' },
-    emo6: { name: 'Indeciso', backgroundColor:  '#B6BFD4', textColor: 'black' },
-    emo9: { name: 'Juguetón', backgroundColor:  '#F6EA7E', textColor: 'black' },
+    emo11: { name: 'Confundido', backgroundColor: '#B6BFD4', textColor: 'black' },
+    emo5: { name: 'No emotivo', backgroundColor: '#F0CC8B', textColor: 'black' },
+    emo6: { name: 'Indeciso', backgroundColor: '#B6BFD4', textColor: 'black' },
+    emo9: { name: 'Juguetón', backgroundColor: '#F6EA7E', textColor: 'black' },
   };
-
 
   const handleTermPress = (term) => {
     setSelectedTerm(term);
@@ -47,11 +50,11 @@ const TermsList = ({ onTermSelect }) => {
         scrollViewRef.current,
         (x, y, width, height) => {
           const screenWidth = Dimensions.get('window').width;
-          const centerPosition = x - (screenWidth / 2) + (width/2);
-          
+          const centerPosition = x - screenWidth / 2 + width / 2;
+
           scrollViewRef.current.scrollTo({ x: centerPosition, animated: true });
         },
-        error => {
+        (error) => {
           console.error('Failed to measure term layout:', error);
         }
       );
@@ -68,10 +71,14 @@ const TermsList = ({ onTermSelect }) => {
       {Object.entries(emotions).map(([termKey, { name, backgroundColor, textColor }]) => (
         <TouchableOpacity
           key={termKey}
-          ref={el => (termRefs.current[termKey] = el)}
+          ref={(el) => (termRefs.current[termKey] = el)}
           style={[
             styles.term,
-            selectedTerm === termKey && { backgroundColor, borderColor: backgroundColor, paddingHorizontal: 20,},
+            selectedTerm === termKey && {
+              backgroundColor,
+              borderColor: backgroundColor,
+              paddingHorizontal: 20,
+            },
           ]}
           onPress={() => handleTermPress(termKey)}
         >
@@ -95,9 +102,8 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 5,
     marginHorizontal: 10,
-    // backgroundColor: '#fcf4e7',
     backgroundColor: '#e4e6dc',
-    paddingRight:15,
+    paddingRight: 15,
   },
   term: {
     borderWidth: 1.5,
@@ -107,13 +113,13 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     marginHorizontal: 5,
   },
-  selectedTerm: {
-    paddingHorizontal: 20,
-    paddingVertical: 0,
-  },
   text: {
     fontSize: 15,
     color: 'gray',
+  },
+  selectedTerm: {
+    paddingHorizontal: 20,
+    paddingVertical: 0,
   },
   selectedText: {
     fontWeight: 'bold',

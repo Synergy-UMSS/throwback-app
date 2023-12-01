@@ -1,57 +1,57 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FastImage from 'react-native-fast-image';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
-import FastImage from 'react-native-fast-image';
 import { useSuccesfulMessage } from '../helpcomponents/succesfulMessage';
 
 const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
   const { title, artist, artwork } = songData;
   const [showOptions, setShowOptions] = useState(false);
-  const {currentPlaylist} = usePlaylistStore();
-  const {setIsAdded} = useSuccesfulMessage();
+  const { currentPlaylist } = usePlaylistStore();
+  const { setIsAdded } = useSuccesfulMessage();
 
   const handleOptionPress = () => {
     setShowOptions(!showOptions);
   };
 
   const addSongPlaylist = async (song) => {
-    const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
-    docRef.get().then((doc) => {
+    try {
+      const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
+      const doc = await docRef.get();
+      
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
-          data.songs.push(song);
-    docRef.update({
-            songs: data.songs
-    })
-      .then(() => {
-        console.log('Dato agregado con éxito');
-      })
-      .catch((error) => {
-        console.error('Error al actualizar el documento:', error);
-      });
-            setIsAdded(true);
-            navigation.navigate('Playlist', { playlistName: currentPlaylist.name, playlistId: currentPlaylist.id});
+          const updatedSongs = [...data.songs, song];
+
+          await docRef.update({
+            songs: updatedSongs
+          });
+
+          setIsAdded(true);
+          navigation.navigate('Playlist', { playlistName: currentPlaylist.name, playlistId: currentPlaylist.id });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
       } else {
         console.error('No se encontró el documento');
       }
-    });
-  }
+    } catch (error) {
+      console.error('Error al agregar la canción a la playlist:', error);
+    }
+  };
 
   const backToPlaylist = () => {
     addSongPlaylist(songData);
     navigation.navigate('Playlist', { playlistId: currentPlaylist.id });
-  }
+  };
 
   return (
     <TouchableOpacity onPress={backToPlaylist}>
-      <View host="lazyload-list" style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.songContainer}>
           {artwork ? (
             typeof artwork === 'number' ? (
@@ -71,33 +71,33 @@ const SongSuggestionSelect = ({ navigation, songData, screenSelected }) => {
           <MaterialCommunityIcons name="dots-vertical" size={30} color="gray" />
         </TouchableOpacity>
       </View>
-        <Modal visible={showOptions} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={styles.closeButtonContainer}>
-                <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
-                  <MaterialCommunityIcons name="close" size={30} color="gray" />
-                </TouchableOpacity>
-              </View>
-              {artwork ? (
-                typeof artwork === 'number' ? (
-                  <FastImage source={artwork} style={styles.imageSelected} />
-                ) : (
-                  <FastImage source={{ uri: artwork }} style={styles.imageSelected} />
-                )
+      <Modal visible={showOptions} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.closeButtonContainer}>
+              <TouchableOpacity onPress={handleOptionPress} style={styles.closeButton}>
+                <MaterialCommunityIcons name="close" size={30} color="gray" />
+              </TouchableOpacity>
+            </View>
+            {artwork ? (
+              typeof artwork === 'number' ? (
+                <FastImage source={artwork} style={styles.imageSelected} />
               ) : (
-                <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
-              )}
-              <Text style={styles.songName}>{title}</Text>
-              <Text style={styles.artistName}>{artist}</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
-                  <Text style={styles.buttonText}>Agregar canción</Text>
-                </TouchableOpacity>
-              </View>
+                <FastImage source={{ uri: artwork }} style={styles.imageSelected} />
+              )
+            ) : (
+              <Image source={require('../assets/logo.png')} style={styles.imageSelected} />
+            )}
+            <Text style={styles.songName}>{title}</Text>
+            <Text style={styles.artistName}>{artist}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button, styles.cyanButton]} onPress={backToPlaylist}>
+                <Text style={styles.buttonText}>Agregar canción</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
     </TouchableOpacity>
   );
 };
@@ -162,10 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
     alignItems: 'center',
-    justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
-  },
-  salmonButton: {
-    backgroundColor: '#DAA1D1',
+    justifyContent: 'center',
   },
   cyanButton: {
     backgroundColor: '#4ADCC8',

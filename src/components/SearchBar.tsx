@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, TextInput, TouchableOpacity, Keyboard} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
-import {useSearchStore} from '../store/searchStore';
-import {usePlaylistStore} from '../store/playlistStore';
+import { useSearchStore } from '../store/searchStore';
+import { usePlaylistStore } from '../store/playlistStore';
 
-const SearchBar = ({comeNav, navigation}) => {
-  const {currentPlaylist, setCurrentPlaylist} = usePlaylistStore();
+const SearchBar = ({ comeNav, navigation }) => {
+  const { currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
   const [busqueda, setBusqueda] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [isSearchBoxFocused, setIsSearchBoxFocused] = useState(false);
@@ -76,7 +76,7 @@ const SearchBar = ({comeNav, navigation}) => {
         {(comeNav) && (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Playlist', {playlistName: currentPlaylist.name, playlistId: currentPlaylist.id});
+              navigation.navigate('Playlist', { playlistName: currentPlaylist.name, playlistId: currentPlaylist.id });
             }}>
             <Animatable.View animation={'fadeIn'} duration={300}>
               <MaterialIcons name="arrow-back" size={30} color="gray" />

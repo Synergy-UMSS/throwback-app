@@ -1,28 +1,28 @@
 import React from 'react';
-import { View, Image, Dimensions } from 'react-native';
-import { StyleSheet } from 'react-native';
-// const ScreenWidth = Dimensions.get('window').width;
+import { View, Image, Dimensions, StyleSheet } from 'react-native';
+
 const screenWidth = Dimensions.get('window').width;
+
 const ImageFullWidth = ({ source }) => {
   return (
-    <View>
-      <Image
-        source={source}
-        style={styles.imagen}
-        // resizeMode="cover"
-      />
+    <View style={styles.container}>
+      <Image source={source} style={styles.image} />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
-  imagen: {
+  container: {
     marginTop: 10,
+  },
+  image: {
     width: screenWidth,
     height: screenWidth * 0.3,
     marginTop: 20,
-    marginBottom:10,
+    marginBottom: 10,
     resizeMode: 'contain',
-    // backgroundColor:'red',
   },
 });
+
 export default ImageFullWidth;
+

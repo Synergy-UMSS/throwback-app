@@ -10,10 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
-// obtener el color de la memoria basado en la emoción
-function getColorForEmotion(emotion) {
-  return emociones[emotion] || "#000000";
-}
+const getColorForEmotion = (emotion) => emociones[emotion] || "#000000";
 
 const emociones = {
   emo1: "#F6EA7E",
@@ -33,9 +30,7 @@ const emociones = {
 };
 
 
-
-// aclarar un color hexadecimal
-function aclararColor(hex, porcentaje = 0.2) {
+const aclararColor = (hex, porcentaje = 0.2) => {
   let r = parseInt(hex.slice(1, 3), 16);
   let g = parseInt(hex.slice(3, 5), 16);
   let b = parseInt(hex.slice(5, 7), 16);
@@ -48,10 +43,9 @@ function aclararColor(hex, porcentaje = 0.2) {
 const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
 
   const navigation = useNavigation();
-  // color de memoria
   const color = getColorForEmotion(emotion);
   const colorOscurecido = aclararColor(color);
-  // borrado de memoria
+
   const showDeleteConfirmation = () => {
     Alert.alert(
       "Confirmación",
@@ -77,26 +71,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
       .catch(error => {
         console.error("Error eliminando memoria: ", error);
       });
-  }
-
-  // const memoriacancionSelecionada = {
-  //   id: memoria.id,
-  //   userKey: memoria.userKey,
-  //   title: memoria.title,
-  //   description: memoria.description,
-  //   emotion: memoria.emotion,
-  //   createDate: memoria.createDate,
-  //   memoryDate: memoria.memoryDate,
-  //   song: memoria.song, //debe ser un entero
-  //   imageURL: memoria.imageURL, // null si no hay imagen
-  //     album: song.album,
-  //     artist: song.artist,
-  //     coverURL: song.coverURL,
-  //     genre: song.genre,
-  //     idS: song.id,
-  //     songURL: song.songURL,
-  //     titleS: song.title
-  // }
+  };
 
   const memoriacancionSelecionada = {
     ...(memoria && {
@@ -108,7 +83,7 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
         createDate: memoria.createDate,
         memoryDate: memoria.memoryDate,
         song: memoria.song,
-        imageURL: memoria.imageURL, // null si no hay imagen
+        imageURL: memoria.imageURL,
     }),
     ...(song && {
       album: song.album,
@@ -118,7 +93,6 @@ const PreviewMemory = ({ memoria, song, onPress, index, emotion }) => {
           idS: song.id,
           songURL: song.songURL,
           titleS: song.title
-        // Agrega más propiedades de song si es necesario
     }),
 };
 
@@ -259,7 +233,6 @@ const optionsStyles = {
     marginTop: 10,
     marginLeft: 0,
     width: 130,
-    // elevation: 0,
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',

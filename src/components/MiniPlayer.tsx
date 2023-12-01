@@ -15,28 +15,24 @@ let colorSec: string[] = [
     '#FFFFFF',
 ];
 
-
 const MiniPlayer = ({ navigation }) => {
     const { currentSong } = usePlayerStore();
     const musicPlayer = useContext(MusicPlayerContext);
     const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
     const backgroundColorIndex = currentSong ? currentSong.id % color.length : 0;
-
-
-    // para que se actualice cuando se reproduce una cancion 
+  
     useEffect(() => {
-        if (currentSong && musicPlayer.isPlaying) {
-            setHasStartedPlaying(true);
-        }
+      if (currentSong && musicPlayer.isPlaying) {
+        setHasStartedPlaying(true);
+      }
     }, [currentSong, musicPlayer.isPlaying]);
-
+  
     const playPause = () => {
-        if (currentSong) {
-            musicPlayer.playPause();
-            setHasStartedPlaying(true);
-        }
+      if (currentSong) {
+        musicPlayer.playPause();
+        setHasStartedPlaying(true);
+      }
     };
-
     const handlePressPlayer = () => {
         navigation.navigate('Player', { songData: currentSong, playlistFlow: true });
     };

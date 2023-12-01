@@ -35,10 +35,11 @@ const MusicPlayerProvider = ({ children }) => {
     }
   });
 
-  // useEffect para inicializar TrackPlayer y otros preparativos
   useEffect(() => {
+    const initializeTrackPlayer = async () => {
     // Inicializa TrackPlayer o realiza cualquier configuración necesaria
-
+  };
+  initializeTrackPlayer();
     return () => {
       // Limpieza (si es necesaria) cuando el componente se desmonta
     };

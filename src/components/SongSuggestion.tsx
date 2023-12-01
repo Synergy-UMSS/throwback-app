@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,39 +15,34 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
-import {usePlayerStore} from '../store/playerStore';
-import {usePlaylistStore} from '../store/playlistStore';
+import { useNavigation } from '@react-navigation/native';
+import { usePlayerStore } from '../store/playerStore';
+import { usePlaylistStore } from '../store/playlistStore';
 import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const SongSuggestion = ({songData, screenSelected}) => {
-  const {title, artist, artwork, url} = songData;
+const SongSuggestion = ({ songData, screenSelected }) => {
+  const { title, artist, artwork, url } = songData;
   const [showOptions, setShowOptions] = useState(false);
   const navigation = useNavigation();
-  const {setCurrentSong, currentSong} = usePlayerStore();
-  const {currentPlaylist} = usePlaylistStore();
+  const { setCurrentSong, currentSong } = usePlayerStore();
+  const { currentPlaylist } = usePlaylistStore();
 
   const handleOptionPress = () => {
     setCurrentSong(songData);
-    console.log('canción actual  ' + currentSong.title);
-    console.log('gente re paila');
     setShowOptions(!showOptions);
   };
 
   useEffect(() => {
     if (showOptions) {
-        console.log('El ModalContainer está visible');
+      console.log('El ModalContainer está visible');
     }
-}, [showOptions]);
+  }, [showOptions]);
 
   const handlePlayPress = () => {
     setCurrentSong(songData);
-    if(screenSelected == 'search'){
-      navigation.navigate('Player', {songData, playlistFlow: false});
-    }else{
-      navigation.navigate('Player', {songData, playlistFlow: true});
-    }
+    const params = { songData, playlistFlow: screenSelected === 'search' ? false : true };
+    navigation.navigate('Player', params);
   };
 
   const checkSongMemory = async (song) => {
@@ -61,10 +56,10 @@ const SongSuggestion = ({songData, screenSelected}) => {
         '¿Volver a crear una memoria con esta canción?',
         'Esta canción ya está asociada.',
         [
-          {text: 'Aceptar', onPress: redirectToCreateMemory},
-          {text: 'Cancelar', onPress: handleOptionPress},
+          { text: 'Aceptar', onPress: redirectToCreateMemory },
+          { text: 'Cancelar', onPress: handleOptionPress },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     } else {
       redirectToCreateMemory();
@@ -72,11 +67,11 @@ const SongSuggestion = ({songData, screenSelected}) => {
   };
 
   const redirectToCreateMemory = () => {
-    navigation.navigate('CreateMemory', {currentSong});
+    navigation.navigate('CreateMemory', { currentSong });
   };
 
   const createMemory = () => {
-    setShowOptions(false); // para cerrar el modal luego de crear memoria Dx bug solucionado
+    setShowOptions(false);
     checkSongMemory(currentSong);
   };
 
@@ -97,7 +92,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
             .catch(error => {
               console.error('Error al actualizar el documento:', error);
             });
-          navigation.navigate('Playlist', {currentSong});
+          navigation.navigate('Playlist', { currentSong });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -108,23 +103,14 @@ const SongSuggestion = ({songData, screenSelected}) => {
   };
 
   const deleteCurrentSong = async () => {
-    console.log('quiero eliminar ' + songData.title);
     const docRef = firestore().collection('playlists').doc(currentPlaylist.id);
     docRef.get().then(doc => {
       if (doc.exists) {
         const data = doc.data();
         if (Array.isArray(data.songs)) {
-          let ind = 0;
-          for (let i = 0; i < data.songs.length; i++) {
-            if (data.songs[i].title === songData.title) {
-              ind = i;
-              break;
-            }
-          }
-          
           const updatedSongs = data.songs.filter(
-            (song, index) => index !== ind,
-            );
+            (song, index) => song.title !== songData.title
+          );
           docRef
             .update({
               songs: updatedSongs,
@@ -135,7 +121,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
             .catch(error => {
               console.error('Error al actualizar el documento:', error);
             });
-          navigation.navigate('Playlist', {currentSong: songData});
+          navigation.navigate('Playlist', { currentSong: songData });
         } else {
           console.error('El campo songs no es un arreglo o no existe');
         }
@@ -157,7 +143,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
             typeof artwork === 'number' ? (
               <Image source={artwork} style={styles.image} />
             ) : (
-              <Image source={{uri: artwork}} style={styles.image} />
+              <Image source={{ uri: artwork }} style={styles.image} />
             )
           ) : (
             <Image
@@ -166,8 +152,8 @@ const SongSuggestion = ({songData, screenSelected}) => {
             />
           )}
           <View style={styles.textContainer}>
-            <Text style={[styles.songName, screenSelected==='search'?{ color: '#777'}: {fontWeight:600, color:'black'}]}>{title}</Text>
-            <Text style={[styles.artistName, screenSelected ==='search'?{ color: '#777'}: {color:'black'}]}>{artist}</Text>
+            <Text style={[styles.songName, screenSelected === 'search' ? { color: '#777' } : { fontWeight: 600, color: 'black' }]}>{title}</Text>
+            <Text style={[styles.artistName, screenSelected === 'search' ? { color: '#777' } : { color: 'black' }]}>{artist}</Text>
           </View>
         </View>
         {screenSelected === 'search' && (
@@ -215,7 +201,7 @@ const SongSuggestion = ({songData, screenSelected}) => {
                 typeof artwork === 'number' ? (
                   <Image source={artwork} style={styles.imageSelected} />
                 ) : (
-                  <Image source={{uri: artwork}} style={styles.imageSelected} />
+                  <Image source={{ uri: artwork }} style={styles.imageSelected} />
                 )
               ) : (
                 <Image
@@ -306,7 +292,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
     alignItems: 'center',
-    justifyContent: 'center', // Bug: Texto del botón “Cerrar” no centrado.
+    justifyContent: 'center',
   },
   salmonButton: {
     backgroundColor: '#DAA1D1',
@@ -346,7 +332,6 @@ const optionsStyles = {
     marginTop: 10,
     marginLeft: 0,
     width: 130,
-    // elevation: 0,
     borderWidth: 0,
     borderRadius: 15,
     borderColor: 'black',

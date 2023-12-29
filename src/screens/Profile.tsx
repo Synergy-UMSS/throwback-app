@@ -33,7 +33,7 @@ export default function Profile() {
           throwback-app@protonmail.com
         </Text>
         <Text style={styles.label}>Versión de la Aplicación:</Text>
-        <Text style={styles.text}> 3.3.1 (13112023)</Text>
+        <Text style={styles.text}> 1.0.0 (29122023)</Text>
       </View>
       <LogOutButton />
     </View>

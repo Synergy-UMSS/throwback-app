@@ -1,27 +1,3 @@
-
-# Throwback
-
-Throwback is a unique mobile application that enables users to create lasting memories by connecting music with their most cherished moments. This user-friendly app simplifies the process of associating songs with special memories, allowing you to relive those precious experiences through the power of music. Whether it's a romantic evening, a memorable road trip, or a serene sunset, Throwback is your ideal companion for adding a harmonious dimension to your most treasured memories. Explore the enchanting synergy of music and memories today with Throwback.
-
-## Installation
-
-Follow these steps to get started with **Throwback**:
-
-1. Clone the repository to your local machine:
-
-   ```bash
-   git clone https://github.com/Synergy-UMSS/throwback-app.git
-
-2. Navigate to the project directory:
-    ```bash
-    cd throwbackApp
-3. Install Dependencies:
-    ```bash
-    npm install
-4. To run the app on Android:
-    ```bash
-    npx react-native run-android
-
 # Throwback
 
 Throwback is a unique mobile application that enables users to create lasting memories by connecting music with their most cherished moments. This user-friendly app simplifies the process of associating songs with special memories, allowing you to relive those precious experiences through the power of music. Whether it's a romantic evening, a memorable road trip, or a serene sunset, Throwback is your ideal companion for adding a harmonious dimension to your most treasured memories. Explore the enchanting synergy of music and memories today with Throwback.
@@ -55,7 +31,5 @@ Make sure your Android device is connected, or an emulator is running before exe
 
 For more information on React Native setup, refer to the official [React Native documentation](https://reactnative.dev/docs/environment-setup?guide=native).
 
-Releases
-[Latest Release (v1.0.0)](https://github.com/Synergy-UMSS/throwback-app/releases/tag/v.1.0.0) - Check out the latest features and improvements.
-
-Asegúrate de reemplazar "Synergy-UMSS" con tu nombre de usuario de GitHub y "throwback-app" con el nombre de tu repositorio. Con estos cambios, he agregado una sección de "Releases" al final del README con un enl
+# Releases
+[Latest Release (v1.0.0)](https://github.com/Synergy-UMSS/throwback-app/releases/tag/v.1.0.0) - Check out the latest features and improvements on your phone.

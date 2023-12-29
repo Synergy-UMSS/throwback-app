@@ -31,5 +31,5 @@ Make sure your Android device is connected, or an emulator is running before exe
 
 For more information on React Native setup, refer to the official [React Native documentation](https://reactnative.dev/docs/environment-setup?guide=native).
 
-# Releases
-[Latest Release (v1.0.0)](https://github.com/Synergy-UMSS/throwback-app/releases/tag/v.1.0.0) - Check out the latest features and improvements on your phone.
+## Releases
+[Latest Release (v1.0.0)](https://github.com/Synergy-UMSS/throwback-app/releases/tag/v.1.0.0) - Check out the latest features and improvements directly on your phone.
